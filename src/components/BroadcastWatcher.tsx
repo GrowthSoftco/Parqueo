@@ -7,12 +7,12 @@ import { getPusher, CH_BROADCAST } from '@/lib/pusherClient'
 
 // Escucha mensajes del desarrollador (broadcast) y los muestra como
 // notch (toast), popup (modal) o banner (barra superior).
-export default function BroadcastWatcher() {
+export default function BroadcastWatcher({ pusherKey, pusherCluster }: { pusherKey?: string; pusherCluster?: string }) {
   const [popup, setPopup] = useState<string | null>(null)
   const [banner, setBanner] = useState<string | null>(null)
 
   useEffect(() => {
-    const p = getPusher()
+    const p = getPusher(pusherKey, pusherCluster)
     if (!p) return
     const ch = p.subscribe(CH_BROADCAST)
     ch.bind('message', (data: { message?: string; kind?: string }) => {
@@ -23,7 +23,7 @@ export default function BroadcastWatcher() {
       else toast(message, 'dev')
     })
     return () => { ch.unbind('message'); p.unsubscribe(CH_BROADCAST) }
-  }, [])
+  }, [pusherKey, pusherCluster])
 
   return (
     <>

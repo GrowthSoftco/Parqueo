@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation'
 import { Ban } from 'lucide-react'
 import AccountWatcher from '@/components/AccountWatcher'
 
-export default function CuentaSuspendida({ status, tenantId }: { status: string; tenantId?: string }) {
+export default function CuentaSuspendida({ status, tenantId, pusherKey, pusherCluster }: { status: string; tenantId?: string; pusherKey?: string; pusherCluster?: string }) {
   const router = useRouter()
   const banned = status === 'BANNED'
 
   return (
     <div className="fixed inset-0 z-[500] flex flex-col items-center justify-center px-6 text-center overflow-hidden" style={{ background: '#000000' }}>
-      <AccountWatcher tenantId={tenantId} />
+      <AccountWatcher tenantId={tenantId} pusherKey={pusherKey} pusherCluster={pusherCluster} />
       {/* Resplandor rojo de fondo */}
       <div
         className="absolute inset-0 pointer-events-none"

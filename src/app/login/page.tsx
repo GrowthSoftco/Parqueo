@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { login } from '@/app/auth-actions'
-import { getLoginBg } from '@/app/actions'
+import { getLoginBg, getPusherConfig } from '@/app/actions'
 import { getPusher, CH_PUBLIC } from '@/lib/pusherClient'
+import type Pusher from 'pusher-js'
+import type { Channel } from 'pusher-js'
 
 const DEFAULT_BG =
   'radial-gradient(circle at 30% 20%, #1e4ba0 0%, transparent 50%), radial-gradient(circle at 70% 80%, #0a2050 0%, transparent 55%), linear-gradient(135deg, #0a1830 0%, #0d2655 100%)'
@@ -21,11 +23,15 @@ export default function LoginPage() {
   useEffect(() => {
     // Carga el fondo guardado y se suscribe a cambios en vivo (Pusher)
     getLoginBg().then(v => { if (v) setBg(v) }).catch(() => {})
-    const p = getPusher()
-    if (!p) return
-    const ch = p.subscribe(CH_PUBLIC)
-    ch.bind('login-bg', (d: { value?: string }) => { if (d?.value) setBg(d.value) })
-    return () => { ch.unbind('login-bg'); p.unsubscribe(CH_PUBLIC) }
+    let pusher: Pusher | null = null
+    let ch: Channel | null = null
+    getPusherConfig().then(({ key, cluster }) => {
+      pusher = getPusher(key, cluster)
+      if (!pusher) return
+      ch = pusher.subscribe(CH_PUBLIC)
+      ch.bind('login-bg', (d: { value?: string }) => { if (d?.value) setBg(d.value) })
+    }).catch(() => {})
+    return () => { if (ch) ch.unbind('login-bg'); if (pusher) pusher.unsubscribe(CH_PUBLIC) }
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {

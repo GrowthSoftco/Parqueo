@@ -187,6 +187,15 @@ export async function getLoginBg() {
   return s?.value ?? null
 }
 
+// Config pública de Pusher leída en el servidor (evita el problema de inyección
+// de NEXT_PUBLIC_ en el build / variables marcadas como "Sensitive" en Vercel).
+export async function getPusherConfig() {
+  return {
+    key: process.env.NEXT_PUBLIC_PUSHER_KEY ?? '',
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? '',
+  }
+}
+
 export async function elegirPlan(plan: 'BASICO' | 'PRO' | 'NEGOCIO') {
   const tenant = await getCurrentTenant()
   // Solo cambia el plan; conserva el estado actual (no reinicia la prueba)

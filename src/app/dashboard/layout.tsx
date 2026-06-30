@@ -11,8 +11,10 @@ import LogoutDialog from '@/components/LogoutDialog'
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser()
   if (!user?.tenant) redirect('/login')
+  const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY ?? ''
+  const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? ''
   if (user.tenant.status === 'SUSPENDED' || user.tenant.status === 'BANNED') {
-    return <CuentaSuspendida status={user.tenant.status} tenantId={user.tenant.id} />
+    return <CuentaSuspendida status={user.tenant.status} tenantId={user.tenant.id} pusherKey={pusherKey} pusherCluster={pusherCluster} />
   }
   const [sub, categorias, registros] = await Promise.all([
     prisma.subscription.findUnique({ where: { tenantId: user.tenant.id } }),
@@ -39,8 +41,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="flex h-screen overflow-hidden p-2.5 gap-2.5" style={{ background: '#000000' }}>
-      <AccountWatcher tenantId={user.tenant.id} />
-      <BroadcastWatcher />
+      <AccountWatcher tenantId={user.tenant.id} pusherKey={pusherKey} pusherCluster={pusherCluster} />
+      <BroadcastWatcher pusherKey={pusherKey} pusherCluster={pusherCluster} />
       <LogoutDialog />
       <Sidebar role={user.role} />
       <main

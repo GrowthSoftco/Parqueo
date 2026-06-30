@@ -2,18 +2,16 @@
 
 import Pusher from 'pusher-js'
 
-// Pusher del lado del CLIENTE (navegador). Singleton. Devuelve null si no hay
-// variables configuradas (la app funciona igual, sin tiempo real).
+// Pusher del lado del CLIENTE. Recibe key/cluster (los provee el servidor),
+// así no dependemos de que las NEXT_PUBLIC_ se inyecten en el build.
 let client: Pusher | null = null
-let intentado = false
+let lastKey: string | null = null
 
-export function getPusher(): Pusher | null {
-  if (intentado) return client
-  intentado = true
-  const key = process.env.NEXT_PUBLIC_PUSHER_KEY
-  const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER
+export function getPusher(key?: string, cluster?: string): Pusher | null {
   if (!key || !cluster) return null
+  if (client && lastKey === key) return client
   client = new Pusher(key, { cluster })
+  lastKey = key
   return client
 }
 
