@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
 import StatCard, { type StatCardProps } from '@/components/StatCard'
-import { X, Car, CreditCard, CheckCircle2, Phone, RefreshCw } from 'lucide-react'
+import { X, RefreshCw } from 'lucide-react'
 import NuevaSuscripcionButton from '@/components/NuevaSuscripcionButton'
 
 export type Sub = {
@@ -129,81 +129,102 @@ export default function SuscripcionesView({ subs, stats }: { subs: Sub[]; stats:
   )
 }
 
+const estadoColor: Record<string, string> = { Activa: '#22c55e', 'Por vencer': '#f59e0b', Vencida: '#ef4444' }
+
 function SubDetail({ sub, onClose }: { sub: Sub; onClose: () => void }) {
-  const pct = sub.diasTotal > 0 ? Math.round((sub.diasRestantes / sub.diasTotal) * 100) : 0
-  const warn = sub.diasRestantes <= 5
+  const pct = sub.diasTotal > 0 ? Math.min(100, Math.max(0, Math.round((sub.diasRestantes / sub.diasTotal) * 100))) : 0
+  const warn = sub.diasRestantes <= 5 && sub.diasRestantes > 0
+  const vencida = sub.diasRestantes <= 0
+  const dot = estadoColor[sub.estado] ?? '#888'
+  const barra = vencida ? '#ef4444' : warn ? '#f59e0b' : '#e7e7e7'
 
   return (
-    <div>
-      <div className="flex items-start justify-between p-5 border-b" style={{ borderColor: '#1c1c1c' }}>
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-white" style={{ fontSize: '16px', fontWeight: 600 }}>{sub.cliente}</span>
-            <span className="text-xs px-2 py-0.5 rounded-full" style={estadoStyle[sub.estado]}>{sub.estado}</span>
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="flex items-start justify-between px-6 pt-6 pb-5">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2.5 mb-1.5">
+            <h2 className="text-white truncate" style={{ fontSize: '18px', fontWeight: 600, letterSpacing: '-0.01em' }}>{sub.cliente}</h2>
+            <span className="inline-flex items-center gap-1.5 shrink-0" style={{ fontSize: '12px', color: dot }}>
+              <span style={{ width: 6, height: 6, borderRadius: 9999, background: dot }} />
+              {sub.estado}
+            </span>
           </div>
-          <p className="font-mono" style={{ fontSize: '13px', color: '#888' }}>{sub.placa}</p>
+          <p className="font-mono" style={{ fontSize: '13px', color: '#777', letterSpacing: '0.02em' }}>{sub.placa}</p>
         </div>
-        <button onClick={onClose} className="p-1.5 rounded-lg transition-colors" style={{ color: '#666' }} onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#666')}>
+        <button onClick={onClose} className="shrink-0 -mr-1.5 p-1.5 rounded-lg transition-colors" style={{ color: '#666' }} onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#666')}>
           <X size={18} />
         </button>
       </div>
 
-      <div className="p-5 flex flex-col gap-6">
-        <div className="p-4 rounded-xl" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <CreditCard size={15} color="#a855f7" />
-              <span className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Plan {sub.plan}</span>
-            </div>
-            <span className="text-white" style={{ fontSize: '16px', fontWeight: 700 }}>{sub.monto}</span>
+      <div className="h-px mx-6" style={{ background: '#1a1a1a' }} />
+
+      <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-7">
+        {/* Monto / plan */}
+        <div>
+          <div className="flex items-baseline justify-between">
+            <span style={{ color: '#888', fontSize: '13px' }}>Plan {sub.plan.toLowerCase()}</span>
+            <span className="text-white" style={{ fontSize: '26px', fontWeight: 700, letterSpacing: '-0.02em' }}>{sub.monto}</span>
           </div>
-          <div className="flex justify-between mb-1.5">
-            <span style={{ color: '#888', fontSize: '12px' }}>Vence {sub.vence}</span>
-            <span style={{ color: warn ? '#f59e0b' : '#888', fontSize: '12px' }}>
-              {sub.diasRestantes > 0 ? `${sub.diasRestantes} días restantes` : 'Vencida'}
+          <div className="mt-4 w-full rounded-full" style={{ height: 4, background: '#1c1c1c' }}>
+            <div className="rounded-full" style={{ height: 4, width: `${pct}%`, background: barra, transition: 'width 400ms ease' }} />
+          </div>
+          <div className="flex justify-between mt-2">
+            <span style={{ color: '#777', fontSize: '12.5px' }}>Vence {sub.vence}</span>
+            <span style={{ color: warn || vencida ? barra : '#777', fontSize: '12.5px', fontWeight: warn || vencida ? 600 : 400 }}>
+              {vencida ? 'Vencida' : `${sub.diasRestantes} días restantes`}
             </span>
           </div>
-          <div className="w-full rounded-full h-1.5" style={{ background: '#222' }}>
-            <div className="h-1.5 rounded-full" style={{ width: `${pct}%`, background: warn ? '#f59e0b' : '#22c55e' }} />
-          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2.5">
-            <Car size={14} color="#666" />
-            <span className="text-white font-mono" style={{ fontSize: '13px' }}>{sub.placa}</span>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <Phone size={14} color="#666" />
-            <span style={{ color: '#ccc', fontSize: '13px' }}>{sub.tel}</span>
-          </div>
+        {/* Datos */}
+        <div className="flex flex-col">
+          {[
+            { k: 'Vehículo', v: sub.placa, mono: true },
+            { k: 'Teléfono', v: sub.tel },
+            { k: 'Inicio', v: sub.inicio },
+          ].map((row, i) => (
+            <div key={row.k} className="flex items-center justify-between py-2.5" style={{ borderTop: i === 0 ? 'none' : '1px solid #161616' }}>
+              <span style={{ color: '#777', fontSize: '13px' }}>{row.k}</span>
+              <span className={row.mono ? 'text-white font-mono' : 'text-white'} style={{ fontSize: '13px' }}>{row.v}</span>
+            </div>
+          ))}
         </div>
 
+        {/* Pagos */}
         <div>
-          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '12px' }}>HISTORIAL DE PAGOS</p>
-          <div className="flex flex-col gap-2">
+          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '6px' }}>HISTORIAL DE PAGOS</p>
+          <div className="flex flex-col">
+            {sub.pagos.length === 0 && <p style={{ color: '#555', fontSize: '13px', paddingTop: 10 }}>Sin pagos registrados.</p>}
             {sub.pagos.map((p, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: '#0f2a1a' }}>
-                  <CheckCircle2 size={15} color="#22c55e" />
+              <div key={i} className="flex items-center justify-between py-3" style={{ borderTop: i === 0 ? 'none' : '1px solid #161616' }}>
+                <div>
+                  <p className="text-white" style={{ fontSize: '13.5px', fontWeight: 500 }}>{p.monto}</p>
+                  <p style={{ color: '#666', fontSize: '11.5px', marginTop: 1 }}>{p.fecha} · {p.metodo}</p>
                 </div>
-                <div className="flex-1">
-                  <p className="text-white" style={{ fontSize: '13px', fontWeight: 500 }}>{p.monto}</p>
-                  <p style={{ color: '#555', fontSize: '11px' }}>{p.fecha} · {p.metodo}</p>
-                </div>
+                <span style={{ fontSize: '11.5px', color: '#3f8f5f', fontWeight: 500 }}>Pagado</span>
               </div>
             ))}
           </div>
         </div>
+      </div>
 
-        <div className="flex gap-2">
-          <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-black font-semibold" style={{ background: '#fff', fontSize: '13px' }}>
-            <RefreshCw size={14} /> Renovar
-          </button>
-          <button className="px-4 py-2.5 rounded-full" style={{ background: '#161616', border: '1px solid #232323', color: '#aaa', fontSize: '13px' }}>
-            Cancelar
-          </button>
-        </div>
+      {/* Acciones */}
+      <div className="px-6 py-4 flex gap-2.5" style={{ borderTop: '1px solid #1a1a1a' }}>
+        <button
+          className="flex-1 flex items-center justify-center gap-2 rounded-full text-black font-semibold transition-transform hover:scale-[1.01]"
+          style={{ background: '#fff', fontSize: '13.5px', padding: '11px' }}
+        >
+          <RefreshCw size={14} strokeWidth={2.5} /> Renovar
+        </button>
+        <button
+          className="rounded-full transition-colors"
+          style={{ background: 'transparent', border: '1px solid #262626', color: '#999', fontSize: '13.5px', padding: '11px 20px' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#161616'; (e.currentTarget as HTMLElement).style.color = '#ddd' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#999' }}
+        >
+          Cancelar
+        </button>
       </div>
     </div>
   )
