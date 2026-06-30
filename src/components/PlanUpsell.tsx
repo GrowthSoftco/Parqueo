@@ -22,7 +22,7 @@ export default function PlanUpsell({
   const p = PLAN[plan]
   return (
     <div className="px-7 pb-7 pt-5">
-      <div className="max-w-2xl mx-auto mt-10 text-center">
+      <div className="max-w-2xl mx-auto mt-10 flex flex-col items-center text-center">
         <div className="inline-flex items-center justify-center mb-6" style={{ width: 56, height: 56, borderRadius: 16, background: 'var(--c-surface3)', border: '1px solid var(--c-border3)' }}>
           <Icon size={26} color="var(--c-text2)" />
         </div>
