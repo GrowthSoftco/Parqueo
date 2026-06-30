@@ -1,7 +1,10 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentTenant } from '@/lib/tenant'
 import { getSessionUser } from '@/lib/auth'
-import { requireTier } from '@/lib/guard'
+import { getTenantPlan } from '@/lib/guard'
+import { planTier } from '@/lib/plan'
+import PlanUpsell from '@/components/PlanUpsell'
+import { FileText } from 'lucide-react'
 import HistorialView, { type Evento } from './HistorialView'
 
 export const dynamic = 'force-dynamic'
@@ -20,7 +23,9 @@ function duracion(a: Date, b: Date) {
 
 export default async function HistorialPage() {
   const tenant = await getCurrentTenant()
-  await requireTier(tenant.id, 2)
+  if (planTier(await getTenantPlan(tenant.id)) < 2) {
+    return <PlanUpsell modulo="Historial completo" descripcion="Consulta y busca todos los movimientos por placa, con duración, montos y filtros. Disponible desde el plan Pro." plan="PRO" icon={FileText} />
+  }
   const user = await getSessionUser()
   const esOwner = user?.role === 'OWNER' || user?.role === 'ADMIN'
   const registros = await prisma.parkingRecord.findMany({

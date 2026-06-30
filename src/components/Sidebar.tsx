@@ -14,9 +14,9 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react'
-import { planTier } from '@/lib/plan'
 
-// tier mínimo para ver el módulo (BASICO=1, PRO=2, NEGOCIO/trial=3)
+// tier = plan mínimo del módulo (1 Básico · 2 Pro · 3 Negocio). Solo informativo:
+// todos se muestran, el gate real (pantalla de upsell) está en cada página.
 const mainNav = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, tier: 1 },
   { label: 'Parqueadero', href: '/dashboard/parqueadero', icon: Car, tier: 1 },
@@ -52,14 +52,13 @@ function Tooltip({ label }: { label: string }) {
 // Lo que puede ver un empleado (EMPLEADO)
 const OPERATOR_HREFS = ['/dashboard/parqueadero', '/dashboard/caja', '/dashboard/historial']
 
-export default function Sidebar({ role, plan }: { role?: string; plan?: string | null }) {
+export default function Sidebar({ role }: { role?: string }) {
   const pathname = usePathname()
   const esOperador = role === 'EMPLEADO'
-  const tier = planTier(plan)
-  const permitido = (i: { href: string; tier: number }) =>
-    tier >= i.tier && (!esOperador || OPERATOR_HREFS.includes(i.href))
-  const principal = mainNav.filter(permitido)
-  const secundario = esOperador ? [] : secondaryNav.filter(permitido)
+  // Se muestran todos los módulos; los de plan superior abren la pantalla
+  // de "mejorar a X plan" al entrar. El empleado sí ve un subconjunto.
+  const principal = esOperador ? mainNav.filter(i => OPERATOR_HREFS.includes(i.href)) : mainNav
+  const secundario = esOperador ? [] : secondaryNav
 
   const NavLink = ({ label, href, icon: Icon }: { label: string; href: string; icon: typeof Car }) => {
     const active = pathname === href

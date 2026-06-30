@@ -2,7 +2,10 @@ import PageHeader from '@/components/PageHeader'
 import StatCard from '@/components/StatCard'
 import ContabilidadToolbar from '@/components/ContabilidadToolbar'
 import { getCurrentTenant } from '@/lib/tenant'
-import { requireOwner, requireTier } from '@/lib/guard'
+import { requireOwner, getTenantPlan } from '@/lib/guard'
+import { planTier } from '@/lib/plan'
+import PlanUpsell from '@/components/PlanUpsell'
+import { BarChart3 } from 'lucide-react'
 import { cargarMovimientos, normalizarPeriodo, rangoDe, PERIODO_LABEL, type Movimiento, type Periodo } from '@/lib/contabilidad'
 
 export const dynamic = 'force-dynamic'
@@ -70,7 +73,9 @@ function IngresosChart({ buckets }: { buckets: Bucket[] }) {
 export default async function ContabilidadPage({ searchParams }: { searchParams: Promise<{ periodo?: string }> }) {
   await requireOwner()
   const tenant = await getCurrentTenant()
-  await requireTier(tenant.id, 2)
+  if (planTier(await getTenantPlan(tenant.id)) < 2) {
+    return <PlanUpsell modulo="Contabilidad y reportes" descripcion="Lleva las cuentas de tu parqueadero: ingresos por periodo, desglose, gráfica y exportación a PDF o CSV. Disponible desde el plan Pro." plan="PRO" icon={BarChart3} />
+  }
   const periodo = normalizarPeriodo((await searchParams).periodo)
   const now = new Date()
   const desde = rangoDe(periodo, now)

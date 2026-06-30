@@ -2,8 +2,9 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentTenant } from '@/lib/tenant'
 import { requireOwner } from '@/lib/guard'
 import { planTier } from '@/lib/plan'
+import PlanUpsell from '@/components/PlanUpsell'
+import { PieChart } from 'lucide-react'
 import ReportesView from './ReportesView'
-import ReportesUpsell from './ReportesUpsell'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,7 +14,21 @@ export default async function ReportesPage() {
   await requireOwner()
   const tenant = await getCurrentTenant()
   const plan = (await prisma.subscription.findUnique({ where: { tenantId: tenant.id }, select: { plan: true } }))?.plan ?? null
-  if (planTier(plan) < 3) return <ReportesUpsell />
+  if (planTier(plan) < 3) {
+    return (
+      <PlanUpsell
+        modulo="Reportes y control"
+        descripcion="Mira el rendimiento de cada empleado, controla los descuadres de caja y entiende tu negocio a fondo. Disponible en el plan Negocio."
+        plan="NEGOCIO"
+        icon={PieChart}
+        puntos={[
+          { t: 'Control de empleados y caja', d: 'Cuánto recaudó cada turno y si la caja cuadró.' },
+          { t: 'Analítica del negocio', d: 'Horas pico, ingresos por categoría y comparativas.' },
+          { t: 'Exportar a Excel', d: 'Lleva tus reportes a Excel con un clic.' },
+        ]}
+      />
+    )
+  }
 
   // ---- Turnos cerrados (control de empleados / caja) ----
   const shifts = await prisma.shift.findMany({

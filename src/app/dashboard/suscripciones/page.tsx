@@ -1,6 +1,9 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentTenant } from '@/lib/tenant'
-import { requireOwner, requireTier } from '@/lib/guard'
+import { requireOwner, getTenantPlan } from '@/lib/guard'
+import { planTier } from '@/lib/plan'
+import PlanUpsell from '@/components/PlanUpsell'
+import { CreditCard } from 'lucide-react'
 import SuscripcionesView, { type Sub } from './SuscripcionesView'
 import type { StatCardProps } from '@/components/StatCard'
 
@@ -17,7 +20,10 @@ const larga = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MESES[d.ge
 export default async function SuscripcionesPage() {
   await requireOwner()
   const tenant = await getCurrentTenant()
-  await requireTier(tenant.id, 2)
+  const plan = await getTenantPlan(tenant.id)
+  if (planTier(plan) < 2) {
+    return <PlanUpsell modulo="Suscripciones mensuales" descripcion="Administra clientes con mensualidad: planes, vencimientos, renovaciones e historial de pagos. Disponible desde el plan Pro." plan="PRO" icon={CreditCard} />
+  }
 
   const subsDb = await prisma.clientSubscription.findMany({
     where: { tenantId: tenant.id },
@@ -53,8 +59,6 @@ export default async function SuscripcionesPage() {
     { label: 'Por vencer (7 días)', value: String(porVencer), change: porVencer > 0 ? 'Atención' : undefined, tone: 'warn' },
     { label: 'Total clientes', value: String(totalClientes), note: 'registrados' },
   ]
-
-  const plan = (await prisma.subscription.findUnique({ where: { tenantId: tenant.id }, select: { plan: true } }))?.plan ?? null
 
   return <SuscripcionesView subs={subs} stats={stats} plan={plan} />
 }

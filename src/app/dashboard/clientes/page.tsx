@@ -1,6 +1,9 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentTenant } from '@/lib/tenant'
-import { requireOwner, requireTier } from '@/lib/guard'
+import { requireOwner, getTenantPlan } from '@/lib/guard'
+import { planTier } from '@/lib/plan'
+import PlanUpsell from '@/components/PlanUpsell'
+import { Users } from 'lucide-react'
 import ClientesView, { type Cliente } from './ClientesView'
 import type { StatCardProps } from '@/components/StatCard'
 
@@ -35,7 +38,9 @@ function venceFmt(d: Date) {
 export default async function ClientesPage() {
   await requireOwner()
   const tenant = await getCurrentTenant()
-  await requireTier(tenant.id, 2)
+  if (planTier(await getTenantPlan(tenant.id)) < 2) {
+    return <PlanUpsell modulo="Directorio de clientes" descripcion="Tu base de clientes frecuentes y suscriptores, con sus vehículos y mensualidades en un solo lugar. Disponible desde el plan Pro." plan="PRO" icon={Users} />
+  }
 
   const [customers, records] = await Promise.all([
     prisma.customer.findMany({
