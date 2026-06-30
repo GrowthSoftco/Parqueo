@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { login } from '@/app/auth-actions'
+import { getLoginBg } from '@/app/actions'
+import { getPusher, CH_PUBLIC } from '@/lib/pusherClient'
 
 const DEFAULT_BG =
   'radial-gradient(circle at 30% 20%, #1e4ba0 0%, transparent 50%), radial-gradient(circle at 70% 80%, #0a2050 0%, transparent 55%), linear-gradient(135deg, #0a1830 0%, #0d2655 100%)'
@@ -17,15 +19,13 @@ export default function LoginPage() {
   const [bg, setBg] = useState<string>(DEFAULT_BG)
 
   useEffect(() => {
-    // Push en tiempo real (SSE): una sola conexión, sin polling
-    const es = new EventSource('/api/login-bg/stream')
-    es.onmessage = e => {
-      try {
-        const d = JSON.parse(e.data)
-        if (d.value) setBg(d.value)
-      } catch {}
-    }
-    return () => es.close()
+    // Carga el fondo guardado y se suscribe a cambios en vivo (Pusher)
+    getLoginBg().then(v => { if (v) setBg(v) }).catch(() => {})
+    const p = getPusher()
+    if (!p) return
+    const ch = p.subscribe(CH_PUBLIC)
+    ch.bind('login-bg', (d: { value?: string }) => { if (d?.value) setBg(d.value) })
+    return () => { ch.unbind('login-bg'); p.unsubscribe(CH_PUBLIC) }
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {

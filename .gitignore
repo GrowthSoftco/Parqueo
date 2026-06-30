@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Prisma cliente generado
 /src/generated
+
+# permitir el ejemplo (sin secretos)
+!.env.example

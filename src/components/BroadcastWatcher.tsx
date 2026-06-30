@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Megaphone, X } from 'lucide-react'
 import { toast } from '@/lib/toast'
+import { getPusher, CH_BROADCAST } from '@/lib/pusherClient'
 
 // Escucha mensajes del desarrollador (broadcast) y los muestra como
 // notch (toast), popup (modal) o banner (barra superior).
@@ -11,17 +12,17 @@ export default function BroadcastWatcher() {
   const [banner, setBanner] = useState<string | null>(null)
 
   useEffect(() => {
-    const es = new EventSource('/api/broadcast/stream')
-    es.onmessage = e => {
-      try {
-        const { message, kind } = JSON.parse(e.data) as { message: string; kind?: string }
-        if (!message) return
-        if (kind === 'popup') setPopup(message)
-        else if (kind === 'banner') setBanner(message)
-        else toast(message, 'dev')
-      } catch {}
-    }
-    return () => es.close()
+    const p = getPusher()
+    if (!p) return
+    const ch = p.subscribe(CH_BROADCAST)
+    ch.bind('message', (data: { message?: string; kind?: string }) => {
+      const { message, kind } = data || {}
+      if (!message) return
+      if (kind === 'popup') setPopup(message)
+      else if (kind === 'banner') setBanner(message)
+      else toast(message, 'dev')
+    })
+    return () => { ch.unbind('message'); p.unsubscribe(CH_BROADCAST) }
   }, [])
 
   return (

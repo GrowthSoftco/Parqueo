@@ -3,7 +3,7 @@
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { getSessionUser } from '@/lib/auth'
-import { bus } from '@/lib/bus'
+import { pushEvent, CH_PUBLIC, CH_BROADCAST, chTenant } from '@/lib/pusher'
 import { revalidatePath } from 'next/cache'
 
 async function requireOperator() {
@@ -20,7 +20,7 @@ function revalidar() {
 
 // Empuja en tiempo real al tenant afectado (su app se actualiza sola)
 function notificarTenant(tenantId: string) {
-  bus.emit(`tenant:${tenantId}`, { changed: true })
+  void pushEvent(chTenant(tenantId), 'changed', { changed: true })
 }
 
 async function audit(actor: string, accion: string, detalle: string, targetTenant: string) {
@@ -37,7 +37,7 @@ export async function enviarMensajeGlobal(mensaje: string, kind: MensajeKind = '
   const msg = mensaje.trim()
   if (!msg) return { ok: false, error: 'Escribe un mensaje' }
   const tipo: MensajeKind = ['notch', 'popup', 'banner'].includes(kind) ? kind : 'notch'
-  bus.emit('broadcast', { message: msg, kind: tipo })
+  await pushEvent(CH_BROADCAST, 'message', { message: msg, kind: tipo })
   await audit(op.nombre, `Mensaje global (${tipo})`, msg.slice(0, 140), '')
   return { ok: true }
 }
@@ -100,7 +100,7 @@ export async function setLoginBg(value: string) {
     update: { value },
   })
   await audit(op.nombre, 'Fondo del login actualizado', value.slice(0, 50), '')
-  bus.emit('loginBg', value) // push en tiempo real a los logins conectados
+  await pushEvent(CH_PUBLIC, 'login-bg', { value }) // push en tiempo real a los logins conectados
   revalidatePath('/login')
   revalidatePath('/register')
   return { ok: true }

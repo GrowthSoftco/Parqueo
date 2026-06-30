@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const user = await getSessionUser()
   if (!user?.tenant) redirect('/login')
   if (user.tenant.status === 'SUSPENDED' || user.tenant.status === 'BANNED') {
-    return <CuentaSuspendida status={user.tenant.status} />
+    return <CuentaSuspendida status={user.tenant.status} tenantId={user.tenant.id} />
   }
   const [sub, categorias, registros] = await Promise.all([
     prisma.subscription.findUnique({ where: { tenantId: user.tenant.id } }),
@@ -39,7 +39,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="flex h-screen overflow-hidden p-2.5 gap-2.5" style={{ background: '#000000' }}>
-      <AccountWatcher />
+      <AccountWatcher tenantId={user.tenant.id} />
       <BroadcastWatcher />
       <LogoutDialog />
       <Sidebar role={user.role} />
