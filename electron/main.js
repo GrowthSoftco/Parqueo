@@ -4,11 +4,10 @@ const path = require('path')
 app.setName('Parqueo')
 
 // Electron es una ventana a la MISMA app servidor.
-// - Desarrollo: carga el dev server local.
-// - Producción: carga tu app desplegada (defínela con APP_URL al empaquetar,
-//   ej. APP_URL=https://app.parqueo.com).
+// - Producción (por defecto): carga la app desplegada en Vercel.
+// - Desarrollo: pon APP_URL=http://localhost:3000 (lo hace el script electron:dev).
 // Así web y escritorio comparten un solo backend y la DB nunca viaja al cliente.
-const APP_URL = process.env.APP_URL || 'http://localhost:3000'
+const APP_URL = process.env.APP_URL || 'https://parqueoco.vercel.app'
 
 function createWindow() {
   const win = new BrowserWindow({
