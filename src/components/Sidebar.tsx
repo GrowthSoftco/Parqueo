@@ -14,19 +14,21 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react'
+import { planTier } from '@/lib/plan'
 
+// tier mínimo para ver el módulo (BASICO=1, PRO=2, NEGOCIO/trial=3)
 const mainNav = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Parqueadero', href: '/dashboard/parqueadero', icon: Car },
-  { label: 'Caja', href: '/dashboard/caja', icon: DollarSign },
-  { label: 'Suscripciones', href: '/dashboard/suscripciones', icon: CreditCard },
-  { label: 'Historial', href: '/dashboard/historial', icon: FileText },
-  { label: 'Contabilidad', href: '/dashboard/contabilidad', icon: BarChart3 },
-  { label: 'Reportes', href: '/dashboard/reportes', icon: PieChart },
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, tier: 1 },
+  { label: 'Parqueadero', href: '/dashboard/parqueadero', icon: Car, tier: 1 },
+  { label: 'Caja', href: '/dashboard/caja', icon: DollarSign, tier: 1 },
+  { label: 'Suscripciones', href: '/dashboard/suscripciones', icon: CreditCard, tier: 2 },
+  { label: 'Historial', href: '/dashboard/historial', icon: FileText, tier: 2 },
+  { label: 'Contabilidad', href: '/dashboard/contabilidad', icon: BarChart3, tier: 2 },
+  { label: 'Reportes', href: '/dashboard/reportes', icon: PieChart, tier: 3 },
 ]
 
 const secondaryNav = [
-  { label: 'Clientes', href: '/dashboard/clientes', icon: Users },
+  { label: 'Clientes', href: '/dashboard/clientes', icon: Users, tier: 2 },
 ]
 
 function Tooltip({ label }: { label: string }) {
@@ -50,11 +52,14 @@ function Tooltip({ label }: { label: string }) {
 // Lo que puede ver un empleado (EMPLEADO)
 const OPERATOR_HREFS = ['/dashboard/parqueadero', '/dashboard/caja', '/dashboard/historial']
 
-export default function Sidebar({ role }: { role?: string }) {
+export default function Sidebar({ role, plan }: { role?: string; plan?: string | null }) {
   const pathname = usePathname()
   const esOperador = role === 'EMPLEADO'
-  const principal = esOperador ? mainNav.filter(i => OPERATOR_HREFS.includes(i.href)) : mainNav
-  const secundario = esOperador ? [] : secondaryNav
+  const tier = planTier(plan)
+  const permitido = (i: { href: string; tier: number }) =>
+    tier >= i.tier && (!esOperador || OPERATOR_HREFS.includes(i.href))
+  const principal = mainNav.filter(permitido)
+  const secundario = esOperador ? [] : secondaryNav.filter(permitido)
 
   const NavLink = ({ label, href, icon: Icon }: { label: string; href: string; icon: typeof Car }) => {
     const active = pathname === href

@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentTenant } from '@/lib/tenant'
 import { requireOwner } from '@/lib/guard'
+import { planTier } from '@/lib/plan'
 import ReportesView from './ReportesView'
 import ReportesUpsell from './ReportesUpsell'
 
@@ -12,7 +13,7 @@ export default async function ReportesPage() {
   await requireOwner()
   const tenant = await getCurrentTenant()
   const plan = (await prisma.subscription.findUnique({ where: { tenantId: tenant.id }, select: { plan: true } }))?.plan ?? null
-  if (plan !== 'NEGOCIO') return <ReportesUpsell />
+  if (planTier(plan) < 3) return <ReportesUpsell />
 
   // ---- Turnos cerrados (control de empleados / caja) ----
   const shifts = await prisma.shift.findMany({

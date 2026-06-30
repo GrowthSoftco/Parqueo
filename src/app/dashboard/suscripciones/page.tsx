@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentTenant } from '@/lib/tenant'
-import { requireOwner } from '@/lib/guard'
+import { requireOwner, requireTier } from '@/lib/guard'
 import SuscripcionesView, { type Sub } from './SuscripcionesView'
 import type { StatCardProps } from '@/components/StatCard'
 
@@ -17,6 +17,7 @@ const larga = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MESES[d.ge
 export default async function SuscripcionesPage() {
   await requireOwner()
   const tenant = await getCurrentTenant()
+  await requireTier(tenant.id, 2)
 
   const subsDb = await prisma.clientSubscription.findMany({
     where: { tenantId: tenant.id },

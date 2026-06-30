@@ -2,7 +2,7 @@ import PageHeader from '@/components/PageHeader'
 import StatCard from '@/components/StatCard'
 import ContabilidadToolbar from '@/components/ContabilidadToolbar'
 import { getCurrentTenant } from '@/lib/tenant'
-import { requireOwner } from '@/lib/guard'
+import { requireOwner, requireTier } from '@/lib/guard'
 import { cargarMovimientos, normalizarPeriodo, rangoDe, PERIODO_LABEL, type Movimiento, type Periodo } from '@/lib/contabilidad'
 
 export const dynamic = 'force-dynamic'
@@ -70,6 +70,7 @@ function IngresosChart({ buckets }: { buckets: Bucket[] }) {
 export default async function ContabilidadPage({ searchParams }: { searchParams: Promise<{ periodo?: string }> }) {
   await requireOwner()
   const tenant = await getCurrentTenant()
+  await requireTier(tenant.id, 2)
   const periodo = normalizarPeriodo((await searchParams).periodo)
   const now = new Date()
   const desde = rangoDe(periodo, now)

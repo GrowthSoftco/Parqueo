@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentTenant } from '@/lib/tenant'
 import { getSessionUser } from '@/lib/auth'
+import { requireTier } from '@/lib/guard'
 import HistorialView, { type Evento } from './HistorialView'
 
 export const dynamic = 'force-dynamic'
@@ -19,6 +20,7 @@ function duracion(a: Date, b: Date) {
 
 export default async function HistorialPage() {
   const tenant = await getCurrentTenant()
+  await requireTier(tenant.id, 2)
   const user = await getSessionUser()
   const esOwner = user?.role === 'OWNER' || user?.role === 'ADMIN'
   const registros = await prisma.parkingRecord.findMany({

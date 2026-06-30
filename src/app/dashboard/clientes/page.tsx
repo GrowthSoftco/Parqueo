@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentTenant } from '@/lib/tenant'
-import { requireOwner } from '@/lib/guard'
+import { requireOwner, requireTier } from '@/lib/guard'
 import ClientesView, { type Cliente } from './ClientesView'
 import type { StatCardProps } from '@/components/StatCard'
 
@@ -35,6 +35,7 @@ function venceFmt(d: Date) {
 export default async function ClientesPage() {
   await requireOwner()
   const tenant = await getCurrentTenant()
+  await requireTier(tenant.id, 2)
 
   const [customers, records] = await Promise.all([
     prisma.customer.findMany({
