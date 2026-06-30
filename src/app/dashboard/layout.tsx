@@ -44,7 +44,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <AccountWatcher tenantId={user.tenant.id} pusherKey={pusherKey} pusherCluster={pusherCluster} />
       <BroadcastWatcher pusherKey={pusherKey} pusherCluster={pusherCluster} />
       <LogoutDialog />
-      <Sidebar role={user.role} nombre={user.tenant.nombre} plan={plan} />
+      <Sidebar role={user.role} />
       <main
         className="flex-1 overflow-hidden rounded-2xl flex flex-col relative"
         style={{
