@@ -14,7 +14,9 @@ import {
   LogOut,
 } from 'lucide-react'
 
-const mainNav = [
+type Item = { label: string; href: string; icon: typeof Car }
+
+const principalNav: Item[] = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Parqueadero', href: '/dashboard/parqueadero', icon: Car },
   { label: 'Caja', href: '/dashboard/caja', icon: DollarSign },
@@ -23,120 +25,102 @@ const mainNav = [
   { label: 'Contabilidad', href: '/dashboard/contabilidad', icon: BarChart3 },
 ]
 
-const secondaryNav = [
+const gestionNav: Item[] = [
   { label: 'Clientes', href: '/dashboard/clientes', icon: Users },
+  { label: 'Configuración', href: '/dashboard/configuracion', icon: Settings },
 ]
-
-function Tooltip({ label }: { label: string }) {
-  return (
-    <div
-      className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 rounded-lg whitespace-nowrap pointer-events-none z-[100] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150"
-      style={{
-        background: '#1f1f1f',
-        border: '1px solid #2c2c2c',
-        color: '#fff',
-        fontSize: '12.5px',
-        fontWeight: 500,
-        boxShadow: '0 6px 20px rgba(0,0,0,0.5)',
-      }}
-    >
-      {label}
-    </div>
-  )
-}
 
 // Lo que puede ver un empleado (EMPLEADO)
 const OPERATOR_HREFS = ['/dashboard/parqueadero', '/dashboard/caja', '/dashboard/historial']
 
-export default function Sidebar({ role }: { role?: string }) {
+const PLAN_LABEL: Record<string, string> = { BASICO: 'Plan Básico', PRO: 'Plan Pro', NEGOCIO: 'Plan Negocio' }
+
+function NavRow({ item, active }: { item: Item; active: boolean }) {
+  const { label, href, icon: Icon } = item
+  return (
+    <Link
+      href={href}
+      className="relative flex items-center gap-3 rounded-lg h-9 px-2.5 transition-colors"
+      style={{ background: active ? '#1a1a1a' : 'transparent', color: active ? '#fff' : '#6e6e6e' }}
+      onMouseEnter={e => { if (!active) { e.currentTarget.style.background = '#141414'; e.currentTarget.style.color = '#d4d4d4' } }}
+      onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6e6e6e' } }}
+    >
+      {active && <span style={{ position: 'absolute', left: -10, top: '50%', transform: 'translateY(-50%)', width: 3, height: 18, borderRadius: 9999, background: '#fff' }} />}
+      <Icon size={17} strokeWidth={2} />
+      <span style={{ fontSize: 13.5, fontWeight: active ? 600 : 500 }}>{label}</span>
+    </Link>
+  )
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="px-2.5 mb-1.5 mt-5 first:mt-0" style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.08em', color: '#4a4a4a', textTransform: 'uppercase' }}>
+      {children}
+    </p>
+  )
+}
+
+export default function Sidebar({ role, nombre, plan }: { role?: string; nombre?: string; plan?: string | null }) {
   const pathname = usePathname()
   const esOperador = role === 'EMPLEADO'
-  const principal = esOperador ? mainNav.filter(i => OPERATOR_HREFS.includes(i.href)) : mainNav
-  const secundario = esOperador ? [] : secondaryNav
+  const principal = esOperador ? principalNav.filter(i => OPERATOR_HREFS.includes(i.href)) : principalNav
+  const gestion = esOperador ? [] : gestionNav
 
-  const NavLink = ({ label, href, icon: Icon }: { label: string; href: string; icon: typeof Car }) => {
-    const active = pathname === href
-    return (
-      <div className="relative group">
-        <Link
-          href={href}
-          className="flex items-center justify-center rounded-xl transition-all"
-          style={{
-            background: active ? '#1e1e1e' : 'transparent',
-            color: active ? '#fff' : '#707070',
-            width: 44,
-            height: 44,
-          }}
-          onMouseEnter={e => {
-            if (!active) {
-              ;(e.currentTarget as HTMLElement).style.background = '#161616'
-              ;(e.currentTarget as HTMLElement).style.color = '#e5e5e5'
-            }
-          }}
-          onMouseLeave={e => {
-            if (!active) {
-              ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-              ;(e.currentTarget as HTMLElement).style.color = '#707070'
-            }
-          }}
-        >
-          <Icon size={18} strokeWidth={2} />
-        </Link>
-        <Tooltip label={label} />
-      </div>
-    )
-  }
+  const nombreLot = nombre?.trim() || 'Parqueadero'
+  const iniciales = nombreLot.split(/\s+/).slice(0, 2).map(p => p[0]).join('').toUpperCase()
+  const planLabel = plan ? PLAN_LABEL[plan] ?? 'Plan activo' : 'Prueba gratis'
 
   return (
-    <aside className="flex flex-col items-center shrink-0 h-full w-[64px] pb-3">
+    <aside className="flex flex-col shrink-0 h-full w-[212px] pb-3 px-2.5">
       {/* Franja superior arrastrable: deja espacio para el semáforo de macOS */}
-      <div className="w-full h-[52px] shrink-0" style={{ WebkitAppRegion: 'drag' } as React.CSSProperties} />
+      <div className="w-full h-[40px] shrink-0" style={{ WebkitAppRegion: 'drag' } as React.CSSProperties} />
 
-      {/* Logo */}
-      <div className="flex items-center justify-center mb-5">
+      {/* Logo + wordmark */}
+      <div className="flex items-center gap-2.5 px-2.5 mb-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="Parqueo" width={28} height={28} />
+        <img src="/logo.svg" alt="Parqueo" width={24} height={24} />
+        <span className="text-white" style={{ fontSize: 16, fontWeight: 650, letterSpacing: '-0.01em' }}>Parqueo</span>
       </div>
 
-      {/* Main nav */}
-      <nav className="flex flex-col gap-1">
-        {principal.map(item => (
-          <NavLink key={item.href} {...item} />
-        ))}
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto">
+        <SectionLabel>Principal</SectionLabel>
+        <div className="flex flex-col gap-0.5">
+          {principal.map(item => <NavRow key={item.href} item={item} active={pathname === item.href} />)}
+        </div>
+
+        {gestion.length > 0 && (
+          <>
+            <SectionLabel>Gestión</SectionLabel>
+            <div className="flex flex-col gap-0.5">
+              {gestion.map(item => <NavRow key={item.href} item={item} active={pathname === item.href} />)}
+            </div>
+          </>
+        )}
       </nav>
 
-      {secundario.length > 0 && (
-        <>
-          <div className="my-3 h-px w-7" style={{ background: '#1c1c1c' }} />
-          <nav className="flex flex-col gap-1">
-            {secundario.map(item => (
-              <NavLink key={item.href} {...item} />
-            ))}
-          </nav>
-        </>
-      )}
-
-      {/* Bottom */}
-      <div className="mt-auto flex flex-col gap-1">
-        {!esOperador && <NavLink label="Configuración" href="/dashboard/configuracion" icon={Settings} />}
-        <div className="relative group">
-          <button
-            onClick={() => window.dispatchEvent(new Event('parqueo:logout'))}
-            className="flex items-center justify-center rounded-xl transition-colors"
-            style={{ color: '#707070', width: 44, height: 44, cursor: 'pointer' }}
-            onMouseEnter={e => {
-              ;(e.currentTarget as HTMLElement).style.background = '#161616'
-              ;(e.currentTarget as HTMLElement).style.color = '#ef4444'
-            }}
-            onMouseLeave={e => {
-              ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-              ;(e.currentTarget as HTMLElement).style.color = '#707070'
-            }}
-          >
-            <LogOut size={18} />
-          </button>
-          <Tooltip label="Cerrar sesión" />
+      {/* Footer: parqueadero + salir */}
+      <div className="mt-3">
+        <div className="h-px w-full mb-2.5" style={{ background: '#181818' }} />
+        <div className="flex items-center gap-2.5 px-1.5 mb-1">
+          <div className="flex items-center justify-center shrink-0" style={{ width: 32, height: 32, borderRadius: 9, background: '#1a1a1a', border: '1px solid #262626', color: '#cfcfcf', fontSize: 11.5, fontWeight: 700 }}>
+            {iniciales}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-white truncate" style={{ fontSize: 12.5, fontWeight: 600 }}>{nombreLot}</p>
+            <p className="truncate" style={{ fontSize: 11, color: '#666' }}>{planLabel}</p>
+          </div>
         </div>
+        <button
+          onClick={() => window.dispatchEvent(new Event('parqueo:logout'))}
+          className="flex items-center gap-3 rounded-lg h-9 px-2.5 w-full transition-colors"
+          style={{ background: 'transparent', color: '#6e6e6e', cursor: 'pointer' }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#160c0c'; e.currentTarget.style.color = '#ef4444' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6e6e6e' }}
+        >
+          <LogOut size={17} strokeWidth={2} />
+          <span style={{ fontSize: 13.5, fontWeight: 500 }}>Cerrar sesión</span>
+        </button>
       </div>
     </aside>
   )
