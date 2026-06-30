@@ -4,7 +4,7 @@ import type { StatCardProps } from '@/components/StatCard'
 
 export const dynamic = 'force-dynamic'
 
-const PRICE: Record<string, number> = { BASICO: 49900, PRO: 99900, NEGOCIO: 179900 }
+const PRICE: Record<string, number> = { BASICO: 49990, PRO: 99990, NEGOCIO: 179990 }
 const planLabel: Record<string, string> = { BASICO: 'Básico', PRO: 'Pro', NEGOCIO: 'Negocio' }
 const pagoLabel: Record<string, string> = { PAGADO: 'Pagado', FALLIDO: 'Fallido', PENDIENTE: 'Pendiente' }
 const fmt = (n: number) => '$' + n.toLocaleString('es-CO')

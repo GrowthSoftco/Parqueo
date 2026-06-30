@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const PRICE: Record<string, number> = { BASICO: 49900, PRO: 99900, NEGOCIO: 179900 }
+const PRICE: Record<string, number> = { BASICO: 49990, PRO: 99990, NEGOCIO: 179990 }
 const fmt = (n: number) => '$' + n.toLocaleString('es-CO')
 const fmtM = (n: number) => (n >= 1_000_000 ? '$' + (n / 1_000_000).toFixed(2) + 'M' : '$' + (n / 1000).toFixed(0) + 'K')
 const planLabel: Record<string, string> = { BASICO: 'Básico', PRO: 'Pro', NEGOCIO: 'Negocio' }

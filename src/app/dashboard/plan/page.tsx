@@ -13,17 +13,17 @@ const fecha = (d: Date) => d.toLocaleDateString('es-CO', { day: '2-digit', month
 const PLANES: Record<string, { nombre: string; precio: number; incluye: string[] }> = {
   BASICO: {
     nombre: 'Básico',
-    precio: 49900,
+    precio: 49990,
     incluye: ['Cobro a tus clientes en efectivo', 'Entradas y salidas ilimitadas', 'Caja y cierre de turnos', 'Reportes en PDF y Excel'],
   },
   PRO: {
     nombre: 'Pro',
-    precio: 99900,
+    precio: 99990,
     incluye: ['Todo lo del plan Básico', 'Cóbrale a tus clientes con Nequi y Daviplata', 'Mensualidades de clientes', 'Personalización del recibo'],
   },
   NEGOCIO: {
     nombre: 'Negocio',
-    precio: 179900,
+    precio: 179990,
     incluye: ['Todo lo del plan Pro', 'Cóbrale a tus clientes con tarjeta', 'Facturación electrónica DIAN (pronto)', 'Soporte prioritario'],
   },
 }
