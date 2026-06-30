@@ -167,6 +167,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Logo: es blanco por defecto. En temas claros se invierte a negro. */
+[data-theme="dia"] img[src="/logo.svg"] {
+  filter: invert(1);
+}
+
 * {
   box-sizing: border-box;
 }
