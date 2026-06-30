@@ -134,7 +134,7 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
             {result ? (
               /* Resultado del cobro */
               <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: '#0f2a1a' }}>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: 'color-mix(in srgb, #22c55e 16%, transparent)' }}>
                   <CheckCircle2 size={24} color="#22c55e" />
                 </div>
                 <p style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Salida registrada · {result.placa}</p>

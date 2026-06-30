@@ -30,15 +30,15 @@ const PLANES: Record<string, { nombre: string; precio: number; incluye: string[]
 
 const ESTADO: Record<string, { label: string; color: string; bg: string }> = {
   TRIAL: { label: 'En prueba', color: '#3b82f6', bg: '#0f1d2e' },
-  ACTIVE: { label: 'Activo', color: '#22c55e', bg: '#0f2a1a' },
+  ACTIVE: { label: 'Activo', color: '#22c55e', bg: 'color-mix(in srgb, #22c55e 16%, transparent)' },
   PAST_DUE: { label: 'Pago pendiente', color: '#f59e0b', bg: '#2a210d' },
   CANCELED: { label: 'Cancelado', color: 'var(--c-text3)', bg: 'var(--c-surface3)' },
 }
 
 const PAGO_ESTADO: Record<string, { label: string; color: string; bg: string }> = {
-  PAGADO: { label: 'Pagado', color: '#22c55e', bg: '#0f2a1a' },
+  PAGADO: { label: 'Pagado', color: '#22c55e', bg: 'color-mix(in srgb, #22c55e 16%, transparent)' },
   PENDIENTE: { label: 'Pendiente', color: '#f59e0b', bg: '#2a210d' },
-  FALLIDO: { label: 'Fallido', color: '#ef4444', bg: '#2a0f0f' },
+  FALLIDO: { label: 'Fallido', color: '#ef4444', bg: 'color-mix(in srgb, #ef4444 16%, transparent)' },
 }
 
 export default async function PlanPage() {

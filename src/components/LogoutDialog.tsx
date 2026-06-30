@@ -41,7 +41,7 @@ export default function LogoutDialog() {
             style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border3)', animation: 'pop-in 180ms cubic-bezier(0.16,1,0.3,1)' }}
             onClick={e => e.stopPropagation()}
           >
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: '#2a0f0f', border: '1px solid #3a1a1a' }}>
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'color-mix(in srgb, #ef4444 16%, transparent)', border: '1px solid color-mix(in srgb, #ef4444 32%, transparent)' }}>
               <Power size={22} color="#ef4444" strokeWidth={2.2} />
             </div>
             <p className="text-white" style={{ fontSize: '17px', fontWeight: 600 }}>¿Cerrar sesión?</p>

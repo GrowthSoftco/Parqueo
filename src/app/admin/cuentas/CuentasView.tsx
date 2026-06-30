@@ -29,10 +29,10 @@ export type Cuenta = {
 const filtros: (Estado | 'Todos')[] = ['Todos', 'Activo', 'Prueba', 'Suspendido', 'Baneado']
 
 const estadoStyle: Record<Estado, React.CSSProperties> = {
-  Activo: { background: '#0f2a1a', color: '#22c55e', border: '1px solid #1a4a2a' },
-  Prueba: { background: '#0f1f2a', color: '#3b82f6', border: '1px solid #1a334a' },
-  Suspendido: { background: '#2a230f', color: '#f59e0b', border: '1px solid #4a3a1a' },
-  Baneado: { background: '#2a0f0f', color: '#ef4444', border: '1px solid #4a1a1a' },
+  Activo: { background: 'color-mix(in srgb, #22c55e 16%, transparent)', color: '#22c55e', border: '1px solid color-mix(in srgb, #22c55e 32%, transparent)' },
+  Prueba: { background: 'color-mix(in srgb, #3b82f6 16%, transparent)', color: '#3b82f6', border: '1px solid color-mix(in srgb, #3b82f6 32%, transparent)' },
+  Suspendido: { background: 'color-mix(in srgb, #f59e0b 16%, transparent)', color: '#f59e0b', border: '1px solid color-mix(in srgb, #f59e0b 32%, transparent)' },
+  Baneado: { background: 'color-mix(in srgb, #ef4444 16%, transparent)', color: '#ef4444', border: '1px solid color-mix(in srgb, #ef4444 32%, transparent)' },
 }
 
 export default function CuentasView({ cuentas }: { cuentas: Cuenta[] }) {
@@ -275,7 +275,7 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
             <div className="flex flex-col gap-2">
               {cuenta.pagos.map((p, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: p.estado === 'Pagado' ? '#0f2a1a' : '#2a0f0f' }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: p.estado === 'Pagado' ? 'color-mix(in srgb, #22c55e 16%, transparent)' : 'color-mix(in srgb, #ef4444 16%, transparent)' }}>
                     <CheckCircle2 size={14} color={p.estado === 'Pagado' ? '#22c55e' : '#ef4444'} />
                   </div>
                   <span className="text-white flex-1" style={{ fontSize: '13px', fontWeight: 500 }}>{p.monto}</span>
@@ -291,7 +291,7 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
           <div className="flex flex-col gap-2">
             <WideAction icon={KeyRound} label="Resetear contraseña" onClick={reset} />
             {tempPass && (
-              <p className="px-3.5 py-2 rounded-lg" style={{ background: '#0f2a1a', border: '1px solid #1a4a2a', color: '#22c55e', fontSize: '12.5px' }}>
+              <p className="px-3.5 py-2 rounded-lg" style={{ background: 'color-mix(in srgb, #22c55e 16%, transparent)', border: '1px solid color-mix(in srgb, #22c55e 32%, transparent)', color: '#22c55e', fontSize: '12.5px' }}>
                 Clave temporal: <span className="font-mono font-bold">{tempPass}</span> — compártela con el dueño.
               </p>
             )}

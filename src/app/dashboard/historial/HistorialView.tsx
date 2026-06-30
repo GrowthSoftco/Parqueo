@@ -67,7 +67,7 @@ export default function HistorialView({ eventos, fecha, esOwner }: { eventos: Ev
                 </div>
                 <div className="relative w-8 shrink-0 flex justify-center">
                   <div className="absolute w-px" style={{ background: 'var(--c-border3)', left: '50%', top: first ? '18px' : 0, bottom: last ? 'auto' : 0, height: last ? '18px' : 'auto' }} />
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center z-10 mt-2" style={{ background: entrada ? '#0f2a1a' : 'var(--c-surface3)', border: `1px solid ${color}33` }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center z-10 mt-2" style={{ background: entrada ? 'color-mix(in srgb, #22c55e 16%, transparent)' : 'var(--c-surface3)', border: `1px solid ${color}33` }}>
                     <Icon size={14} color={color} />
                   </div>
                 </div>
@@ -86,7 +86,7 @@ export default function HistorialView({ eventos, fecha, esOwner }: { eventos: Ev
                   </div>
                   <div className="flex items-center gap-3">
                     {e.enCurso ? (
-                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: '#0f2a1a', color: '#22c55e', border: '1px solid #1a4a2a' }}>Adentro</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'color-mix(in srgb, #22c55e 16%, transparent)', color: '#22c55e', border: '1px solid color-mix(in srgb, #22c55e 32%, transparent)' }}>Adentro</span>
                     ) : e.monto ? (
                       <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>{e.monto}</p>
                     ) : null}
@@ -97,7 +97,7 @@ export default function HistorialView({ eventos, fecha, esOwner }: { eventos: Ev
                         title="Anular movimiento"
                         className="w-7 h-7 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
                         style={{ color: 'var(--c-text4)', cursor: 'pointer' }}
-                        onMouseEnter={ev => { (ev.currentTarget as HTMLElement).style.background = '#2a0f0f'; (ev.currentTarget as HTMLElement).style.color = '#ef4444' }}
+                        onMouseEnter={ev => { (ev.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, #ef4444 16%, transparent)'; (ev.currentTarget as HTMLElement).style.color = '#ef4444' }}
                         onMouseLeave={ev => { (ev.currentTarget as HTMLElement).style.background = 'transparent'; (ev.currentTarget as HTMLElement).style.color = 'var(--c-text4)' }}
                       >
                         <Trash2 size={14} />

@@ -104,7 +104,7 @@ export default async function CajaPage() {
                 <td className="px-5 py-3 text-right">
                   <span
                     className="text-xs px-2 py-0.5 rounded-full"
-                    style={t.status === 'ABIERTO' ? { background: '#0f2a1a', color: '#22c55e', border: '1px solid #1a4a2a' } : { background: 'var(--c-surface3)', color: 'var(--c-text3)', border: '1px solid var(--c-border3)' }}
+                    style={t.status === 'ABIERTO' ? { background: 'color-mix(in srgb, #22c55e 16%, transparent)', color: '#22c55e', border: '1px solid color-mix(in srgb, #22c55e 32%, transparent)' } : { background: 'var(--c-surface3)', color: 'var(--c-text3)', border: '1px solid var(--c-border3)' }}
                   >
                     {t.status === 'ABIERTO' ? 'Abierto' : 'Cerrado'}
                   </span>

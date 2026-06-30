@@ -277,7 +277,7 @@ export default function ConfiguracionView({
                             disabled={savingEmp}
                             className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
                             style={{ color: 'var(--c-text4)', cursor: 'pointer' }}
-                            onMouseEnter={ev => { (ev.currentTarget as HTMLElement).style.background = '#2a0f0f'; (ev.currentTarget as HTMLElement).style.color = '#ef4444' }}
+                            onMouseEnter={ev => { (ev.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, #ef4444 16%, transparent)'; (ev.currentTarget as HTMLElement).style.color = '#ef4444' }}
                             onMouseLeave={ev => { (ev.currentTarget as HTMLElement).style.background = 'transparent'; (ev.currentTarget as HTMLElement).style.color = 'var(--c-text4)' }}
                             title="Eliminar empleado"
                           >
@@ -340,7 +340,7 @@ export default function ConfiguracionView({
                             </div>
                             {!c.esDefault && (
                               <button onClick={() => quitarCategoria(c.id)} className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors" style={{ color: 'var(--c-text4)', cursor: 'pointer' }}
-                                onMouseEnter={ev => { (ev.currentTarget as HTMLElement).style.background = '#2a0f0f'; (ev.currentTarget as HTMLElement).style.color = '#ef4444' }}
+                                onMouseEnter={ev => { (ev.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, #ef4444 16%, transparent)'; (ev.currentTarget as HTMLElement).style.color = '#ef4444' }}
                                 onMouseLeave={ev => { (ev.currentTarget as HTMLElement).style.background = 'transparent'; (ev.currentTarget as HTMLElement).style.color = 'var(--c-text4)' }}
                                 title="Eliminar categoría">
                                 <Trash2 size={15} />

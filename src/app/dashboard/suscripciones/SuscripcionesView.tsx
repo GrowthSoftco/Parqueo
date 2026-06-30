@@ -22,9 +22,9 @@ export type Sub = {
 }
 
 const estadoStyle: Record<string, React.CSSProperties> = {
-  Activa: { background: '#0f2a1a', color: '#22c55e', border: '1px solid #1a4a2a' },
-  'Por vencer': { background: '#2a230f', color: '#f59e0b', border: '1px solid #4a3a1a' },
-  Vencida: { background: '#2a0f0f', color: '#ef4444', border: '1px solid #4a1a1a' },
+  Activa: { background: 'color-mix(in srgb, #22c55e 16%, transparent)', color: '#22c55e', border: '1px solid color-mix(in srgb, #22c55e 32%, transparent)' },
+  'Por vencer': { background: 'color-mix(in srgb, #f59e0b 16%, transparent)', color: '#f59e0b', border: '1px solid color-mix(in srgb, #f59e0b 32%, transparent)' },
+  Vencida: { background: 'color-mix(in srgb, #ef4444 16%, transparent)', color: '#ef4444', border: '1px solid color-mix(in srgb, #ef4444 32%, transparent)' },
 }
 
 const filtros = ['Todas', 'Activa', 'Por vencer', 'Vencida'] as const

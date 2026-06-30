@@ -39,10 +39,10 @@ export default function CerrarTurnoButton({ esperado, base, ingresos }: { espera
   const estado = dif === null
     ? { color: 'var(--c-text4)', bg: 'var(--c-surface3)', label: 'Escribe el efectivo contado', icon: null }
     : cuadra
-      ? { color: '#22c55e', bg: '#0f2a1a', label: 'Caja cuadrada', icon: <Check size={14} strokeWidth={2.5} /> }
+      ? { color: '#22c55e', bg: 'color-mix(in srgb, #22c55e 16%, transparent)', label: 'Caja cuadrada', icon: <Check size={14} strokeWidth={2.5} /> }
       : sobra
         ? { color: '#f59e0b', bg: '#2a210d', label: `Sobrante ${fmt(Math.abs(dif!))}`, icon: <ArrowUp size={14} strokeWidth={2.5} /> }
-        : { color: '#ef4444', bg: '#2a0f0f', label: `Faltante ${fmt(Math.abs(dif!))}`, icon: <ArrowDown size={14} strokeWidth={2.5} /> }
+        : { color: '#ef4444', bg: 'color-mix(in srgb, #ef4444 16%, transparent)', label: `Faltante ${fmt(Math.abs(dif!))}`, icon: <ArrowDown size={14} strokeWidth={2.5} /> }
 
   return (
     <>
