@@ -9,6 +9,7 @@ import {
   CreditCard,
   FileText,
   BarChart3,
+  PieChart,
   Users,
   Settings,
   LogOut,
@@ -21,6 +22,7 @@ const mainNav = [
   { label: 'Suscripciones', href: '/dashboard/suscripciones', icon: CreditCard },
   { label: 'Historial', href: '/dashboard/historial', icon: FileText },
   { label: 'Contabilidad', href: '/dashboard/contabilidad', icon: BarChart3 },
+  { label: 'Reportes', href: '/dashboard/reportes', icon: PieChart },
 ]
 
 const secondaryNav = [
