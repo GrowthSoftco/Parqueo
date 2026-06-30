@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
 import StatCard, { type StatCardProps } from '@/components/StatCard'
-import { Phone, Mail, X, LogIn, LogOut, CreditCard, ChevronRight } from 'lucide-react'
+import { X, ChevronRight } from 'lucide-react'
 import NuevoClienteButton from '@/components/NuevoClienteButton'
 import { iconoDe } from '@/lib/vehicleIcons'
 
@@ -124,97 +124,102 @@ export default function ClientesView({ clientes, stats }: { clientes: Cliente[];
   )
 }
 
+const estadoColor: Record<string, string> = { Activa: '#22c55e', 'Por vencer': '#f59e0b', Vencida: '#ef4444' }
+
 function ClientDetail({ client, onClose }: { client: Cliente; onClose: () => void }) {
   const m = client.mensualidad
-  const pct = m.diasTotal > 0 ? Math.round((m.diasRestantes / m.diasTotal) * 100) : 0
+  const pct = m.diasTotal > 0 ? Math.min(100, Math.max(0, Math.round((m.diasRestantes / m.diasTotal) * 100))) : 0
+  const warn = m.diasRestantes <= 5 && m.diasRestantes > 0
+  const vencida = m.diasRestantes <= 0
+  const barra = vencida ? '#ef4444' : warn ? '#f59e0b' : '#e7e7e7'
+  const dot = estadoColor[client.estado] ?? '#888'
+  const puntoTl: Record<string, string> = { in: '#22c55e', out: '#6e6e6e', pago: '#d4d4d4' }
 
   return (
-    <div>
-      <div className="flex items-start justify-between p-5 border-b" style={{ borderColor: '#1c1c1c' }}>
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', fontSize: '18px', fontWeight: 700, color: '#ccc' }}>
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="flex items-start justify-between px-6 pt-6 pb-5">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ background: '#1a1a1a', border: '1px solid #262626', fontSize: '16px', fontWeight: 600, color: '#cfcfcf' }}>
             {client.nombre.charAt(0)}
           </div>
-          <div>
-            <p className="text-white" style={{ fontSize: '16px', fontWeight: 600 }}>{client.nombre}</p>
-            <p style={{ color: '#555', fontSize: '12px' }}>Cliente desde {client.desde}</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-white truncate" style={{ fontSize: '18px', fontWeight: 600, letterSpacing: '-0.01em' }}>{client.nombre}</h2>
+              <span style={{ width: 6, height: 6, borderRadius: 9999, background: dot, flexShrink: 0 }} title={client.estado} />
+            </div>
+            <p style={{ color: '#777', fontSize: '12.5px', marginTop: 1 }}>Cliente desde {client.desde}</p>
           </div>
         </div>
-        <button onClick={onClose} className="p-1.5 rounded-lg transition-colors" style={{ color: '#666' }} onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#666')}>
+        <button onClick={onClose} className="shrink-0 -mr-1.5 p-1.5 rounded-lg transition-colors" style={{ color: '#666' }} onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#666')}>
           <X size={18} />
         </button>
       </div>
 
-      <div className="p-5 flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2.5">
-            <Phone size={14} color="#666" />
-            <span style={{ color: '#ccc', fontSize: '13px' }}>{client.tel}</span>
+      <div className="h-px mx-6" style={{ background: '#1a1a1a' }} />
+
+      <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-7">
+        {/* Contacto */}
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between py-2.5">
+            <span style={{ color: '#777', fontSize: '13px' }}>Teléfono</span>
+            <span className="text-white" style={{ fontSize: '13px' }}>{client.tel || '—'}</span>
           </div>
-          <div className="flex items-center gap-2.5">
-            <Mail size={14} color="#666" />
-            <span style={{ color: '#ccc', fontSize: '13px' }}>{client.email}</span>
+          <div className="flex items-center justify-between py-2.5" style={{ borderTop: '1px solid #161616' }}>
+            <span style={{ color: '#777', fontSize: '13px' }}>Email</span>
+            <span className="text-white truncate ml-4" style={{ fontSize: '13px' }}>{client.email || '—'}</span>
           </div>
         </div>
 
+        {/* Vehículos */}
         <div>
-          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '10px' }}>VEHÍCULOS</p>
-          <div className="flex flex-col gap-2">
-            {client.vehiculos.map(v => {
+          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '4px' }}>VEHÍCULOS</p>
+          <div className="flex flex-col">
+            {client.vehiculos.map((v, i) => {
               const Icon = iconoDe(v.icono)
               return (
-                <div key={v.placa} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#1c1c1c' }}>
-                    <Icon size={15} color="#aaa" />
-                  </div>
+                <div key={v.placa} className="flex items-center gap-3 py-3" style={{ borderTop: i === 0 ? 'none' : '1px solid #161616' }}>
+                  <Icon size={16} color="#888" />
                   <span className="text-white font-mono" style={{ fontSize: '13px' }}>{v.placa}</span>
-                  <span className="ml-auto" style={{ color: '#555', fontSize: '12px' }}>{v.tipoNombre}</span>
+                  <span className="ml-auto" style={{ color: '#666', fontSize: '12.5px' }}>{v.tipoNombre}</span>
                 </div>
               )
             })}
           </div>
         </div>
 
+        {/* Mensualidad */}
         <div>
-          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '10px' }}>MENSUALIDAD</p>
-          <div className="p-4 rounded-xl" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <CreditCard size={15} color="#a855f7" />
-                <span className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Plan {m.plan}</span>
-              </div>
-              <span className="text-white" style={{ fontSize: '14px', fontWeight: 700 }}>{m.monto}</span>
-            </div>
-            <div className="flex justify-between mb-1.5">
-              <span style={{ color: '#888', fontSize: '12px' }}>Vence {m.vence}</span>
-              <span style={{ color: m.diasRestantes <= 5 ? '#f59e0b' : '#888', fontSize: '12px' }}>
-                {m.diasRestantes > 0 ? `${m.diasRestantes} días restantes` : 'Vencida'}
-              </span>
-            </div>
-            <div className="w-full rounded-full h-1.5" style={{ background: '#222' }}>
-              <div className="h-1.5 rounded-full" style={{ width: `${pct}%`, background: m.diasRestantes <= 5 ? '#f59e0b' : '#22c55e' }} />
-            </div>
+          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '10px' }}>MENSUALIDAD</p>
+          <div className="flex items-baseline justify-between">
+            <span style={{ color: '#888', fontSize: '13px' }}>Plan {m.plan.toLowerCase()}</span>
+            <span className="text-white" style={{ fontSize: '24px', fontWeight: 700, letterSpacing: '-0.02em' }}>{m.monto}</span>
+          </div>
+          <div className="mt-4 w-full rounded-full" style={{ height: 4, background: '#1c1c1c' }}>
+            <div className="rounded-full" style={{ height: 4, width: `${pct}%`, background: barra, transition: 'width 400ms ease' }} />
+          </div>
+          <div className="flex justify-between mt-2">
+            <span style={{ color: '#777', fontSize: '12.5px' }}>Vence {m.vence}</span>
+            <span style={{ color: warn || vencida ? barra : '#777', fontSize: '12.5px', fontWeight: warn || vencida ? 600 : 400 }}>
+              {vencida ? 'Vencida' : `${m.diasRestantes} días restantes`}
+            </span>
           </div>
         </div>
 
+        {/* Línea de tiempo */}
         <div>
-          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '14px' }}>LÍNEA DE TIEMPO</p>
+          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '14px' }}>LÍNEA DE TIEMPO</p>
           <div className="relative flex flex-col gap-5">
-            <div className="absolute left-[11px] top-1 bottom-1 w-px" style={{ background: '#222' }} />
-            {client.timeline.map((t, i) => {
-              const cfg = t.tipo === 'in' ? { Icon: LogIn, color: '#22c55e' } : t.tipo === 'out' ? { Icon: LogOut, color: '#888' } : { Icon: CreditCard, color: '#a855f7' }
-              return (
-                <div key={i} className="flex items-start gap-3 relative">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 z-10" style={{ background: '#141414', border: `1px solid ${cfg.color}40` }}>
-                    <cfg.Icon size={12} color={cfg.color} />
-                  </div>
-                  <div className="pt-0.5">
-                    <p className="text-white" style={{ fontSize: '13px' }}>{t.detalle}</p>
-                    <p style={{ color: '#555', fontSize: '11px', marginTop: '1px' }}>{t.fecha}</p>
-                  </div>
+            <div className="absolute left-[3.5px] top-1.5 bottom-1.5 w-px" style={{ background: '#1f1f1f' }} />
+            {client.timeline.map((t, i) => (
+              <div key={i} className="flex items-start gap-3.5 relative">
+                <span className="shrink-0 z-10" style={{ width: 8, height: 8, borderRadius: 9999, marginTop: 4, background: puntoTl[t.tipo] ?? '#6e6e6e', boxShadow: '0 0 0 3px #0f0f0f' }} />
+                <div>
+                  <p className="text-white" style={{ fontSize: '13px' }}>{t.detalle}</p>
+                  <p style={{ color: '#666', fontSize: '11.5px', marginTop: '1px' }}>{t.fecha}</p>
                 </div>
-              )
-            })}
+              </div>
+            ))}
             {client.timeline.length === 0 && (
               <p style={{ color: '#555', fontSize: '12px' }}>Sin movimientos registrados.</p>
             )}
