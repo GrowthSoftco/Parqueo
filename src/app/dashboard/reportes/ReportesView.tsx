@@ -56,31 +56,31 @@ export default function ReportesView({
 
   return (
     <div className="px-7 pb-7 pt-5">
-      <div className="flex items-start justify-between">
-        <PageHeader crumb="Reportes" title="Reportes" subtitle="Control de empleados, caja y analítica del negocio" />
+      <PageHeader crumb="Reportes" title="Reportes" subtitle="Control de empleados, caja y analítica del negocio" />
+
+      {/* Tabs + exportar */}
+      <div className="flex items-center justify-between gap-3 mb-5">
+        <div className="flex items-center gap-2">
+          {([['turnos', 'Turnos y caja'], ['analitica', 'Analítica']] as const).map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => setTab(id)}
+              className="px-4 py-1.5 rounded-full transition-colors"
+              style={{ background: tab === id ? 'var(--c-text)' : 'var(--c-surface2)', color: tab === id ? 'var(--c-bg)' : 'var(--c-text3)', border: '1px solid var(--c-border2)', fontSize: 13, fontWeight: 500 }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         <button
           onClick={exportar}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold transition-colors mt-1"
+          className="flex items-center gap-2 px-4 py-2 rounded-full font-semibold transition-colors shrink-0"
           style={{ background: 'var(--c-surface2)', border: '1px solid var(--c-border3)', color: 'var(--c-text2)', fontSize: 13 }}
           onMouseEnter={e => (e.currentTarget.style.background = 'var(--c-border)')}
           onMouseLeave={e => (e.currentTarget.style.background = 'var(--c-surface2)')}
         >
           <FileSpreadsheet size={15} /> Exportar a Excel
         </button>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex items-center gap-2 mb-5">
-        {([['turnos', 'Turnos y caja'], ['analitica', 'Analítica']] as const).map(([id, label]) => (
-          <button
-            key={id}
-            onClick={() => setTab(id)}
-            className="px-4 py-1.5 rounded-full transition-colors"
-            style={{ background: tab === id ? 'var(--c-text)' : 'var(--c-surface2)', color: tab === id ? 'var(--c-bg)' : 'var(--c-text3)', border: '1px solid var(--c-border2)', fontSize: 13, fontWeight: 500 }}
-          >
-            {label}
-          </button>
-        ))}
       </div>
 
       {tab === 'turnos' && (
