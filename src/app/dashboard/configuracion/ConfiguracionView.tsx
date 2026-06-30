@@ -548,7 +548,7 @@ function Row({ label, desc, children }: { label: React.ReactNode; desc?: string;
 function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} className="rounded-full transition-colors" style={{ width: 42, height: 24, background: on ? '#22c55e' : 'var(--c-border3)', padding: 2, cursor: 'pointer' }}>
-      <div className="rounded-full transition-transform" style={{ width: 20, height: 20, background: 'var(--c-accent)', transform: on ? 'translateX(18px)' : 'translateX(0)' }} />
+      <div className="rounded-full transition-transform" style={{ width: 20, height: 20, background: '#fff', boxShadow: '0 1px 2px rgba(0,0,0,0.3)', transform: on ? 'translateX(18px)' : 'translateX(0)' }} />
     </button>
   )
 }
