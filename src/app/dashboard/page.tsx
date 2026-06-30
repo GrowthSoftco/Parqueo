@@ -70,17 +70,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="px-7 pb-7 pt-5">
-      <div className="flex items-center gap-2 mb-1" style={{ color: '#555', fontSize: '13px' }}>
+      <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--c-text5)', fontSize: '13px' }}>
         <Home size={14} />
         <ChevronRight size={13} />
         <span>Dashboard</span>
         <ChevronRight size={13} />
-        <span className="px-2 py-0.5 rounded-md" style={{ background: '#1a1a1a', color: '#ccc', fontSize: '12px' }}>Resumen</span>
+        <span className="px-2 py-0.5 rounded-md" style={{ background: 'var(--c-surface3)', color: 'var(--c-text2)', fontSize: '12px' }}>Resumen</span>
       </div>
 
       <div className="mb-6">
         <h1 className="text-white font-bold" style={{ fontSize: '26px' }}>Dashboard</h1>
-        <p style={{ color: '#555', fontSize: '13px', marginTop: '2px' }}>
+        <p style={{ color: 'var(--c-text5)', fontSize: '13px', marginTop: '2px' }}>
           {DIAS[now.getDay()]}, {now.getDate()} de {MESES[now.getMonth()]} de {now.getFullYear()}
         </p>
       </div>
@@ -95,9 +95,9 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
         {/* Ingresos últimos 14 días */}
-        <div className="lg:col-span-2 rounded-2xl p-5" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+        <div className="lg:col-span-2 rounded-2xl p-5" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
           <div className="flex items-center justify-between">
-            <p style={{ color: '#777', fontSize: '13px' }}>Ingresos · últimos 14 días</p>
+            <p style={{ color: 'var(--c-text4)', fontSize: '13px' }}>Ingresos · últimos 14 días</p>
             <span className="text-white" style={{ fontSize: '13px', fontWeight: 600 }}>{fmt(dias.reduce((a, d) => a + d.value, 0))}</span>
           </div>
           <div className="flex items-end gap-[5px]" style={{ height: 140, marginTop: 18 }}>
@@ -105,26 +105,26 @@ export default async function DashboardPage() {
               <div key={i} className="flex-1 flex flex-col items-center justify-end group" style={{ height: '100%' }} title={`${d.label} · ${fmt(d.value)}`}>
                 <div
                   className="w-full rounded-[3px] transition-colors group-hover:brightness-150"
-                  style={{ height: `${(d.value / maxDia) * 100}%`, minHeight: d.value > 0 ? 4 : 2, background: d.value > 0 ? '#fff' : '#1f1f1f' }}
+                  style={{ height: `${(d.value / maxDia) * 100}%`, minHeight: d.value > 0 ? 4 : 2, background: d.value > 0 ? 'var(--c-text)' : 'var(--c-border)' }}
                 />
               </div>
             ))}
           </div>
           <div className="flex gap-[5px]" style={{ marginTop: 8 }}>
             {dias.map((d, i) => (
-              <span key={i} className="flex-1 text-center" style={{ color: '#555', fontSize: '10px' }}>{d.showLabel ? d.label : ''}</span>
+              <span key={i} className="flex-1 text-center" style={{ color: 'var(--c-text5)', fontSize: '10px' }}>{d.showLabel ? d.label : ''}</span>
             ))}
           </div>
         </div>
 
         {/* En el parqueadero ahora */}
-        <div className="rounded-2xl p-5 flex flex-col" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+        <div className="rounded-2xl p-5 flex flex-col" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
           <div className="flex items-center justify-between mb-4">
-            <p style={{ color: '#777', fontSize: '13px' }}>En el parqueadero ahora</p>
-            <span className="px-2 py-0.5 rounded-md" style={{ background: '#1c1c1c', color: '#ccc', fontSize: '12px', fontWeight: 600 }}>{adentro.length}</span>
+            <p style={{ color: 'var(--c-text4)', fontSize: '13px' }}>En el parqueadero ahora</p>
+            <span className="px-2 py-0.5 rounded-md" style={{ background: 'var(--c-surface3)', color: 'var(--c-text2)', fontSize: '12px', fontWeight: 600 }}>{adentro.length}</span>
           </div>
           {adentro.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-center py-6" style={{ color: '#444' }}>
+            <div className="flex-1 flex flex-col items-center justify-center text-center py-6" style={{ color: 'var(--c-text5)' }}>
               <Car size={26} strokeWidth={1.5} />
               <p style={{ fontSize: '12.5px', marginTop: 10 }}>No hay vehículos adentro</p>
             </div>
@@ -133,11 +133,11 @@ export default async function DashboardPage() {
               {adentro.slice(0, 8).map(r => (
                 <div key={r.id} className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <span style={{ width: 6, height: 6, borderRadius: 9999, background: '#fff' }} />
+                    <span style={{ width: 6, height: 6, borderRadius: 9999, background: 'var(--c-accent)' }} />
                     <span className="text-white font-mono" style={{ fontSize: '13px', letterSpacing: '0.04em' }}>{r.placa}</span>
-                    <span style={{ color: '#666', fontSize: '12px' }}>{r.tipoNombre}</span>
+                    <span style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{r.tipoNombre}</span>
                   </div>
-                  <span style={{ color: '#555', fontSize: '11.5px' }}>{haceTexto(r.entradaAt)}</span>
+                  <span style={{ color: 'var(--c-text5)', fontSize: '11.5px' }}>{haceTexto(r.entradaAt)}</span>
                 </div>
               ))}
             </div>
@@ -146,24 +146,24 @@ export default async function DashboardPage() {
       </div>
 
       {/* Movimientos */}
-      <div className="rounded-2xl overflow-hidden" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-        <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid #1e1e1e' }}>
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+        <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid var(--c-border)' }}>
           <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Movimientos recientes</p>
-          <a href="/dashboard/historial" style={{ color: '#666', fontSize: '12px' }}>Ver todo</a>
+          <a href="/dashboard/historial" style={{ color: 'var(--c-text4)', fontSize: '12px' }}>Ver todo</a>
         </div>
         {movimientos.length === 0 ? (
-          <div className="px-5 py-10 text-center" style={{ color: '#555', fontSize: '13px' }}>Aún no hay movimientos</div>
+          <div className="px-5 py-10 text-center" style={{ color: 'var(--c-text5)', fontSize: '13px' }}>Aún no hay movimientos</div>
         ) : (
           movimientos.map((m, i) => (
-            <div key={i} className="px-5 py-3 flex items-center justify-between" style={{ borderBottom: i < movimientos.length - 1 ? '1px solid #181818' : 'none' }}>
+            <div key={i} className="px-5 py-3 flex items-center justify-between" style={{ borderBottom: i < movimientos.length - 1 ? '1px solid var(--c-surface2)' : 'none' }}>
               <div className="flex items-center gap-3">
-                <span style={{ width: 7, height: 7, borderRadius: 9999, background: m.salio ? '#fff' : 'transparent', border: m.salio ? 'none' : '1.5px solid #444' }} />
+                <span style={{ width: 7, height: 7, borderRadius: 9999, background: m.salio ? 'var(--c-text)' : 'transparent', border: m.salio ? 'none' : '1.5px solid var(--c-text5)' }} />
                 <span className="text-white font-mono" style={{ fontSize: '13px', letterSpacing: '0.04em' }}>{m.placa}</span>
-                <span style={{ color: '#666', fontSize: '12px' }}>{m.tipo} · {m.estado}</span>
+                <span style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{m.tipo} · {m.estado}</span>
               </div>
               <div className="flex items-center gap-4">
-                <span style={{ color: '#555', fontSize: '11.5px' }}>{m.time}</span>
-                <span style={{ color: m.salio ? '#fff' : '#555', fontSize: '13px', fontWeight: 600, minWidth: 70, textAlign: 'right' }}>{m.monto}</span>
+                <span style={{ color: 'var(--c-text5)', fontSize: '11.5px' }}>{m.time}</span>
+                <span style={{ color: m.salio ? 'var(--c-text)' : 'var(--c-text5)', fontSize: '13px', fontWeight: 600, minWidth: 70, textAlign: 'right' }}>{m.monto}</span>
               </div>
             </div>
           ))

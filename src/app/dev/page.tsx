@@ -25,21 +25,21 @@ const screens = [
 
 export default function DevPage() {
   return (
-    <div className="min-h-screen w-full flex justify-center" style={{ background: '#0a0a0a' }}>
+    <div className="min-h-screen w-full flex justify-center" style={{ background: 'var(--c-bg)' }}>
       <div className="w-full max-w-2xl px-8 py-16">
         <div className="mb-2 flex items-center gap-2">
           <span
             className="px-2 py-0.5 rounded-md"
-            style={{ background: '#1a1a1a', color: '#f59e0b', fontSize: '11px', fontWeight: 600 }}
+            style={{ background: 'var(--c-surface3)', color: '#f59e0b', fontSize: '11px', fontWeight: 600 }}
           >
             DEV
           </span>
-          <span style={{ color: '#555', fontSize: '12px' }}>Solo visible en desarrollo</span>
+          <span style={{ color: 'var(--c-text5)', fontSize: '12px' }}>Solo visible en desarrollo</span>
         </div>
         <h1 className="text-white font-bold mb-1" style={{ fontSize: '28px' }}>
           Pantallas
         </h1>
-        <p style={{ color: '#666', fontSize: '14px', marginBottom: '40px' }}>
+        <p style={{ color: 'var(--c-text4)', fontSize: '14px', marginBottom: '40px' }}>
           Navega cualquier pantalla del sistema sin tener que seguir el flujo completo.
         </p>
 
@@ -48,7 +48,7 @@ export default function DevPage() {
             <div key={section.group}>
               <p
                 style={{
-                  color: '#555',
+                  color: 'var(--c-text5)',
                   fontSize: '11px',
                   fontWeight: 600,
                   letterSpacing: '0.05em',
@@ -63,22 +63,22 @@ export default function DevPage() {
                     key={item.href}
                     href={item.href}
                     className="flex items-center gap-4 p-4 rounded-xl transition-colors group"
-                    style={{ background: '#131313', border: '1px solid #1e1e1e' }}
+                    style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}
                   >
                     <div
                       className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ background: '#1c1c1c' }}
+                      style={{ background: 'var(--c-surface3)' }}
                     >
-                      <item.icon size={18} color="#aaa" />
+                      <item.icon size={18} color="var(--c-text2)" />
                     </div>
                     <div className="flex-1">
                       <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>
                         {item.label}
                       </p>
-                      <p style={{ color: '#666', fontSize: '12px' }}>{item.desc}</p>
+                      <p style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{item.desc}</p>
                     </div>
-                    <code style={{ color: '#444', fontSize: '12px' }}>{item.href}</code>
-                    <ArrowUpRight size={16} color="#555" />
+                    <code style={{ color: 'var(--c-text5)', fontSize: '12px' }}>{item.href}</code>
+                    <ArrowUpRight size={16} color="var(--c-text5)" />
                   </Link>
                 ))}
               </div>

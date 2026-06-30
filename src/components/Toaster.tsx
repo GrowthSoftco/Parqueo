@@ -9,7 +9,7 @@ type Toast = { id: number; type: ToastType; message: string; show: boolean }
 const CONF: Record<ToastType, { color: string; icon: React.ElementType }> = {
   error: { color: '#ef4444', icon: AlertCircle },
   success: { color: '#22c55e', icon: CheckCircle2 },
-  info: { color: '#e5e5e5', icon: Info },
+  info: { color: 'var(--c-text)', icon: Info },
   dev: { color: '#eab308', icon: Megaphone }, // amarillo = mensaje del desarrollador
 }
 
@@ -64,8 +64,8 @@ export default function Toaster() {
               style={{
                 pointerEvents: 'auto',
                 cursor: 'pointer',
-                background: '#0a0a0a',
-                border: `1px solid ${esDev ? '#eab30855' : '#242424'}`,
+                background: 'var(--c-bg)',
+                border: `1px solid ${esDev ? '#eab30855' : 'var(--c-border2)'}`,
                 borderRadius: 9999,
                 padding: '9px 12px 9px 12px',
                 boxShadow: esDev ? '0 12px 40px rgba(234,179,8,0.12)' : '0 12px 40px rgba(0,0,0,0.55)',
@@ -78,14 +78,14 @@ export default function Toaster() {
               <span className="flex items-center justify-center shrink-0" style={{ width: 22, height: 22, borderRadius: 9999, background: `${color}1f`, color }}>
                 <Icon size={14} strokeWidth={2.4} />
               </span>
-              <span style={{ fontSize: 13.5, fontWeight: 500, color: esDev ? '#f0d97a' : '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <span style={{ fontSize: 13.5, fontWeight: 500, color: esDev ? '#f0d97a' : 'var(--c-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {t.message}
               </span>
               {/* X en círculo (aparece al hover) */}
               <button
                 onClick={e => { e.stopPropagation(); quitar(t.id) }}
                 className="shrink-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ width: 18, height: 18, borderRadius: 9999, background: '#1f1f1f', border: '1px solid #333', color: '#aaa' }}
+                style={{ width: 18, height: 18, borderRadius: 9999, background: 'var(--c-border)', border: '1px solid #333', color: 'var(--c-text2)' }}
                 title="Cerrar"
               >
                 <X size={11} strokeWidth={2.6} />
@@ -98,7 +98,7 @@ export default function Toaster() {
       {/* Popup del mensaje completo (mensaje del desarrollador) */}
       {expandido && (
         <div className="fixed inset-0 z-[710] flex items-center justify-center px-6" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} onClick={() => setExpandido(null)}>
-          <div className="rounded-2xl w-full max-w-md p-6" style={{ background: '#141414', border: '1px solid #2a2a2a', animation: 'pop-in 170ms cubic-bezier(0.16,1,0.3,1)' }} onClick={e => e.stopPropagation()}>
+          <div className="rounded-2xl w-full max-w-md p-6" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border3)', animation: 'pop-in 170ms cubic-bezier(0.16,1,0.3,1)' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <span className="flex items-center justify-center" style={{ width: 26, height: 26, borderRadius: 9999, background: '#eab30822', color: '#eab308' }}>
@@ -106,9 +106,9 @@ export default function Toaster() {
                 </span>
                 <p className="text-white" style={{ fontSize: 15, fontWeight: 600 }}>Mensaje de Parqueo</p>
               </div>
-              <button onClick={() => setExpandido(null)} style={{ color: '#666' }} className="hover:text-white transition-colors"><X size={18} /></button>
+              <button onClick={() => setExpandido(null)} style={{ color: 'var(--c-text4)' }} className="hover:text-white transition-colors"><X size={18} /></button>
             </div>
-            <p style={{ color: '#ddd', fontSize: 14, lineHeight: 1.6 }}>{expandido}</p>
+            <p style={{ color: 'var(--c-text2)', fontSize: 14, lineHeight: 1.6 }}>{expandido}</p>
           </div>
         </div>
       )}

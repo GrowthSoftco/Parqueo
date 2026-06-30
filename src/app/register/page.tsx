@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 import { registrarCuenta } from '@/app/auth-actions'
 
 const inputStyle: React.CSSProperties = {
-  background: '#161616',
-  border: '1px solid #222',
+  background: 'var(--c-surface2)',
+  border: '1px solid var(--c-border2)',
   borderRadius: '8px',
-  color: '#fff',
+  color: 'var(--c-text)',
   padding: '10px 14px',
   fontSize: '14px',
   outline: 'none',
@@ -37,7 +37,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden" style={{ background: '#0a0a0a' }}>
+    <div className="flex h-screen w-full overflow-hidden" style={{ background: 'var(--c-bg)' }}>
       {/* Left - Form */}
       <div className="relative flex w-full lg:w-1/2 flex-col items-center justify-center px-12 lg:px-20">
         <div className="absolute top-11 left-12 lg:left-20">
@@ -47,19 +47,19 @@ export default function RegisterPage() {
 
         <div className="w-full max-w-sm">
           <h1 className="text-white text-3xl font-bold mb-2">Crea tu cuenta</h1>
-          <p style={{ color: '#888' }} className="text-sm mb-8">14 días de prueba gratis · sin tarjeta</p>
+          <p style={{ color: 'var(--c-text3)' }} className="text-sm mb-8">14 días de prueba gratis · sin tarjeta</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
-              <label style={{ color: '#888', fontSize: '13px' }}>Nombre completo</label>
+              <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Nombre completo</label>
               <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Juan Pérez" required style={inputStyle} />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label style={{ color: '#888', fontSize: '13px' }}>Email</label>
+              <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@parqueadero.com" required style={inputStyle} />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label style={{ color: '#888', fontSize: '13px' }}>Contraseña</label>
+              <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Contraseña</label>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required style={inputStyle} />
             </div>
             {error && <p style={{ color: '#ef4444', fontSize: '13px' }}>{error}</p>}
@@ -68,8 +68,8 @@ export default function RegisterPage() {
               type="submit"
               disabled={loading}
               style={{
-                background: '#fff',
-                color: '#000',
+                background: 'var(--c-accent)',
+                color: 'var(--c-on-accent)',
                 borderRadius: '9999px',
                 padding: '11px',
                 fontWeight: 600,
@@ -83,9 +83,9 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p style={{ color: '#555', fontSize: '13px', marginTop: '24px', textAlign: 'center' }}>
+          <p style={{ color: 'var(--c-text5)', fontSize: '13px', marginTop: '24px', textAlign: 'center' }}>
             ¿Ya tienes cuenta?{' '}
-            <a href="/login" style={{ color: '#fff' }} className="hover:underline">
+            <a href="/login" style={{ color: 'var(--c-text)' }} className="hover:underline">
               Inicia sesión
             </a>
           </p>

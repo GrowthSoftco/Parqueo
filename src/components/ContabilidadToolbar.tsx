@@ -25,9 +25,9 @@ export default function ContabilidadToolbar({ periodo }: { periodo: string }) {
               onClick={() => router.push(`/dashboard/contabilidad?periodo=${f.key}`)}
               className="px-3.5 py-1.5 rounded-full transition-colors"
               style={{
-                background: activo ? '#fff' : '#161616',
-                color: activo ? '#000' : '#888',
-                border: '1px solid #232323',
+                background: activo ? 'var(--c-text)' : 'var(--c-surface2)',
+                color: activo ? 'var(--c-bg)' : 'var(--c-text3)',
+                border: '1px solid var(--c-border2)',
                 fontSize: '13px',
                 fontWeight: 500,
               }}
@@ -41,15 +41,15 @@ export default function ContabilidadToolbar({ periodo }: { periodo: string }) {
       <div className="flex gap-2">
         <a
           href={`/api/contabilidad/pdf?periodo=${periodo}`}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-lg transition-colors hover:bg-[#1b1b1b]"
-          style={{ background: '#141414', border: '1px solid #232323', color: '#aaa', fontSize: '13px' }}
+          className="flex items-center gap-2 px-3.5 py-2 rounded-lg transition-colors hover:bg-[var(--c-surface3)]"
+          style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border2)', color: 'var(--c-text2)', fontSize: '13px' }}
         >
           <FileText size={15} /> PDF
         </a>
         <a
           href={`/api/contabilidad/export?periodo=${periodo}`}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-lg transition-colors hover:bg-[#1b1b1b]"
-          style={{ background: '#141414', border: '1px solid #232323', color: '#aaa', fontSize: '13px' }}
+          className="flex items-center gap-2 px-3.5 py-2 rounded-lg transition-colors hover:bg-[var(--c-surface3)]"
+          style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border2)', color: 'var(--c-text2)', fontSize: '13px' }}
         >
           <Download size={15} /> Excel
         </a>

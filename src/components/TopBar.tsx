@@ -24,7 +24,7 @@ const AVATAR = '/avatar.jpg'
 export default function TopBar({ plan, userName, userEmail, role, categorias, empresa, autoRecibo, actividad }: { plan?: string | null; userName?: string; userEmail?: string; role?: string; categorias: { id: string; nombre: string; icono: string }[]; empresa: { nombre: string; nit?: string; direccion?: string; telefono?: string }; autoRecibo: boolean; actividad: Actividad[] }) {
   const esOperador = role === 'EMPLEADO'
   const menuItems = esOperador ? [] : menu
-  const ringColor = plan ? PLAN_COLOR[plan] ?? '#3b82f6' : '#666'
+  const ringColor = plan ? PLAN_COLOR[plan] ?? '#3b82f6' : 'var(--c-text4)'
   const planBadge = plan ? PLAN_LABEL[plan] : null
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -66,8 +66,8 @@ export default function TopBar({ plan, userName, userEmail, role, categorias, em
           className="absolute right-0 mt-2 rounded-2xl overflow-hidden z-50"
           style={{
             width: 240,
-            background: '#161616',
-            border: '1px solid #262626',
+            background: 'var(--c-surface2)',
+            border: '1px solid var(--c-border3)',
             boxShadow: '0 16px 48px rgba(0,0,0,0.6)',
             transformOrigin: 'top right',
             opacity: open ? 1 : 0,
@@ -77,9 +77,9 @@ export default function TopBar({ plan, userName, userEmail, role, categorias, em
           }}
         >
             {/* User header */}
-            <div className="px-4 py-3 border-b" style={{ borderColor: '#222' }}>
+            <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--c-border2)' }}>
               <p className="text-white" style={{ fontSize: '13px', fontWeight: 600 }}>{userName ?? 'Usuario'}</p>
-              <p style={{ color: '#666', fontSize: '12px' }}>{userEmail ?? ''}</p>
+              <p style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{userEmail ?? ''}</p>
             </div>
 
             {/* Main items */}
@@ -93,14 +93,14 @@ export default function TopBar({ plan, userName, userEmail, role, categorias, em
                     setOpen(false)
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors"
-                  style={{ color: '#bbb' }}
+                  style={{ color: 'var(--c-text2)' }}
                   onMouseEnter={e => {
-                    ;(e.currentTarget as HTMLElement).style.background = '#1f1f1f'
-                    ;(e.currentTarget as HTMLElement).style.color = '#fff'
+                    ;(e.currentTarget as HTMLElement).style.background = 'var(--c-border)'
+                    ;(e.currentTarget as HTMLElement).style.color = 'var(--c-text)'
                   }}
                   onMouseLeave={e => {
                     ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-                    ;(e.currentTarget as HTMLElement).style.color = '#bbb'
+                    ;(e.currentTarget as HTMLElement).style.color = 'var(--c-text2)'
                   }}
                 >
                   <item.icon size={16} />
@@ -118,7 +118,7 @@ export default function TopBar({ plan, userName, userEmail, role, categorias, em
             </div>
             )}
 
-            {menuItems.length > 0 && <div className="h-px mx-1.5" style={{ background: '#222' }} />}
+            {menuItems.length > 0 && <div className="h-px mx-1.5" style={{ background: 'var(--c-border2)' }} />}
 
             {/* Bottom items */}
             <div className="p-1.5">
@@ -134,14 +134,14 @@ export default function TopBar({ plan, userName, userEmail, role, categorias, em
                     }
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors"
-                  style={{ color: '#bbb' }}
+                  style={{ color: 'var(--c-text2)' }}
                   onMouseEnter={e => {
-                    ;(e.currentTarget as HTMLElement).style.background = '#1f1f1f'
-                    ;(e.currentTarget as HTMLElement).style.color = item.label === 'Cerrar sesión' ? '#ef4444' : '#fff'
+                    ;(e.currentTarget as HTMLElement).style.background = 'var(--c-border)'
+                    ;(e.currentTarget as HTMLElement).style.color = item.label === 'Cerrar sesión' ? '#ef4444' : 'var(--c-text)'
                   }}
                   onMouseLeave={e => {
                     ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-                    ;(e.currentTarget as HTMLElement).style.color = '#bbb'
+                    ;(e.currentTarget as HTMLElement).style.color = 'var(--c-text2)'
                   }}
                 >
                   <item.icon size={16} />

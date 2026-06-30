@@ -62,8 +62,8 @@ export default function CuentasView({ cuentas }: { cuentas: Cuenta[] }) {
 
       {/* Toolbar */}
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg flex-1 max-w-xs" style={{ background: '#141414', border: '1px solid #232323' }}>
-          <Search size={15} color="#555" />
+        <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg flex-1 max-w-xs" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border2)' }}>
+          <Search size={15} color="var(--c-text5)" />
           <input value={q} onChange={e => setQ(e.target.value)} placeholder="Buscar cuenta, dueño o email..." className="bg-transparent outline-none flex-1 text-white" style={{ fontSize: '13px' }} />
         </div>
         <div className="flex items-center gap-2 ml-auto">
@@ -72,7 +72,7 @@ export default function CuentasView({ cuentas }: { cuentas: Cuenta[] }) {
               key={f}
               onClick={() => setFiltro(f)}
               className="px-3 py-1.5 rounded-full transition-colors"
-              style={{ background: filtro === f ? '#fff' : '#161616', color: filtro === f ? '#000' : '#888', border: '1px solid #232323', fontSize: '12.5px', fontWeight: 500 }}
+              style={{ background: filtro === f ? 'var(--c-text)' : 'var(--c-surface2)', color: filtro === f ? 'var(--c-bg)' : 'var(--c-text3)', border: '1px solid var(--c-border2)', fontSize: '12.5px', fontWeight: 500 }}
             >
               {f}
             </button>
@@ -81,10 +81,10 @@ export default function CuentasView({ cuentas }: { cuentas: Cuenta[] }) {
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl overflow-hidden" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
         <table className="w-full">
           <thead>
-            <tr style={{ color: '#555', fontSize: '12px', background: '#0f0f0f' }}>
+            <tr style={{ color: 'var(--c-text5)', fontSize: '12px', background: 'var(--c-panel)' }}>
               <th className="text-left font-medium px-5 py-3">Parqueadero</th>
               <th className="text-left font-medium px-5 py-3">Plan</th>
               <th className="text-left font-medium px-5 py-3">Ciudad</th>
@@ -99,25 +99,25 @@ export default function CuentasView({ cuentas }: { cuentas: Cuenta[] }) {
                 key={c.id}
                 onClick={() => openDrawer(c)}
                 className="border-t cursor-pointer transition-colors"
-                style={{ borderColor: '#1a1a1a' }}
-                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = '#181818')}
+                style={{ borderColor: 'var(--c-surface3)' }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = 'var(--c-surface2)')}
                 onMouseLeave={e => ((e.currentTarget as HTMLElement).style.background = 'transparent')}
               >
                 <td className="px-5 py-3.5">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: '#1c1c1c' }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'var(--c-surface3)' }}>
                       <span className="text-white" style={{ fontSize: '12px', fontWeight: 700 }}>{c.nombre.charAt(0)}</span>
                     </div>
                     <div>
                       <p className="text-white" style={{ fontSize: '13px', fontWeight: 500 }}>{c.nombre}</p>
-                      <p style={{ color: '#555', fontSize: '11px' }}>{c.dueño}</p>
+                      <p style={{ color: 'var(--c-text5)', fontSize: '11px' }}>{c.dueño}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-5 py-3.5" style={{ color: '#aaa', fontSize: '13px' }}>{c.plan}</td>
-                <td className="px-5 py-3.5" style={{ color: '#888', fontSize: '13px' }}>{c.ciudad}</td>
-                <td className="px-5 py-3.5" style={{ color: '#888', fontSize: '13px' }}>{c.registro}</td>
-                <td className="px-5 py-3.5" style={{ color: '#888', fontSize: '13px' }}>{c.ultima}</td>
+                <td className="px-5 py-3.5" style={{ color: 'var(--c-text2)', fontSize: '13px' }}>{c.plan}</td>
+                <td className="px-5 py-3.5" style={{ color: 'var(--c-text3)', fontSize: '13px' }}>{c.ciudad}</td>
+                <td className="px-5 py-3.5" style={{ color: 'var(--c-text3)', fontSize: '13px' }}>{c.registro}</td>
+                <td className="px-5 py-3.5" style={{ color: 'var(--c-text3)', fontSize: '13px' }}>{c.ultima}</td>
                 <td className="px-5 py-3.5 text-right">
                   <span className="text-xs px-2 py-0.5 rounded-full" style={estadoStyle[c.estado]}>{c.estado}</span>
                 </td>
@@ -133,7 +133,7 @@ export default function CuentasView({ cuentas }: { cuentas: Cuenta[] }) {
           <div onClick={closeDrawer} className="fixed inset-0 z-[60] transition-opacity duration-300" style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(3px)', opacity: open ? 1 : 0 }} />
           <div
             className="fixed top-0 right-0 bottom-0 z-[70] overflow-y-auto"
-            style={{ width: 440, maxWidth: '92vw', background: '#0f0f0f', borderLeft: '1px solid #1e1e1e', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform 300ms cubic-bezier(0.16, 1, 0.3, 1)' }}
+            style={{ width: 440, maxWidth: '92vw', background: 'var(--c-panel)', borderLeft: '1px solid var(--c-border)', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform 300ms cubic-bezier(0.16, 1, 0.3, 1)' }}
           >
             <CuentaDetail cuenta={cuenta} onClose={closeDrawer} />
           </div>
@@ -170,9 +170,9 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
   return (
     <div>
       {/* Header */}
-      <div className="flex items-start justify-between p-5 border-b" style={{ borderColor: '#1c1c1c' }}>
+      <div className="flex items-start justify-between p-5 border-b" style={{ borderColor: 'var(--c-surface3)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#8b5cf6', fontSize: '17px', fontWeight: 700, color: '#fff' }}>
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#8b5cf6', fontSize: '17px', fontWeight: 700, color: 'var(--c-text)' }}>
             {cuenta.nombre.charAt(0)}
           </div>
           <div>
@@ -180,10 +180,10 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
               <p className="text-white" style={{ fontSize: '15px', fontWeight: 600 }}>{cuenta.nombre}</p>
               <span className="text-xs px-2 py-0.5 rounded-full" style={estadoStyle[cuenta.estado]}>{cuenta.estado}</span>
             </div>
-            <p style={{ color: '#666', fontSize: '12px' }}>{cuenta.dueño}</p>
+            <p style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{cuenta.dueño}</p>
           </div>
         </div>
-        <button onClick={onClose} className="p-1.5 rounded-lg" style={{ color: '#666' }} onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#666')}>
+        <button onClick={onClose} className="p-1.5 rounded-lg" style={{ color: 'var(--c-text4)' }} onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--c-text)')} onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--c-text4)')}>
           <X size={18} />
         </button>
       </div>
@@ -209,7 +209,7 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
         {/* Suscripción */}
         <Block title="SUSCRIPCIÓN">
           {/* Estado actual */}
-          <div className="flex items-center gap-3 p-4 rounded-xl mb-4" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+          <div className="flex items-center gap-3 p-4 rounded-xl mb-4" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
             <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(139,92,246,0.12)' }}>
               <CreditCard size={16} color="#8b5cf6" />
             </div>
@@ -217,20 +217,20 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
               <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>
                 {cuenta.plan === '—' ? 'Sin suscripción' : `Plan ${cuenta.plan}`}
               </p>
-              <p style={{ color: '#666', fontSize: '12px' }}>
+              <p style={{ color: 'var(--c-text4)', fontSize: '12px' }}>
                 {cuenta.estado === 'Prueba' ? 'En periodo de prueba' : cuenta.plan === '—' ? 'No asignado' : 'Renueva cada mes'}
               </p>
             </div>
             {precioActual && (
               <span className="text-white" style={{ fontSize: '14px', fontWeight: 700 }}>
                 {precioActual}
-                <span style={{ color: '#666', fontWeight: 400, fontSize: '12px' }}>/mes</span>
+                <span style={{ color: 'var(--c-text4)', fontWeight: 400, fontSize: '12px' }}>/mes</span>
               </span>
             )}
           </div>
 
           {/* Selector de plan */}
-          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '8px' }}>ASIGNAR PLAN</p>
+          <p style={{ color: 'var(--c-text4)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '8px' }}>ASIGNAR PLAN</p>
           <div className="grid grid-cols-3 gap-2 mb-4">
             {planes.map(p => {
               const on = plan === p.nombre
@@ -239,10 +239,10 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
                   key={p.nombre}
                   onClick={() => setPlan(p.nombre)}
                   className="rounded-xl p-3 text-left transition-all"
-                  style={{ background: on ? 'rgba(139,92,246,0.1)' : '#141414', border: on ? '1px solid #8b5cf6' : '1px solid #1e1e1e' }}
+                  style={{ background: on ? 'rgba(139,92,246,0.1)' : 'var(--c-surface)', border: on ? '1px solid #8b5cf6' : '1px solid var(--c-border)' }}
                 >
-                  <p style={{ color: on ? '#fff' : '#bbb', fontSize: '13px', fontWeight: 600 }}>{p.nombre}</p>
-                  <p style={{ color: '#666', fontSize: '11px', marginTop: '2px' }}>{p.precio}</p>
+                  <p style={{ color: on ? 'var(--c-text)' : 'var(--c-text2)', fontSize: '13px', fontWeight: 600 }}>{p.nombre}</p>
+                  <p style={{ color: 'var(--c-text4)', fontSize: '11px', marginTop: '2px' }}>{p.precio}</p>
                 </button>
               )
             })}
@@ -252,7 +252,7 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
           <button
             onClick={() => act(() => cambiarPlan(cuenta.id, planEnum[plan]))}
             className="w-full rounded-full py-2.5 mb-3"
-            style={{ background: '#8b5cf6', color: '#fff', fontSize: '13px', fontWeight: 600 }}
+            style={{ background: '#8b5cf6', color: 'var(--c-text)', fontSize: '13px', fontWeight: 600 }}
           >
             {cuenta.plan === '—' ? 'Activar suscripción' : 'Guardar cambios'}
           </button>
@@ -270,16 +270,16 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
         {/* Pagos */}
         <Block title="HISTORIAL DE PAGOS">
           {cuenta.pagos.length === 0 ? (
-            <p style={{ color: '#555', fontSize: '13px' }}>Sin pagos registrados.</p>
+            <p style={{ color: 'var(--c-text5)', fontSize: '13px' }}>Sin pagos registrados.</p>
           ) : (
             <div className="flex flex-col gap-2">
               {cuenta.pagos.map((p, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+                <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
                   <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: p.estado === 'Pagado' ? '#0f2a1a' : '#2a0f0f' }}>
                     <CheckCircle2 size={14} color={p.estado === 'Pagado' ? '#22c55e' : '#ef4444'} />
                   </div>
                   <span className="text-white flex-1" style={{ fontSize: '13px', fontWeight: 500 }}>{p.monto}</span>
-                  <span style={{ color: '#555', fontSize: '12px' }}>{p.fecha} · {p.estado}</span>
+                  <span style={{ color: 'var(--c-text5)', fontSize: '12px' }}>{p.fecha} · {p.estado}</span>
                 </div>
               ))}
             </div>
@@ -312,7 +312,7 @@ function CuentaDetail({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '12px' }}>{title}</p>
+      <p style={{ color: 'var(--c-text4)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '12px' }}>{title}</p>
       {children}
     </div>
   )
@@ -321,18 +321,18 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
 function InfoRow({ icon: Icon, value }: { icon: typeof Mail; value: string }) {
   return (
     <div className="flex items-center gap-2.5 py-1">
-      <Icon size={14} color="#666" />
-      <span style={{ color: '#ccc', fontSize: '13px' }}>{value}</span>
+      <Icon size={14} color="var(--c-text4)" />
+      <span style={{ color: 'var(--c-text2)', fontSize: '13px' }}>{value}</span>
     </div>
   )
 }
 
 function Mini({ icon: Icon, label, value }: { icon: typeof Car; label: string; value: string }) {
   return (
-    <div className="p-3 rounded-xl" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+    <div className="p-3 rounded-xl" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
       <div className="flex items-center gap-1.5 mb-1.5">
-        <Icon size={13} color="#666" />
-        <span style={{ color: '#666', fontSize: '11px' }}>{label}</span>
+        <Icon size={13} color="var(--c-text4)" />
+        <span style={{ color: 'var(--c-text4)', fontSize: '11px' }}>{label}</span>
       </div>
       <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>{value}</p>
     </div>
@@ -340,14 +340,14 @@ function Mini({ icon: Icon, label, value }: { icon: typeof Car; label: string; v
 }
 
 function WideAction({ icon: Icon, label, tone, onClick }: { icon: typeof LogIn; label: string; tone?: 'danger' | 'ok'; onClick?: () => void }) {
-  const color = tone === 'danger' ? '#ef4444' : tone === 'ok' ? '#22c55e' : '#ccc'
+  const color = tone === 'danger' ? '#ef4444' : tone === 'ok' ? '#22c55e' : 'var(--c-text2)'
   return (
     <button
       onClick={onClick}
       className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-colors w-full text-left"
-      style={{ background: '#141414', border: '1px solid #1e1e1e', color }}
-      onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = '#1a1a1a')}
-      onMouseLeave={e => ((e.currentTarget as HTMLElement).style.background = '#141414')}
+      style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', color }}
+      onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = 'var(--c-surface3)')}
+      onMouseLeave={e => ((e.currentTarget as HTMLElement).style.background = 'var(--c-surface)')}
     >
       <Icon size={15} />
       <span style={{ fontSize: '13px', fontWeight: 500 }}>{label}</span>

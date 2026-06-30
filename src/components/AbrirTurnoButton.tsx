@@ -32,22 +32,22 @@ export default function AbrirTurnoButton() {
       <button
         onClick={() => setOpen(true)}
         className="px-5 py-2.5 rounded-full text-black font-semibold transition-transform hover:scale-[1.02]"
-        style={{ background: '#fff', fontSize: '14px', cursor: 'pointer' }}
+        style={{ background: 'var(--c-accent)', fontSize: '14px', cursor: 'pointer' }}
       >
         Abrir turno
       </button>
 
       {open && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center px-6" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} onClick={() => setOpen(false)}>
-          <div className="rounded-2xl w-full max-w-sm p-6" style={{ background: '#141414', border: '1px solid #262626' }} onClick={e => e.stopPropagation()}>
+          <div className="rounded-2xl w-full max-w-sm p-6" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border3)' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-1">
               <p className="text-white" style={{ fontSize: '16px', fontWeight: 600 }}>Abrir turno</p>
-              <button onClick={() => setOpen(false)} style={{ color: '#666' }}><X size={18} /></button>
+              <button onClick={() => setOpen(false)} style={{ color: 'var(--c-text4)' }}><X size={18} /></button>
             </div>
-            <p style={{ color: '#666', fontSize: '12.5px', marginBottom: 18 }}>¿Con cuánto efectivo arrancas la caja?</p>
+            <p style={{ color: 'var(--c-text4)', fontSize: '12.5px', marginBottom: 18 }}>¿Con cuánto efectivo arrancas la caja?</p>
 
-            <label style={{ color: '#888', fontSize: '13px' }}>Base inicial</label>
-            <div className="flex items-center mt-2 rounded-xl overflow-hidden" style={{ background: '#0e0e0e', border: '1px solid #2a2a2a' }}>
+            <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Base inicial</label>
+            <div className="flex items-center mt-2 rounded-xl overflow-hidden" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border3)' }}>
               <span className="text-white pl-4" style={{ fontSize: '20px', fontWeight: 600 }}>$</span>
               <input
                 autoFocus
@@ -60,12 +60,12 @@ export default function AbrirTurnoButton() {
                 style={{ fontSize: '20px', fontWeight: 600 }}
               />
             </div>
-            {base > 0 && <p style={{ color: '#666', fontSize: 12, marginTop: 8 }}>La caja arranca con {fmt(base)}</p>}
+            {base > 0 && <p style={{ color: 'var(--c-text4)', fontSize: 12, marginTop: 8 }}>La caja arranca con {fmt(base)}</p>}
 
-            <button onClick={confirmar} disabled={pending} className="w-full rounded-full py-3 text-black font-semibold mt-5" style={{ background: '#fff', fontSize: '14px', opacity: pending ? 0.6 : 1, cursor: pending ? 'default' : 'pointer' }}>
+            <button onClick={confirmar} disabled={pending} className="w-full rounded-full py-3 text-black font-semibold mt-5" style={{ background: 'var(--c-accent)', fontSize: '14px', opacity: pending ? 0.6 : 1, cursor: pending ? 'default' : 'pointer' }}>
               {pending ? 'Abriendo…' : 'Abrir turno'}
             </button>
-            <p className="text-center" style={{ color: '#555', fontSize: 11, marginTop: 10 }}>Sin un turno abierto no puedes registrar entradas ni salidas</p>
+            <p className="text-center" style={{ color: 'var(--c-text5)', fontSize: 11, marginTop: 10 }}>Sin un turno abierto no puedes registrar entradas ni salidas</p>
           </div>
         </div>
       )}

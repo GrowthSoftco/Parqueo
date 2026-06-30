@@ -44,21 +44,21 @@ function buildBuckets(movs: Movimiento[], periodo: Periodo, now: Date): Bucket[]
 function IngresosChart({ buckets }: { buckets: Bucket[] }) {
   const max = Math.max(1, ...buckets.map(b => b.value))
   return (
-    <div className="rounded-2xl p-5" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-      <p style={{ color: '#777', fontSize: '13px' }}>Ingresos en el periodo</p>
+    <div className="rounded-2xl p-5" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+      <p style={{ color: 'var(--c-text4)', fontSize: '13px' }}>Ingresos en el periodo</p>
       <div className="flex items-end gap-[3px]" style={{ height: 150, marginTop: 18 }}>
         {buckets.map((b, i) => (
           <div key={i} className="flex-1 flex flex-col items-center justify-end group" style={{ height: '100%' }} title={`${b.label} · ${fmt(b.value)}`}>
             <div
               className="w-full rounded-[3px] transition-colors group-hover:brightness-150"
-              style={{ height: `${(b.value / max) * 100}%`, minHeight: b.value > 0 ? 3 : 1, background: b.value > 0 ? '#fff' : '#1f1f1f' }}
+              style={{ height: `${(b.value / max) * 100}%`, minHeight: b.value > 0 ? 3 : 1, background: b.value > 0 ? 'var(--c-text)' : 'var(--c-border)' }}
             />
           </div>
         ))}
       </div>
       <div className="flex gap-[3px]" style={{ marginTop: 8 }}>
         {buckets.map((b, i) => (
-          <span key={i} className="flex-1 text-center" style={{ color: '#555', fontSize: '10px' }}>
+          <span key={i} className="flex-1 text-center" style={{ color: 'var(--c-text5)', fontSize: '10px' }}>
             {b.showLabel ? b.label : ''}
           </span>
         ))}
@@ -94,7 +94,7 @@ export default async function ContabilidadPage({ searchParams }: { searchParams:
   const vehRows = Object.entries(porVeh).sort((a, b) => b[1].monto - a[1].monto)
 
   const fuentes = [
-    { label: 'Rotación', monto: rotacionTotal, color: '#fff' },
+    { label: 'Rotación', monto: rotacionTotal, color: 'var(--c-text)' },
     { label: 'Mensualidades', monto: mensualidadTotal, color: '#a855f7' },
   ]
 
@@ -119,33 +119,33 @@ export default async function ContabilidadPage({ searchParams }: { searchParams:
           <IngresosChart buckets={buckets} />
         </div>
 
-        <div className="rounded-2xl p-5" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-          <p style={{ color: '#777', fontSize: '13px' }}>Origen de los ingresos</p>
+        <div className="rounded-2xl p-5" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+          <p style={{ color: 'var(--c-text4)', fontSize: '13px' }}>Origen de los ingresos</p>
           <div className="mt-4 space-y-4">
             {fuentes.map(f => {
               const pct = ingresoTotal ? Math.round((f.monto / ingresoTotal) * 100) : 0
               return (
                 <div key={f.label}>
                   <div className="flex items-center justify-between" style={{ marginBottom: 7 }}>
-                    <span style={{ color: '#bbb', fontSize: '13px' }}>{f.label}</span>
+                    <span style={{ color: 'var(--c-text2)', fontSize: '13px' }}>{f.label}</span>
                     <span className="text-white" style={{ fontSize: '13px', fontWeight: 600 }}>{fmt(f.monto)}</span>
                   </div>
-                  <div className="w-full rounded-full overflow-hidden" style={{ height: 6, background: '#1f1f1f' }}>
+                  <div className="w-full rounded-full overflow-hidden" style={{ height: 6, background: 'var(--c-border)' }}>
                     <div className="h-full rounded-full" style={{ width: `${pct}%`, background: f.color }} />
                   </div>
-                  <span style={{ color: '#555', fontSize: '11px' }}>{pct}%</span>
+                  <span style={{ color: 'var(--c-text5)', fontSize: '11px' }}>{pct}%</span>
                 </div>
               )
             })}
           </div>
 
-          <div style={{ height: 1, background: '#1e1e1e', margin: '18px 0 14px' }} />
-          <p style={{ color: '#777', fontSize: '13px', marginBottom: 12 }}>Por tipo de vehículo</p>
-          {vehRows.length === 0 && <p style={{ color: '#555', fontSize: '12px' }}>Sin rotación en el periodo</p>}
+          <div style={{ height: 1, background: 'var(--c-border)', margin: '18px 0 14px' }} />
+          <p style={{ color: 'var(--c-text4)', fontSize: '13px', marginBottom: 12 }}>Por tipo de vehículo</p>
+          {vehRows.length === 0 && <p style={{ color: 'var(--c-text5)', fontSize: '12px' }}>Sin rotación en el periodo</p>}
           <div className="space-y-2.5">
             {vehRows.map(([veh, d]) => (
               <div key={veh} className="flex items-center justify-between">
-                <span style={{ color: '#bbb', fontSize: '13px' }}>{veh} <span style={{ color: '#555' }}>· {d.count}</span></span>
+                <span style={{ color: 'var(--c-text2)', fontSize: '13px' }}>{veh} <span style={{ color: 'var(--c-text5)' }}>· {d.count}</span></span>
                 <span className="text-white" style={{ fontSize: '13px' }}>{fmt(d.monto)}</span>
               </div>
             ))}
@@ -153,17 +153,17 @@ export default async function ContabilidadPage({ searchParams }: { searchParams:
         </div>
       </div>
 
-      <div className="rounded-2xl mt-4 overflow-hidden" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-        <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid #1e1e1e' }}>
+      <div className="rounded-2xl mt-4 overflow-hidden" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+        <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid var(--c-border)' }}>
           <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Movimientos</p>
-          <span style={{ color: '#555', fontSize: '12px' }}>{movs.length} en {PERIODO_LABEL[periodo].toLowerCase()}</span>
+          <span style={{ color: 'var(--c-text5)', fontSize: '12px' }}>{movs.length} en {PERIODO_LABEL[periodo].toLowerCase()}</span>
         </div>
         {recientes.length === 0 ? (
-          <div className="px-5 py-10 text-center" style={{ color: '#555', fontSize: '13px' }}>Sin movimientos en este periodo</div>
+          <div className="px-5 py-10 text-center" style={{ color: 'var(--c-text5)', fontSize: '13px' }}>Sin movimientos en este periodo</div>
         ) : (
           <div>
             {recientes.map((m, i) => (
-              <div key={i} className="px-5 py-3 flex items-center justify-between" style={{ borderBottom: i < recientes.length - 1 ? '1px solid #181818' : 'none' }}>
+              <div key={i} className="px-5 py-3 flex items-center justify-between" style={{ borderBottom: i < recientes.length - 1 ? '1px solid var(--c-surface2)' : 'none' }}>
                 <div className="flex items-center gap-3">
                   <span
                     className="px-2 py-0.5 rounded-md"
@@ -171,16 +171,16 @@ export default async function ContabilidadPage({ searchParams }: { searchParams:
                       fontSize: '11px',
                       fontWeight: 600,
                       background: m.tipo === 'Mensualidad' ? '#a855f71f' : '#ffffff14',
-                      color: m.tipo === 'Mensualidad' ? '#c084fc' : '#ddd',
+                      color: m.tipo === 'Mensualidad' ? '#c084fc' : 'var(--c-text2)',
                     }}
                   >
                     {m.tipo}
                   </span>
                   <span className="text-white font-mono" style={{ fontSize: '13px', letterSpacing: '0.04em' }}>{m.detalle}</span>
-                  <span style={{ color: '#666', fontSize: '12px' }}>{m.vehiculo}</span>
+                  <span style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{m.vehiculo}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span style={{ color: '#666', fontSize: '12px' }}>{fechaCorta(m.fecha)}</span>
+                  <span style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{fechaCorta(m.fecha)}</span>
                   <span className="text-white" style={{ fontSize: '13px', fontWeight: 600, minWidth: 70, textAlign: 'right' }}>{fmt(m.monto)}</span>
                 </div>
               </div>

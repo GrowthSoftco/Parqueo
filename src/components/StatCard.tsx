@@ -13,7 +13,7 @@ const toneColor: Record<NonNullable<StatCardProps['tone']>, string> = {
   up: '#22c55e',
   down: '#ef4444',
   warn: '#f59e0b',
-  neutral: '#888888',
+  neutral: 'var(--c-text3)',
 }
 
 function Sparkline({ data, color, id }: { data: number[]; color: string; id: string }) {
@@ -57,8 +57,8 @@ export default function StatCard({ label, value, change, tone = 'neutral', note,
   const sparkId = `spark-${label.replace(/[^a-zA-Z0-9]/g, '')}`
 
   return (
-    <div className="rounded-2xl p-5 overflow-hidden" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-      <p style={{ color: '#777', fontSize: '13px' }}>{label}</p>
+    <div className="rounded-2xl p-5 overflow-hidden" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+      <p style={{ color: 'var(--c-text4)', fontSize: '13px' }}>{label}</p>
       <p className="text-white font-bold" style={{ fontSize: '28px', marginTop: '6px' }}>{value}</p>
       {(change || note) && (
         <div className="flex items-center gap-2" style={{ marginTop: '10px' }}>
@@ -72,7 +72,7 @@ export default function StatCard({ label, value, change, tone = 'neutral', note,
               {change}
             </span>
           )}
-          {note && <span style={{ color: '#666', fontSize: '12px' }}>{note}</span>}
+          {note && <span style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{note}</span>}
         </div>
       )}
       {spark && <Sparkline data={spark} color={color} id={sparkId} />}

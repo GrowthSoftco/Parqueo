@@ -6,10 +6,10 @@ import { ShieldCheck } from 'lucide-react'
 import { loginOperador } from '@/app/auth-actions'
 
 const inputStyle: React.CSSProperties = {
-  background: '#141414',
-  border: '1px solid #232323',
+  background: 'var(--c-surface)',
+  border: '1px solid var(--c-border2)',
   borderRadius: '8px',
-  color: '#fff',
+  color: 'var(--c-text)',
   padding: '10px 14px',
   fontSize: '14px',
   outline: 'none',
@@ -37,7 +37,7 @@ export default function OperadorLogin() {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center px-6" style={{ background: '#0a0a0a' }}>
+    <div className="flex h-screen items-center justify-center px-6" style={{ background: 'var(--c-bg)' }}>
       <div className="w-full max-w-sm">
         <div className="flex items-center gap-2.5 mb-8">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -52,15 +52,15 @@ export default function OperadorLogin() {
           <ShieldCheck size={18} color="#8b5cf6" />
           <h1 className="text-white" style={{ fontSize: '22px', fontWeight: 700 }}>Acceso de operador</h1>
         </div>
-        <p style={{ color: '#666', fontSize: '13px', marginBottom: '28px' }}>Área restringida · solo personal autorizado</p>
+        <p style={{ color: 'var(--c-text4)', fontSize: '13px', marginBottom: '28px' }}>Área restringida · solo personal autorizado</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <label style={{ color: '#888', fontSize: '13px' }}>Email</label>
+            <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Email</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="operador@parqueo.com" required style={inputStyle} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <label style={{ color: '#888', fontSize: '13px' }}>Contraseña</label>
+            <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Contraseña</label>
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required style={inputStyle} />
           </div>
 
@@ -69,7 +69,7 @@ export default function OperadorLogin() {
           <button
             type="submit"
             disabled={loading}
-            style={{ background: '#8b5cf6', color: '#fff', borderRadius: '9999px', padding: '11px', fontWeight: 600, fontSize: '14px', border: 'none', opacity: loading ? 0.7 : 1, marginTop: '4px' }}
+            style={{ background: '#8b5cf6', color: 'var(--c-text)', borderRadius: '9999px', padding: '11px', fontWeight: 600, fontSize: '14px', border: 'none', opacity: loading ? 0.7 : 1, marginTop: '4px' }}
           >
             {loading ? 'Entrando...' : 'Entrar'}
           </button>

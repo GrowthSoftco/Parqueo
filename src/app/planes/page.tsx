@@ -91,17 +91,17 @@ export default function PlanesPage() {
     })
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center" style={{ background: '#0a0a0a' }}>
+    <div className="min-h-screen w-full flex flex-col items-center" style={{ background: 'var(--c-bg)' }}>
       {/* Top */}
       <div className="w-full flex items-center justify-between px-10 pt-10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.svg" alt="Parqueo" width={26} height={26} />
         {fromApp ? (
-          <a href="/dashboard/plan" style={{ color: '#888', fontSize: '13px' }} className="hover:text-white transition-colors">
+          <a href="/dashboard/plan" style={{ color: 'var(--c-text3)', fontSize: '13px' }} className="hover:text-white transition-colors">
             ← Volver a Mi plan
           </a>
         ) : (
-          <a href="/login" style={{ color: '#888', fontSize: '13px' }} className="hover:text-white transition-colors">
+          <a href="/login" style={{ color: 'var(--c-text3)', fontSize: '13px' }} className="hover:text-white transition-colors">
             ¿Ya tienes cuenta? Inicia sesión
           </a>
         )}
@@ -110,13 +110,13 @@ export default function PlanesPage() {
       {/* Header */}
       <div className="text-center mt-10 mb-8 px-6">
         <h1 className="text-white font-bold" style={{ fontSize: '32px' }}>Elige tu plan</h1>
-        <p style={{ color: '#777', fontSize: '15px', marginTop: '8px' }}>
+        <p style={{ color: 'var(--c-text4)', fontSize: '15px', marginTop: '8px' }}>
           14 días de prueba gratis · sin tarjeta de crédito
         </p>
 
         {/* Toggle */}
         <div className="inline-flex items-center gap-3 mt-7">
-          <div className="flex p-1 rounded-full" style={{ background: '#161616', border: '1px solid #232323' }}>
+          <div className="flex p-1 rounded-full" style={{ background: 'var(--c-surface2)', border: '1px solid var(--c-border2)' }}>
             {[
               { k: false, l: 'Mensual' },
               { k: true, l: 'Anual' },
@@ -126,8 +126,8 @@ export default function PlanesPage() {
                 onClick={() => setAnual(opt.k)}
                 className="px-5 py-1.5 rounded-full transition-colors"
                 style={{
-                  background: anual === opt.k ? '#fff' : 'transparent',
-                  color: anual === opt.k ? '#000' : '#888',
+                  background: anual === opt.k ? 'var(--c-text)' : 'transparent',
+                  color: anual === opt.k ? 'var(--c-bg)' : 'var(--c-text3)',
                   fontSize: '13px',
                   fontWeight: 600,
                 }}
@@ -154,29 +154,29 @@ export default function PlanesPage() {
               key={plan.id}
               className="rounded-2xl p-6 flex flex-col relative"
               style={{
-                background: rec ? '#151515' : '#101010',
-                border: rec ? `1.5px solid ${ACCENT}` : '1px solid #1e1e1e',
+                background: rec ? 'var(--c-surface2)' : 'var(--c-panel)',
+                border: rec ? `1.5px solid ${ACCENT}` : '1px solid var(--c-border)',
               }}
             >
               {rec && (
                 <span
                   className="absolute -top-3 left-6 px-2.5 py-1 rounded-full"
-                  style={{ background: ACCENT, color: '#fff', fontSize: '11px', fontWeight: 700 }}
+                  style={{ background: ACCENT, color: 'var(--c-text)', fontSize: '11px', fontWeight: 700 }}
                 >
                   Recomendado
                 </span>
               )}
 
               <p className="text-white" style={{ fontSize: '17px', fontWeight: 700 }}>{plan.nombre}</p>
-              <p style={{ color: '#777', fontSize: '13px', marginTop: '4px', minHeight: '36px' }}>{plan.desc}</p>
+              <p style={{ color: 'var(--c-text4)', fontSize: '13px', marginTop: '4px', minHeight: '36px' }}>{plan.desc}</p>
 
               <div className="flex items-baseline gap-1.5 mt-4 mb-1">
                 <span className="text-white font-bold" style={{ fontSize: '30px' }}>
                   {fmt(anual ? plan.anual : plan.mensual)}
                 </span>
-                <span style={{ color: '#666', fontSize: '13px' }}>/{anual ? 'año' : 'mes'}</span>
+                <span style={{ color: 'var(--c-text4)', fontSize: '13px' }}>/{anual ? 'año' : 'mes'}</span>
               </div>
-              <p style={{ color: '#555', fontSize: '12px', minHeight: '18px' }}>
+              <p style={{ color: 'var(--c-text5)', fontSize: '12px', minHeight: '18px' }}>
                 {anual ? `Equivale a ${fmt(Math.round(plan.anual / 12))}/mes` : 'COP, facturado mensual'}
               </p>
 
@@ -185,8 +185,8 @@ export default function PlanesPage() {
                 className="rounded-full py-2.5 mt-5 mb-6 transition-opacity hover:opacity-90"
                 style={
                   rec
-                    ? { background: '#fff', color: '#000', fontSize: '14px', fontWeight: 600 }
-                    : { background: '#1a1a1a', border: '1px solid #2a2a2a', color: '#fff', fontSize: '14px', fontWeight: 600 }
+                    ? { background: 'var(--c-accent)', color: 'var(--c-on-accent)', fontSize: '14px', fontWeight: 600 }
+                    : { background: 'var(--c-surface3)', border: '1px solid var(--c-border3)', color: 'var(--c-text)', fontSize: '14px', fontWeight: 600 }
                 }
               >
                 {fromApp ? 'Cambiar a este plan' : 'Empezar prueba gratis'}
@@ -198,11 +198,11 @@ export default function PlanesPage() {
                   return (
                     <div key={i} className="flex items-start gap-2.5">
                       {heading ? (
-                        <span style={{ color: '#888', fontSize: '12.5px', fontWeight: 600 }}>{f}</span>
+                        <span style={{ color: 'var(--c-text3)', fontSize: '12.5px', fontWeight: 600 }}>{f}</span>
                       ) : (
                         <>
-                          <Check size={15} color={rec ? ACCENT : '#666'} strokeWidth={2.5} className="shrink-0 mt-0.5" />
-                          <span style={{ color: '#bbb', fontSize: '13px' }}>{f}</span>
+                          <Check size={15} color={rec ? ACCENT : 'var(--c-text4)'} strokeWidth={2.5} className="shrink-0 mt-0.5" />
+                          <span style={{ color: 'var(--c-text2)', fontSize: '13px' }}>{f}</span>
                         </>
                       )}
                     </div>
@@ -214,9 +214,9 @@ export default function PlanesPage() {
         })}
       </div>
 
-      <p style={{ color: '#555', fontSize: '13px', paddingBottom: '40px' }}>
+      <p style={{ color: 'var(--c-text5)', fontSize: '13px', paddingBottom: '40px' }}>
         ¿Necesitas más sedes o algo a la medida?{' '}
-        <a href="#" style={{ color: '#fff' }} className="hover:underline">Contáctanos</a>
+        <a href="#" style={{ color: 'var(--c-text)' }} className="hover:underline">Contáctanos</a>
       </p>
     </div>
   )

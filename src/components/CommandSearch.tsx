@@ -122,13 +122,13 @@ export default function CommandSearch({ role }: { role?: string }) {
       <button
         onClick={() => setOpen(true)}
         className="flex items-center gap-2 rounded-full transition-colors"
-        style={{ background: '#161616', border: '1px solid #232323', color: '#888', fontSize: '13px', padding: '8px 12px', minWidth: 180 }}
-        onMouseEnter={e => (e.currentTarget.style.background = '#1c1c1c')}
-        onMouseLeave={e => (e.currentTarget.style.background = '#161616')}
+        style={{ background: 'var(--c-surface2)', border: '1px solid var(--c-border2)', color: 'var(--c-text3)', fontSize: '13px', padding: '8px 12px', minWidth: 180 }}
+        onMouseEnter={e => (e.currentTarget.style.background = 'var(--c-surface3)')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'var(--c-surface2)')}
       >
         <Search size={15} />
         <span style={{ flex: 1, textAlign: 'left' }}>Buscar</span>
-        <kbd style={{ background: '#0e0e0e', border: '1px solid #2a2a2a', borderRadius: 6, padding: '1px 6px', fontSize: 11, color: '#777' }}>⌘K</kbd>
+        <kbd style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border3)', borderRadius: 6, padding: '1px 6px', fontSize: 11, color: 'var(--c-text4)' }}>⌘K</kbd>
       </button>
 
       {open && (
@@ -139,12 +139,12 @@ export default function CommandSearch({ role }: { role?: string }) {
         >
           <div
             className="w-full max-w-xl rounded-2xl overflow-hidden"
-            style={{ background: '#141414', border: '1px solid #2a2a2a', boxShadow: '0 24px 64px rgba(0,0,0,0.6)', animation: 'pop-in 160ms cubic-bezier(0.16,1,0.3,1)' }}
+            style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border3)', boxShadow: '0 24px 64px rgba(0,0,0,0.6)', animation: 'pop-in 160ms cubic-bezier(0.16,1,0.3,1)' }}
             onClick={e => e.stopPropagation()}
           >
             {/* Input */}
-            <div className="flex items-center gap-3 px-4" style={{ borderBottom: '1px solid #1f1f1f', height: 56 }}>
-              <Search size={18} color="#666" />
+            <div className="flex items-center gap-3 px-4" style={{ borderBottom: '1px solid var(--c-border)', height: 56 }}>
+              <Search size={18} color="var(--c-text4)" />
               <input
                 ref={inputRef}
                 value={q}
@@ -154,21 +154,21 @@ export default function CommandSearch({ role }: { role?: string }) {
                 className="flex-1 bg-transparent outline-none text-white"
                 style={{ fontSize: 15 }}
               />
-              <kbd style={{ background: '#0e0e0e', border: '1px solid #2a2a2a', borderRadius: 6, padding: '2px 7px', fontSize: 11, color: '#666' }}>Esc</kbd>
+              <kbd style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border3)', borderRadius: 6, padding: '2px 7px', fontSize: 11, color: 'var(--c-text4)' }}>Esc</kbd>
             </div>
 
             {/* Resultados */}
             <div style={{ maxHeight: 360, overflowY: 'auto', padding: 8 }}>
               {!q.trim() ? (
-                <p className="text-center" style={{ color: '#555', fontSize: 13, padding: '28px 0' }}>
+                <p className="text-center" style={{ color: 'var(--c-text5)', fontSize: 13, padding: '28px 0' }}>
                   Escribe una placa{esEmpleado ? '' : ', nombre de cliente'} para empezar
                 </p>
               ) : items.length === 0 ? (
-                <p className="text-center" style={{ color: '#555', fontSize: 13, padding: '28px 0' }}>Sin resultados para “{q.trim()}”</p>
+                <p className="text-center" style={{ color: 'var(--c-text5)', fontSize: 13, padding: '28px 0' }}>Sin resultados para “{q.trim()}”</p>
               ) : (
                 grupos.map(g => (
                   <div key={g} className="mb-1">
-                    <p style={{ color: '#555', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', padding: '8px 10px 4px', textTransform: 'uppercase' }}>{g}</p>
+                    <p style={{ color: 'var(--c-text5)', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', padding: '8px 10px 4px', textTransform: 'uppercase' }}>{g}</p>
                     {items.filter(i => i.group === g).map(item => {
                       idx++
                       const activo = idx === sel
@@ -179,16 +179,16 @@ export default function CommandSearch({ role }: { role?: string }) {
                           onClick={item.run}
                           onMouseMove={() => setSel(myIdx)}
                           className="w-full flex items-center gap-3 rounded-lg text-left"
-                          style={{ background: activo ? '#1f1f1f' : 'transparent', padding: '9px 10px' }}
+                          style={{ background: activo ? 'var(--c-border)' : 'transparent', padding: '9px 10px' }}
                         >
-                          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: '#0f0f0f', border: '1px solid #232323', color: activo ? '#fff' : '#888' }}>
+                          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border2)', color: activo ? 'var(--c-text)' : 'var(--c-text3)' }}>
                             <item.icon size={15} />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-white font-mono" style={{ fontSize: 13.5, letterSpacing: '0.03em' }}>{item.label}</p>
-                            {item.sub && <p style={{ color: '#666', fontSize: 12 }}>{item.sub}</p>}
+                            {item.sub && <p style={{ color: 'var(--c-text4)', fontSize: 12 }}>{item.sub}</p>}
                           </div>
-                          {activo && <CornerDownLeft size={14} color="#666" />}
+                          {activo && <CornerDownLeft size={14} color="var(--c-text4)" />}
                         </button>
                       )
                     })}

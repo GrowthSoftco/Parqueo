@@ -27,14 +27,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (isLogin) return <>{children}</>
 
   // Evita el flash mientras verifica / redirige
-  if (!ready) return <div className="h-screen" style={{ background: '#0a0a0a' }} />
+  if (!ready) return <div className="h-screen" style={{ background: 'var(--c-bg)' }} />
 
   return (
-    <div className="flex h-screen overflow-hidden p-2.5 gap-2.5" style={{ background: '#000000' }}>
+    <div className="flex h-screen overflow-hidden p-2.5 gap-2.5" style={{ background: 'var(--c-bg)' }}>
       <AdminSidebar />
       <main
         className="flex-1 overflow-hidden rounded-2xl flex flex-col relative"
-        style={{ background: '#0d0d0d', border: '1px solid #1c1c1c' }}
+        style={{ background: 'var(--c-panel)', border: '1px solid var(--c-surface3)' }}
       >
         <div className="flex-1 overflow-y-auto">{children}</div>
       </main>

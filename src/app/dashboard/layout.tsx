@@ -40,7 +40,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   })
 
   return (
-    <div className="flex h-screen overflow-hidden p-2.5 gap-2.5" style={{ background: '#000000' }}>
+    <div className="flex h-screen overflow-hidden p-2.5 gap-2.5" style={{ background: 'var(--c-bg)' }}>
       <AccountWatcher tenantId={user.tenant.id} pusherKey={pusherKey} pusherCluster={pusherCluster} />
       <BroadcastWatcher pusherKey={pusherKey} pusherCluster={pusherCluster} />
       <LogoutDialog />
@@ -48,8 +48,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <main
         className="flex-1 overflow-hidden rounded-2xl flex flex-col relative"
         style={{
-          background: '#0d0d0d',
-          border: '1px solid #1c1c1c',
+          background: 'var(--c-panel)',
+          border: '1px solid var(--c-surface3)',
         }}
       >
         <TopBar

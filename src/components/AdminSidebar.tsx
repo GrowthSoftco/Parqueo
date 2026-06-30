@@ -18,7 +18,7 @@ function Tooltip({ label }: { label: string }) {
   return (
     <div
       className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 rounded-lg whitespace-nowrap pointer-events-none z-[100] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150"
-      style={{ background: '#1f1f1f', border: '1px solid #2c2c2c', color: '#fff', fontSize: '12.5px', fontWeight: 500, boxShadow: '0 6px 20px rgba(0,0,0,0.5)' }}
+      style={{ background: 'var(--c-border)', border: '1px solid var(--c-border3)', color: 'var(--c-text)', fontSize: '12.5px', fontWeight: 500, boxShadow: '0 6px 20px rgba(0,0,0,0.5)' }}
     >
       {label}
     </div>
@@ -44,7 +44,7 @@ export default function AdminSidebar() {
       <div className="relative group flex items-center justify-center mb-5">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.svg" alt="Parqueo" width={28} height={28} />
-        <span className="absolute -bottom-2.5 px-1 rounded" style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', color: '#999', fontSize: '7.5px', fontWeight: 800, letterSpacing: '0.04em' }}>OP</span>
+        <span className="absolute -bottom-2.5 px-1 rounded" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)', color: 'var(--c-text3)', fontSize: '7.5px', fontWeight: 800, letterSpacing: '0.04em' }}>OP</span>
         <Tooltip label="Consola de operador" />
       </div>
 
@@ -57,9 +57,9 @@ export default function AdminSidebar() {
               <Link
                 href={href}
                 className="flex items-center justify-center rounded-xl transition-all"
-                style={{ background: active ? '#1e1e1e' : 'transparent', color: active ? '#fff' : '#707070', width: 44, height: 44 }}
-                onMouseEnter={e => { if (!active) { (e.currentTarget as HTMLElement).style.background = '#161616'; (e.currentTarget as HTMLElement).style.color = '#e5e5e5' } }}
-                onMouseLeave={e => { if (!active) { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#707070' } }}
+                style={{ background: active ? 'var(--c-border)' : 'transparent', color: active ? 'var(--c-text)' : 'var(--c-text4)', width: 44, height: 44 }}
+                onMouseEnter={e => { if (!active) { (e.currentTarget as HTMLElement).style.background = 'var(--c-surface2)'; (e.currentTarget as HTMLElement).style.color = 'var(--c-text)' } }}
+                onMouseLeave={e => { if (!active) { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--c-text4)' } }}
               >
                 <Icon size={18} strokeWidth={2} />
               </Link>
@@ -75,9 +75,9 @@ export default function AdminSidebar() {
           <Link
             href="/dashboard"
             className="flex items-center justify-center rounded-xl transition-colors"
-            style={{ color: '#707070', width: 44, height: 44 }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#161616'; (e.currentTarget as HTMLElement).style.color = '#e5e5e5' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#707070' }}
+            style={{ color: 'var(--c-text4)', width: 44, height: 44 }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--c-surface2)'; (e.currentTarget as HTMLElement).style.color = 'var(--c-text)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--c-text4)' }}
           >
             <ArrowUpRight size={18} />
           </Link>
@@ -87,9 +87,9 @@ export default function AdminSidebar() {
           <button
             onClick={logout}
             className="flex items-center justify-center rounded-xl transition-colors"
-            style={{ color: '#707070', width: 44, height: 44, cursor: 'pointer' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#161616'; (e.currentTarget as HTMLElement).style.color = '#ef4444' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#707070' }}
+            style={{ color: 'var(--c-text4)', width: 44, height: 44, cursor: 'pointer' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--c-surface2)'; (e.currentTarget as HTMLElement).style.color = '#ef4444' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--c-text4)' }}
           >
             <LogOut size={18} />
           </button>

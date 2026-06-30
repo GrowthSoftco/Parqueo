@@ -121,29 +121,29 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
       <button
         onClick={() => setOpen(true)}
         className="flex items-center gap-1.5 rounded-full font-semibold transition-colors"
-        style={{ background: '#161616', border: '1px solid #2a2a2a', color: '#ddd', fontSize: '13px', padding: '8px 16px' }}
-        onMouseEnter={e => (e.currentTarget.style.background = '#1e1e1e')}
-        onMouseLeave={e => (e.currentTarget.style.background = '#161616')}
+        style={{ background: 'var(--c-surface2)', border: '1px solid var(--c-border3)', color: 'var(--c-text2)', fontSize: '13px', padding: '8px 16px' }}
+        onMouseEnter={e => (e.currentTarget.style.background = 'var(--c-border)')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'var(--c-surface2)')}
       >
         <LogOut size={15} /> Registrar salida
       </button>
 
       {open && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center px-6" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} onClick={close}>
-          <div className="rounded-2xl w-full max-w-md p-7" style={{ background: '#141414', border: '1px solid #262626' }} onClick={e => e.stopPropagation()}>
+          <div className="rounded-2xl w-full max-w-md p-7" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border3)' }} onClick={e => e.stopPropagation()}>
             {result ? (
               /* Resultado del cobro */
               <div className="flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: '#0f2a1a' }}>
                   <CheckCircle2 size={24} color="#22c55e" />
                 </div>
-                <p style={{ color: '#888', fontSize: '13px' }}>Salida registrada · {result.placa}</p>
+                <p style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Salida registrada · {result.placa}</p>
                 <p className="text-white font-bold mt-2" style={{ fontSize: '40px' }}>{fmt(result.monto)}</p>
-                <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>Tiempo: {result.minutos} min</p>
+                <p style={{ color: 'var(--c-text4)', fontSize: '13px', marginBottom: '20px' }}>Tiempo: {result.minutos} min</p>
 
                 {/* Métodos de pago (según plan) */}
                 <div className="w-full text-left mb-4">
-                  <p style={{ color: '#888', fontSize: '12px', marginBottom: '8px' }}>Método de pago</p>
+                  <p style={{ color: 'var(--c-text3)', fontSize: '12px', marginBottom: '8px' }}>Método de pago</p>
                   <div className="flex flex-wrap gap-2">
                     {metodos.map(m => {
                       const on = metodo === m
@@ -152,7 +152,7 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                           key={m}
                           onClick={() => setMetodo(m)}
                           className="px-3 py-1.5 rounded-full transition-colors"
-                          style={{ background: on ? '#fff' : '#161616', color: on ? '#000' : '#888', border: '1px solid #2a2a2a', fontSize: '12.5px', fontWeight: 500 }}
+                          style={{ background: on ? 'var(--c-text)' : 'var(--c-surface2)', color: on ? 'var(--c-bg)' : 'var(--c-text3)', border: '1px solid var(--c-border3)', fontSize: '12.5px', fontWeight: 500 }}
                         >
                           {m}
                         </button>
@@ -164,14 +164,14 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                 {/* Paga con / devuelta (solo efectivo) */}
                 {metodo === 'Efectivo' ? (
                   <div className="w-full text-left mb-5">
-                    <p style={{ color: '#888', fontSize: '12px', marginBottom: '8px' }}>Paga con</p>
+                    <p style={{ color: 'var(--c-text3)', fontSize: '12px', marginBottom: '8px' }}>Paga con</p>
                     <input
                       value={paga ? '$' + Number(paga).toLocaleString('es-CO') : ''}
                       onChange={e => setPaga(e.target.value.replace(/\D/g, ''))}
                       inputMode="numeric"
                       placeholder="Monto recibido"
                       className="w-full outline-none"
-                      style={{ background: '#0f0f0f', border: '1px solid #232323', borderRadius: 10, color: '#fff', padding: '11px 14px', fontSize: 16 }}
+                      style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border2)', borderRadius: 10, color: 'var(--c-text)', padding: '11px 14px', fontSize: 16 }}
                     />
                     {paga &&
                       (Number(paga) - result.monto >= 0 ? (
@@ -185,14 +185,14 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                       ))}
                   </div>
                 ) : (
-                  <p style={{ color: '#666', fontSize: 13, marginBottom: 20 }}>Cobro exacto por {metodo}</p>
+                  <p style={{ color: 'var(--c-text4)', fontSize: 13, marginBottom: 20 }}>Cobro exacto por {metodo}</p>
                 )}
 
                 <div className="w-full flex gap-2">
-                  <button onClick={imprimir} className="flex items-center justify-center gap-2 rounded-full py-3 font-semibold transition-colors" style={{ flex: 1, background: '#1e1e1e', border: '1px solid #2c2c2c', color: '#eee', fontSize: '14px', cursor: 'pointer' }} onMouseEnter={e => (e.currentTarget.style.background = '#262626')} onMouseLeave={e => (e.currentTarget.style.background = '#1e1e1e')}>
+                  <button onClick={imprimir} className="flex items-center justify-center gap-2 rounded-full py-3 font-semibold transition-colors" style={{ flex: 1, background: 'var(--c-border)', border: '1px solid var(--c-border3)', color: 'var(--c-text)', fontSize: '14px', cursor: 'pointer' }} onMouseEnter={e => (e.currentTarget.style.background = 'var(--c-border3)')} onMouseLeave={e => (e.currentTarget.style.background = 'var(--c-border)')}>
                     <Printer size={15} /> Imprimir
                   </button>
-                  <button onClick={finalizar} className="rounded-full py-3 text-black font-semibold" style={{ flex: 1, background: '#fff', fontSize: '14px', cursor: 'pointer' }}>
+                  <button onClick={finalizar} className="rounded-full py-3 text-black font-semibold" style={{ flex: 1, background: 'var(--c-accent)', fontSize: '14px', cursor: 'pointer' }}>
                     Listo
                   </button>
                 </div>
@@ -202,18 +202,18 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
               <>
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-white" style={{ fontSize: '17px', fontWeight: 600 }}>Registrar salida</p>
-                  <button onClick={close} style={{ color: '#666' }} className="transition-colors hover:text-white">
+                  <button onClick={close} style={{ color: 'var(--c-text4)' }} className="transition-colors hover:text-white">
                     <X size={18} />
                   </button>
                 </div>
                 <div className="flex items-center justify-between mb-5">
-                  <p style={{ color: '#666', fontSize: '13px' }}>Ingresa la placa del vehículo que sale</p>
+                  <p style={{ color: 'var(--c-text4)', fontSize: '13px' }}>Ingresa la placa del vehículo que sale</p>
                   <button
                     onClick={() => setIntl(v => !v)}
                     className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-colors shrink-0"
-                    style={{ background: intl ? '#1e1e1e' : '#0f0f0f', border: '1px solid #232323', color: intl ? '#fff' : '#888', fontSize: '11.5px', fontWeight: 500 }}
+                    style={{ background: intl ? 'var(--c-border)' : 'var(--c-panel)', border: '1px solid var(--c-border2)', color: intl ? 'var(--c-text)' : 'var(--c-text3)', fontSize: '11.5px', fontWeight: 500 }}
                   >
-                    <span style={{ width: 6, height: 6, borderRadius: 9999, background: intl ? '#ef4444' : '#444' }} />
+                    <span style={{ width: 6, height: 6, borderRadius: 9999, background: intl ? '#ef4444' : 'var(--c-text5)' }} />
                     Internacional
                   </button>
                 </div>
@@ -226,7 +226,7 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                     onKeyDown={e => { if (e.key === 'Enter') submit() }}
                     placeholder="Placa"
                     className="w-full text-center font-mono outline-none mb-6"
-                    style={{ height: 56, background: '#0f0f0f', border: '1.5px solid #232323', borderRadius: 12, color: '#fff', fontSize: 22, fontWeight: 600, letterSpacing: '0.12em' }}
+                    style={{ height: 56, background: 'var(--c-panel)', border: '1.5px solid var(--c-border2)', borderRadius: 12, color: 'var(--c-text)', fontSize: 22, fontWeight: 600, letterSpacing: '0.12em' }}
                   />
                 ) : (
                   <div className="flex items-center justify-center gap-2 mb-6" onPaste={onPaste}>
@@ -243,10 +243,10 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                             e.target.select()
                             e.currentTarget.style.borderColor = '#ef4444'
                           }}
-                          onBlur={e => (e.currentTarget.style.borderColor = chars[i] ? '#ef4444' : '#232323')}
+                          onBlur={e => (e.currentTarget.style.borderColor = chars[i] ? '#ef4444' : 'var(--c-border2)')}
                           maxLength={1}
                           className="text-center font-mono outline-none"
-                          style={{ width: 46, height: 56, background: '#0f0f0f', border: `1.5px solid ${chars[i] ? '#ef4444' : '#232323'}`, borderRadius: 12, color: '#fff', fontSize: 22, fontWeight: 600, caretColor: '#ef4444' }}
+                          style={{ width: 46, height: 56, background: 'var(--c-panel)', border: `1.5px solid ${chars[i] ? '#ef4444' : 'var(--c-border2)'}`, borderRadius: 12, color: 'var(--c-text)', fontSize: 22, fontWeight: 600, caretColor: '#ef4444' }}
                         />
                         {i === 2 && <span style={{ color: '#333', fontSize: 20, fontWeight: 700 }}>·</span>}
                       </div>
@@ -254,7 +254,7 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                   </div>
                 )}
 
-                <button onClick={submit} disabled={pending} className="w-full rounded-full py-3 text-black font-semibold transition-opacity" style={{ background: '#fff', fontSize: '14px', opacity: pending ? 0.6 : 1 }}>
+                <button onClick={submit} disabled={pending} className="w-full rounded-full py-3 text-black font-semibold transition-opacity" style={{ background: 'var(--c-accent)', fontSize: '14px', opacity: pending ? 0.6 : 1 }}>
                   {pending ? 'Calculando...' : 'Calcular y cobrar'}
                 </button>
               </>

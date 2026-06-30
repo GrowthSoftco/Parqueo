@@ -12,7 +12,7 @@ const presets = [
   { id: 'verde', label: 'Esmeralda', css: 'radial-gradient(circle at 30% 20%, #047857 0%, transparent 55%), linear-gradient(135deg, #0a1f17 0%, #064e3b 100%)' },
   { id: 'naranja', label: 'Atardecer', css: 'radial-gradient(circle at 30% 20%, #ea580c 0%, transparent 55%), linear-gradient(135deg, #1f0a05 0%, #7c2d12 100%)' },
   { id: 'rosa', label: 'Magenta', css: 'radial-gradient(circle at 30% 20%, #be185d 0%, transparent 55%), linear-gradient(135deg, #1f0512 0%, #831843 100%)' },
-  { id: 'negro', label: 'Negro', css: 'linear-gradient(135deg, #0a0a0a 0%, #1c1c1c 100%)' },
+  { id: 'negro', label: 'Negro', css: 'linear-gradient(135deg, #0a0a0a 0%, var(--c-surface3) 100%)' },
 ]
 
 const urlToCss = (url: string) => `url('${url.trim()}') center / cover no-repeat`
@@ -43,15 +43,15 @@ export default function PersonalizacionView({ inicial }: { inicial: string | nul
         {/* Opciones */}
         <div className="flex flex-col gap-5">
           <div>
-            <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '10px' }}>FONDOS</p>
+            <p style={{ color: 'var(--c-text4)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '10px' }}>FONDOS</p>
             <div className="grid grid-cols-3 gap-3">
               {presets.map(p => {
                 const on = value === p.css
                 return (
-                  <button key={p.id} onClick={() => setValue(p.css)} className="rounded-xl overflow-hidden relative" style={{ height: 80, background: p.css, border: on ? '2px solid #8b5cf6' : '1px solid #232323' }}>
+                  <button key={p.id} onClick={() => setValue(p.css)} className="rounded-xl overflow-hidden relative" style={{ height: 80, background: p.css, border: on ? '2px solid #8b5cf6' : '1px solid var(--c-border2)' }}>
                     {on && (
                       <span className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#8b5cf6' }}>
-                        <Check size={12} color="#fff" strokeWidth={3} />
+                        <Check size={12} color="var(--c-text)" strokeWidth={3} />
                       </span>
                     )}
                     <span className="absolute bottom-1.5 left-2 text-white" style={{ fontSize: '11px', fontWeight: 600, textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>{p.label}</span>
@@ -62,10 +62,10 @@ export default function PersonalizacionView({ inicial }: { inicial: string | nul
           </div>
 
           <div>
-            <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '10px' }}>O UNA IMAGEN (URL)</p>
+            <p style={{ color: 'var(--c-text4)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '10px' }}>O UNA IMAGEN (URL)</p>
             <div className="flex gap-2">
-              <div className="flex items-center gap-2 flex-1 px-3 rounded-lg" style={{ background: '#0f0f0f', border: '1px solid #232323' }}>
-                <LinkIcon size={15} color="#555" />
+              <div className="flex items-center gap-2 flex-1 px-3 rounded-lg" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border2)' }}>
+                <LinkIcon size={15} color="var(--c-text5)" />
                 <input
                   value={url}
                   onChange={e => setUrl(e.target.value)}
@@ -74,11 +74,11 @@ export default function PersonalizacionView({ inicial }: { inicial: string | nul
                   style={{ fontSize: '13px' }}
                 />
               </div>
-              <button onClick={() => url.trim() && setValue(urlToCss(url))} className="px-4 rounded-lg" style={{ background: '#161616', border: '1px solid #232323', color: '#ccc', fontSize: '13px' }}>
+              <button onClick={() => url.trim() && setValue(urlToCss(url))} className="px-4 rounded-lg" style={{ background: 'var(--c-surface2)', border: '1px solid var(--c-border2)', color: 'var(--c-text2)', fontSize: '13px' }}>
                 Usar
               </button>
             </div>
-            <p style={{ color: '#555', fontSize: '12px', marginTop: '8px' }}>Pega el enlace de una imagen (ej. de Pinterest, Unsplash) y dale “Usar”.</p>
+            <p style={{ color: 'var(--c-text5)', fontSize: '12px', marginTop: '8px' }}>Pega el enlace de una imagen (ej. de Pinterest, Unsplash) y dale “Usar”.</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -91,15 +91,15 @@ export default function PersonalizacionView({ inicial }: { inicial: string | nul
 
         {/* Preview */}
         <div>
-          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '10px' }}>VISTA PREVIA DEL LOGIN</p>
-          <div className="rounded-2xl overflow-hidden flex" style={{ height: 280, border: '1px solid #1e1e1e' }}>
-            <div className="w-1/2 flex flex-col justify-center px-6" style={{ background: '#0a0a0a' }}>
+          <p style={{ color: 'var(--c-text4)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '10px' }}>VISTA PREVIA DEL LOGIN</p>
+          <div className="rounded-2xl overflow-hidden flex" style={{ height: 280, border: '1px solid var(--c-border)' }}>
+            <div className="w-1/2 flex flex-col justify-center px-6" style={{ background: 'var(--c-bg)' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.svg" alt="" width={20} height={20} className="mb-4" />
               <p className="text-white font-bold" style={{ fontSize: '18px' }}>Bienvenido</p>
-              <div className="mt-3 h-8 rounded-md" style={{ background: '#161616', border: '1px solid #222' }} />
-              <div className="mt-2 h-8 rounded-md" style={{ background: '#161616', border: '1px solid #222' }} />
-              <div className="mt-3 h-8 rounded-full" style={{ background: '#fff' }} />
+              <div className="mt-3 h-8 rounded-md" style={{ background: 'var(--c-surface2)', border: '1px solid var(--c-border2)' }} />
+              <div className="mt-2 h-8 rounded-md" style={{ background: 'var(--c-surface2)', border: '1px solid var(--c-border2)' }} />
+              <div className="mt-3 h-8 rounded-full" style={{ background: 'var(--c-accent)' }} />
             </div>
             <div className="w-1/2" style={{ background: value }} />
           </div>

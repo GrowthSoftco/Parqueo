@@ -49,7 +49,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden" style={{ background: '#0a0a0a' }}>
+    <div className="flex h-screen w-full overflow-hidden" style={{ background: 'var(--c-bg)' }}>
       {/* Left - Form */}
       <div className="relative flex w-full lg:w-1/2 flex-col items-center justify-center px-12 lg:px-20">
         <div className="absolute top-11 left-12 lg:left-20">
@@ -59,11 +59,11 @@ export default function LoginPage() {
 
         <div className="w-full max-w-sm">
           <h1 className="text-white text-3xl font-bold mb-2">Bienvenido</h1>
-          <p style={{ color: '#888' }} className="text-sm mb-8">Accede a tu panel de gestión</p>
+          <p style={{ color: 'var(--c-text3)' }} className="text-sm mb-8">Accede a tu panel de gestión</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
-              <label style={{ color: '#888', fontSize: '13px' }}>Email</label>
+              <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Email</label>
               <input
                 type="email"
                 value={email}
@@ -71,21 +71,21 @@ export default function LoginPage() {
                 placeholder="admin@parqueadero.com"
                 required
                 style={{
-                  background: '#161616',
-                  border: '1px solid #222',
+                  background: 'var(--c-surface2)',
+                  border: '1px solid var(--c-border2)',
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: 'var(--c-text)',
                   padding: '10px 14px',
                   fontSize: '14px',
                   outline: 'none',
                 }}
-                onFocus={e => (e.target.style.borderColor = '#444')}
-                onBlur={e => (e.target.style.borderColor = '#222')}
+                onFocus={e => (e.target.style.borderColor = 'var(--c-text5)')}
+                onBlur={e => (e.target.style.borderColor = 'var(--c-border2)')}
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label style={{ color: '#888', fontSize: '13px' }}>Contraseña</label>
+              <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Contraseña</label>
               <input
                 type="password"
                 value={password}
@@ -93,21 +93,21 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 required
                 style={{
-                  background: '#161616',
-                  border: '1px solid #222',
+                  background: 'var(--c-surface2)',
+                  border: '1px solid var(--c-border2)',
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: 'var(--c-text)',
                   padding: '10px 14px',
                   fontSize: '14px',
                   outline: 'none',
                 }}
-                onFocus={e => (e.target.style.borderColor = '#444')}
-                onBlur={e => (e.target.style.borderColor = '#222')}
+                onFocus={e => (e.target.style.borderColor = 'var(--c-text5)')}
+                onBlur={e => (e.target.style.borderColor = 'var(--c-border2)')}
               />
             </div>
 
             <div className="flex justify-end">
-              <a href="#" style={{ color: '#888', fontSize: '13px' }} className="hover:text-white transition-colors">
+              <a href="#" style={{ color: 'var(--c-text3)', fontSize: '13px' }} className="hover:text-white transition-colors">
                 ¿Olvidaste tu contraseña?
               </a>
             </div>
@@ -120,8 +120,8 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               style={{
-                background: '#fff',
-                color: '#000',
+                background: 'var(--c-accent)',
+                color: 'var(--c-on-accent)',
                 borderRadius: '9999px',
                 padding: '11px',
                 fontWeight: '600',
@@ -136,9 +136,9 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p style={{ color: '#555', fontSize: '13px', marginTop: '24px', textAlign: 'center' }}>
+          <p style={{ color: 'var(--c-text5)', fontSize: '13px', marginTop: '24px', textAlign: 'center' }}>
             ¿No tienes cuenta?{' '}
-            <a href="/register" style={{ color: '#fff' }} className="hover:underline">
+            <a href="/register" style={{ color: 'var(--c-text)' }} className="hover:underline">
               Pruébalo gratis 14 días
             </a>
           </p>

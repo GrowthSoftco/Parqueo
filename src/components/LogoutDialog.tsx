@@ -38,28 +38,28 @@ export default function LogoutDialog() {
         >
           <div
             className="rounded-2xl w-full max-w-sm p-6 text-center"
-            style={{ background: '#141414', border: '1px solid #262626', animation: 'pop-in 180ms cubic-bezier(0.16,1,0.3,1)' }}
+            style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border3)', animation: 'pop-in 180ms cubic-bezier(0.16,1,0.3,1)' }}
             onClick={e => e.stopPropagation()}
           >
             <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: '#2a0f0f', border: '1px solid #3a1a1a' }}>
               <Power size={22} color="#ef4444" strokeWidth={2.2} />
             </div>
             <p className="text-white" style={{ fontSize: '17px', fontWeight: 600 }}>¿Cerrar sesión?</p>
-            <p style={{ color: '#888', fontSize: '13px', marginTop: 8, lineHeight: 1.5 }}>
+            <p style={{ color: 'var(--c-text3)', fontSize: '13px', marginTop: 8, lineHeight: 1.5 }}>
               Vas a salir de tu cuenta. Tendrás que volver a iniciar sesión para entrar.
             </p>
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setPhase('idle')}
                 className="flex-1 rounded-full py-2.5 font-semibold transition-colors"
-                style={{ background: '#1e1e1e', border: '1px solid #2c2c2c', color: '#ccc', fontSize: '13.5px', cursor: 'pointer' }}
+                style={{ background: 'var(--c-border)', border: '1px solid var(--c-border3)', color: 'var(--c-text2)', fontSize: '13.5px', cursor: 'pointer' }}
               >
                 Cancelar
               </button>
               <button
                 onClick={confirmar}
                 className="flex-1 rounded-full py-2.5 font-semibold transition-transform hover:scale-[1.02]"
-                style={{ background: '#ef4444', color: '#fff', fontSize: '13.5px', cursor: 'pointer' }}
+                style={{ background: '#ef4444', color: 'var(--c-text)', fontSize: '13.5px', cursor: 'pointer' }}
               >
                 Sí, salir
               </button>
@@ -72,7 +72,7 @@ export default function LogoutDialog() {
       <div
         className="fixed inset-0"
         style={{
-          background: '#000',
+          background: 'var(--c-bg)',
           zIndex: 600,
           opacity: phase === 'fading' ? 1 : 0,
           pointerEvents: phase === 'fading' ? 'auto' : 'none',

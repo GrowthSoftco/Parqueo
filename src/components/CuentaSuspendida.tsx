@@ -9,7 +9,7 @@ export default function CuentaSuspendida({ status, tenantId, pusherKey, pusherCl
   const banned = status === 'BANNED'
 
   return (
-    <div className="fixed inset-0 z-[500] flex flex-col items-center justify-center px-6 text-center overflow-hidden" style={{ background: '#000000' }}>
+    <div className="fixed inset-0 z-[500] flex flex-col items-center justify-center px-6 text-center overflow-hidden" style={{ background: 'var(--c-bg)' }}>
       <AccountWatcher tenantId={tenantId} pusherKey={pusherKey} pusherCluster={pusherCluster} />
       {/* Resplandor rojo de fondo */}
       <div
@@ -33,17 +33,17 @@ export default function CuentaSuspendida({ status, tenantId, pusherKey, pusherCl
         <h1 className="text-white font-bold" style={{ fontSize: '28px', letterSpacing: '-0.01em' }}>
           {banned ? 'Cuenta bloqueada' : 'Cuenta suspendida'}
         </h1>
-        <p style={{ color: '#888', fontSize: '15px', marginTop: '12px', maxWidth: '420px', lineHeight: 1.55 }}>
+        <p style={{ color: 'var(--c-text3)', fontSize: '15px', marginTop: '12px', maxWidth: '420px', lineHeight: 1.55 }}>
           {banned
             ? 'El acceso a tu parqueadero fue bloqueado. Contáctanos para resolverlo.'
             : 'Tienes un pago pendiente. Ponte al día para volver a operar tu parqueadero.'}
         </p>
 
-        <div className="mt-7 px-5 py-3 rounded-xl flex items-center gap-3" style={{ background: '#0d0d0d', border: '1px solid #1c1c1c' }}>
-          <span style={{ color: '#555', fontSize: '12px' }}>Soporte</span>
-          <span style={{ width: 1, height: 14, background: '#222' }} />
+        <div className="mt-7 px-5 py-3 rounded-xl flex items-center gap-3" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-surface3)' }}>
+          <span style={{ color: 'var(--c-text5)', fontSize: '12px' }}>Soporte</span>
+          <span style={{ width: 1, height: 14, background: 'var(--c-border2)' }} />
           <span className="text-white" style={{ fontSize: '13px' }}>soporte@parqueo.com</span>
-          <span style={{ width: 1, height: 14, background: '#222' }} />
+          <span style={{ width: 1, height: 14, background: 'var(--c-border2)' }} />
           <span className="text-white" style={{ fontSize: '13px' }}>WhatsApp 300 000 0000</span>
         </div>
 
@@ -51,7 +51,7 @@ export default function CuentaSuspendida({ status, tenantId, pusherKey, pusherCl
           <button
             onClick={() => router.push('/planes')}
             className="mt-9 px-8 py-3 rounded-full text-black font-semibold transition-transform hover:scale-[1.03]"
-            style={{ background: '#fff', fontSize: '14.5px' }}
+            style={{ background: 'var(--c-accent)', fontSize: '14.5px' }}
           >
             Pagar ahora
           </button>

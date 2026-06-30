@@ -47,7 +47,7 @@ export default async function AdminResumen() {
       {/* Header */}
       <div className="mb-7">
         <h1 className="text-white font-bold" style={{ fontSize: '24px', letterSpacing: '-0.01em' }}>Operador</h1>
-        <p style={{ color: '#666', fontSize: '13.5px', marginTop: 3 }}>Estado general de Parqueo</p>
+        <p style={{ color: 'var(--c-text4)', fontSize: '13.5px', marginTop: 3 }}>Estado general de Parqueo</p>
       </div>
 
       {/* KPIs */}
@@ -60,40 +60,40 @@ export default async function AdminResumen() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Tabla de parqueaderos */}
-        <div className="lg:col-span-2 rounded-2xl overflow-hidden" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-          <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid #1e1e1e' }}>
+        <div className="lg:col-span-2 rounded-2xl overflow-hidden" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+          <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid var(--c-border)' }}>
             <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Parqueaderos</p>
-            <span style={{ color: '#555', fontSize: '12px' }}>{total} en total</span>
+            <span style={{ color: 'var(--c-text5)', fontSize: '12px' }}>{total} en total</span>
           </div>
 
-          <div className="grid px-5 py-2.5" style={{ gridTemplateColumns: '1.6fr 1fr 0.9fr auto', color: '#555', fontSize: '11.5px', borderBottom: '1px solid #181818' }}>
+          <div className="grid px-5 py-2.5" style={{ gridTemplateColumns: '1.6fr 1fr 0.9fr auto', color: 'var(--c-text5)', fontSize: '11.5px', borderBottom: '1px solid var(--c-surface2)' }}>
             <span>Parqueadero</span><span>Plan</span><span>Estado</span><span className="text-right">Registrado</span>
           </div>
 
           {tenants.length === 0 ? (
-            <div className="px-5 py-10 text-center" style={{ color: '#555', fontSize: 13 }}>Aún no hay parqueaderos</div>
+            <div className="px-5 py-10 text-center" style={{ color: 'var(--c-text5)', fontSize: 13 }}>Aún no hay parqueaderos</div>
           ) : (
             tenants.slice(0, 8).map((t, i) => {
               const e = ESTADO[t.status] ?? ESTADO.TRIAL
               return (
-                <div key={t.id} className="grid items-center px-5 py-3" style={{ gridTemplateColumns: '1.6fr 1fr 0.9fr auto', borderBottom: i < Math.min(tenants.length, 8) - 1 ? '1px solid #181818' : 'none' }}>
+                <div key={t.id} className="grid items-center px-5 py-3" style={{ gridTemplateColumns: '1.6fr 1fr 0.9fr auto', borderBottom: i < Math.min(tenants.length, 8) - 1 ? '1px solid var(--c-surface2)' : 'none' }}>
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: '#1c1c1c', border: '1px solid #262626' }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)' }}>
                       <span className="text-white" style={{ fontSize: 12, fontWeight: 700 }}>{t.nombre.charAt(0).toUpperCase()}</span>
                     </div>
                     <div className="min-w-0">
                       <p className="text-white truncate" style={{ fontSize: 13 }}>{t.nombre}</p>
-                      <p className="truncate" style={{ color: '#666', fontSize: 11.5 }}>{t.users[0]?.email ?? '—'}</p>
+                      <p className="truncate" style={{ color: 'var(--c-text4)', fontSize: 11.5 }}>{t.users[0]?.email ?? '—'}</p>
                     </div>
                   </div>
-                  <span style={{ color: t.subscription?.plan ? '#ccc' : '#666', fontSize: 12.5 }}>
+                  <span style={{ color: t.subscription?.plan ? 'var(--c-text2)' : 'var(--c-text4)', fontSize: 12.5 }}>
                     {t.subscription?.plan ? planLabel[t.subscription.plan] : 'Sin plan'}
                   </span>
-                  <span className="flex items-center gap-1.5" style={{ color: '#bbb', fontSize: 12.5 }}>
+                  <span className="flex items-center gap-1.5" style={{ color: 'var(--c-text2)', fontSize: 12.5 }}>
                     <span style={{ width: 6, height: 6, borderRadius: 9999, background: e.dot }} />
                     {e.label}
                   </span>
-                  <span className="text-right" style={{ color: '#555', fontSize: 11.5 }}>{hace(t.createdAt)}</span>
+                  <span className="text-right" style={{ color: 'var(--c-text5)', fontSize: 11.5 }}>{hace(t.createdAt)}</span>
                 </div>
               )
             })
@@ -101,25 +101,25 @@ export default async function AdminResumen() {
         </div>
 
         {/* Distribución de planes */}
-        <div className="rounded-2xl p-5" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+        <div className="rounded-2xl p-5" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
           <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Distribución de planes</p>
           <div className="mt-5 space-y-4">
             {planDist.map(p => (
               <div key={p.plan}>
                 <div className="flex items-center justify-between" style={{ marginBottom: 6 }}>
-                  <span style={{ color: '#bbb', fontSize: 13 }}>{p.plan}</span>
+                  <span style={{ color: 'var(--c-text2)', fontSize: 13 }}>{p.plan}</span>
                   <span className="text-white" style={{ fontSize: 13, fontWeight: 600 }}>{p.count}</span>
                 </div>
-                <div className="w-full rounded-full overflow-hidden" style={{ height: 6, background: '#1f1f1f' }}>
-                  <div className="h-full rounded-full" style={{ width: `${(p.count / maxPlan) * 100}%`, background: '#fff' }} />
+                <div className="w-full rounded-full overflow-hidden" style={{ height: 6, background: 'var(--c-border)' }}>
+                  <div className="h-full rounded-full" style={{ width: `${(p.count / maxPlan) * 100}%`, background: 'var(--c-accent)' }} />
                 </div>
               </div>
             ))}
           </div>
 
-          <div style={{ height: 1, background: '#1e1e1e', margin: '18px 0 14px' }} />
+          <div style={{ height: 1, background: 'var(--c-border)', margin: '18px 0 14px' }} />
           <div className="flex items-center justify-between">
-            <span style={{ color: '#777', fontSize: 12.5 }}>Ingreso anual proyectado</span>
+            <span style={{ color: 'var(--c-text4)', fontSize: 12.5 }}>Ingreso anual proyectado</span>
             <span className="text-white" style={{ fontSize: 14, fontWeight: 700 }}>{fmt(mrr * 12)}</span>
           </div>
         </div>

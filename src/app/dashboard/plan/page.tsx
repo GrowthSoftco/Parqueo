@@ -32,7 +32,7 @@ const ESTADO: Record<string, { label: string; color: string; bg: string }> = {
   TRIAL: { label: 'En prueba', color: '#3b82f6', bg: '#0f1d2e' },
   ACTIVE: { label: 'Activo', color: '#22c55e', bg: '#0f2a1a' },
   PAST_DUE: { label: 'Pago pendiente', color: '#f59e0b', bg: '#2a210d' },
-  CANCELED: { label: 'Cancelado', color: '#888', bg: '#1a1a1a' },
+  CANCELED: { label: 'Cancelado', color: 'var(--c-text3)', bg: 'var(--c-surface3)' },
 }
 
 const PAGO_ESTADO: Record<string, { label: string; color: string; bg: string }> = {
@@ -62,7 +62,7 @@ export default async function PlanPage() {
       <PageHeader crumb="Mi plan" title="Mi plan" subtitle="Tu suscripción a Parqueo y tus facturas de pago" />
 
       {/* Tarjeta del plan */}
-      <div className="rounded-2xl mb-4" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+      <div className="rounded-2xl mb-4" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
         <div className="flex items-start justify-between gap-4 p-6">
           <div>
             <div className="flex items-center gap-2.5">
@@ -76,11 +76,11 @@ export default async function PlanPage() {
             {planInfo && (
               <div className="flex items-baseline gap-1.5 mt-3">
                 <span className="text-white font-bold" style={{ fontSize: '32px', letterSpacing: '-0.01em' }}>{fmt(planInfo.precio)}</span>
-                <span style={{ color: '#666', fontSize: '13px' }}>/mes</span>
+                <span style={{ color: 'var(--c-text4)', fontSize: '13px' }}>/mes</span>
               </div>
             )}
 
-            <p style={{ color: '#777', fontSize: '13px', marginTop: 8 }}>
+            <p style={{ color: 'var(--c-text4)', fontSize: '13px', marginTop: 8 }}>
               {sub?.status === 'TRIAL' && diasPrueba != null
                 ? `Te quedan ${Math.max(0, diasPrueba)} días de prueba gratis`
                 : periodEnd
@@ -92,20 +92,20 @@ export default async function PlanPage() {
           <Link
             href="/planes?from=app"
             className="px-4 py-2.5 rounded-full text-black font-semibold shrink-0"
-            style={{ background: '#fff', fontSize: '13px' }}
+            style={{ background: 'var(--c-accent)', fontSize: '13px' }}
           >
             {planInfo ? 'Cambiar plan' : 'Elegir plan'}
           </Link>
         </div>
 
         {planInfo && (
-          <div className="px-6 py-5" style={{ borderTop: '1px solid #1e1e1e' }}>
-            <p style={{ color: '#666', fontSize: '12px', marginBottom: 12 }}>Incluido en tu plan</p>
+          <div className="px-6 py-5" style={{ borderTop: '1px solid var(--c-border)' }}>
+            <p style={{ color: 'var(--c-text4)', fontSize: '12px', marginBottom: 12 }}>Incluido en tu plan</p>
             <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
               {planInfo.incluye.map(item => (
                 <div key={item} className="flex items-center gap-2.5">
-                  <Check size={14} color="#777" strokeWidth={2.4} />
-                  <span style={{ color: '#bbb', fontSize: '13px' }}>{item}</span>
+                  <Check size={14} color="var(--c-text4)" strokeWidth={2.4} />
+                  <span style={{ color: 'var(--c-text2)', fontSize: '13px' }}>{item}</span>
                 </div>
               ))}
             </div>
@@ -114,39 +114,39 @@ export default async function PlanPage() {
       </div>
 
       {/* Facturas */}
-      <div className="rounded-2xl overflow-hidden" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-        <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid #1e1e1e' }}>
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+        <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid var(--c-border)' }}>
           <div className="flex items-center gap-2">
-            <FileText size={15} color="#888" />
+            <FileText size={15} color="var(--c-text3)" />
             <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Facturas</p>
           </div>
-          <span style={{ color: '#555', fontSize: '12px' }}>{pagos.length} en total</span>
+          <span style={{ color: 'var(--c-text5)', fontSize: '12px' }}>{pagos.length} en total</span>
         </div>
 
         {pagos.length === 0 ? (
           <div className="px-5 py-12 text-center">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ background: '#1a1a1a', border: '1px solid #262626' }}>
-              <FileText size={18} color="#666" />
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)' }}>
+              <FileText size={18} color="var(--c-text4)" />
             </div>
-            <p style={{ color: '#aaa', fontSize: '13.5px' }}>Todavía no tienes facturas</p>
-            <p style={{ color: '#555', fontSize: '12.5px', marginTop: 4 }}>Aquí aparecerán tus pagos del plan cuando se generen.</p>
+            <p style={{ color: 'var(--c-text2)', fontSize: '13.5px' }}>Todavía no tienes facturas</p>
+            <p style={{ color: 'var(--c-text5)', fontSize: '12.5px', marginTop: 4 }}>Aquí aparecerán tus pagos del plan cuando se generen.</p>
           </div>
         ) : (
           <div>
-            <div className="grid px-5 py-2.5" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr auto', color: '#555', fontSize: '12px', borderBottom: '1px solid #181818' }}>
+            <div className="grid px-5 py-2.5" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr auto', color: 'var(--c-text5)', fontSize: '12px', borderBottom: '1px solid var(--c-surface2)' }}>
               <span>Concepto</span><span>Fecha</span><span>Método</span><span>Estado</span><span className="text-right">Monto</span>
             </div>
             {pagos.map((p, i) => {
               const pe = PAGO_ESTADO[p.status] ?? PAGO_ESTADO.PAGADO
               return (
-                <div key={p.id} className="grid items-center px-5 py-3.5" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr auto', borderBottom: i < pagos.length - 1 ? '1px solid #181818' : 'none' }}>
+                <div key={p.id} className="grid items-center px-5 py-3.5" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr auto', borderBottom: i < pagos.length - 1 ? '1px solid var(--c-surface2)' : 'none' }}>
                   <span className="text-white" style={{ fontSize: '13px' }}>{p.concepto ?? 'Pago de plan'}</span>
-                  <span style={{ color: '#888', fontSize: '12.5px' }}>{fecha(p.paidAt)}</span>
-                  <span style={{ color: '#888', fontSize: '12.5px' }}>{p.metodo}</span>
+                  <span style={{ color: 'var(--c-text3)', fontSize: '12.5px' }}>{fecha(p.paidAt)}</span>
+                  <span style={{ color: 'var(--c-text3)', fontSize: '12.5px' }}>{p.metodo}</span>
                   <span><span className="px-2 py-0.5 rounded-md" style={{ background: pe.bg, color: pe.color, fontSize: '11px', fontWeight: 600 }}>{pe.label}</span></span>
                   <span className="text-white text-right flex items-center justify-end gap-3" style={{ fontSize: '13px', fontWeight: 600 }}>
                     {fmt(p.monto)}
-                    <Download size={14} color="#555" />
+                    <Download size={14} color="var(--c-text5)" />
                   </span>
                 </div>
               )

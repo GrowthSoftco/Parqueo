@@ -32,9 +32,9 @@ function Tooltip({ label }: { label: string }) {
     <div
       className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 rounded-lg whitespace-nowrap pointer-events-none z-[100] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150"
       style={{
-        background: '#1f1f1f',
-        border: '1px solid #2c2c2c',
-        color: '#fff',
+        background: 'var(--c-border)',
+        border: '1px solid var(--c-border3)',
+        color: 'var(--c-text)',
         fontSize: '12.5px',
         fontWeight: 500,
         boxShadow: '0 6px 20px rgba(0,0,0,0.5)',
@@ -62,21 +62,21 @@ export default function Sidebar({ role }: { role?: string }) {
           href={href}
           className="flex items-center justify-center rounded-xl transition-all"
           style={{
-            background: active ? '#1e1e1e' : 'transparent',
-            color: active ? '#fff' : '#707070',
+            background: active ? 'var(--c-border)' : 'transparent',
+            color: active ? 'var(--c-text)' : 'var(--c-text4)',
             width: 44,
             height: 44,
           }}
           onMouseEnter={e => {
             if (!active) {
-              ;(e.currentTarget as HTMLElement).style.background = '#161616'
-              ;(e.currentTarget as HTMLElement).style.color = '#e5e5e5'
+              ;(e.currentTarget as HTMLElement).style.background = 'var(--c-surface2)'
+              ;(e.currentTarget as HTMLElement).style.color = 'var(--c-text)'
             }
           }}
           onMouseLeave={e => {
             if (!active) {
               ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-              ;(e.currentTarget as HTMLElement).style.color = '#707070'
+              ;(e.currentTarget as HTMLElement).style.color = 'var(--c-text4)'
             }
           }}
         >
@@ -107,7 +107,7 @@ export default function Sidebar({ role }: { role?: string }) {
 
       {secundario.length > 0 && (
         <>
-          <div className="my-3 h-px w-7" style={{ background: '#1c1c1c' }} />
+          <div className="my-3 h-px w-7" style={{ background: 'var(--c-surface3)' }} />
           <nav className="flex flex-col gap-1">
             {secundario.map(item => (
               <NavLink key={item.href} {...item} />
@@ -123,14 +123,14 @@ export default function Sidebar({ role }: { role?: string }) {
           <button
             onClick={() => window.dispatchEvent(new Event('parqueo:logout'))}
             className="flex items-center justify-center rounded-xl transition-colors"
-            style={{ color: '#707070', width: 44, height: 44, cursor: 'pointer' }}
+            style={{ color: 'var(--c-text4)', width: 44, height: 44, cursor: 'pointer' }}
             onMouseEnter={e => {
-              ;(e.currentTarget as HTMLElement).style.background = '#161616'
+              ;(e.currentTarget as HTMLElement).style.background = 'var(--c-surface2)'
               ;(e.currentTarget as HTMLElement).style.color = '#ef4444'
             }}
             onMouseLeave={e => {
               ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-              ;(e.currentTarget as HTMLElement).style.color = '#707070'
+              ;(e.currentTarget as HTMLElement).style.color = 'var(--c-text4)'
             }}
           >
             <LogOut size={18} />

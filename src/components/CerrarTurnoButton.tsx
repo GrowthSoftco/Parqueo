@@ -37,7 +37,7 @@ export default function CerrarTurnoButton({ esperado, base, ingresos }: { espera
 
   // Estado del comparador
   const estado = dif === null
-    ? { color: '#666', bg: '#1a1a1a', label: 'Escribe el efectivo contado', icon: null }
+    ? { color: 'var(--c-text4)', bg: 'var(--c-surface3)', label: 'Escribe el efectivo contado', icon: null }
     : cuadra
       ? { color: '#22c55e', bg: '#0f2a1a', label: 'Caja cuadrada', icon: <Check size={14} strokeWidth={2.5} /> }
       : sobra
@@ -46,32 +46,32 @@ export default function CerrarTurnoButton({ esperado, base, ingresos }: { espera
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-black font-semibold" style={{ background: '#fff', fontSize: '13px' }}>
+      <button onClick={() => setOpen(true)} className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-black font-semibold" style={{ background: 'var(--c-accent)', fontSize: '13px' }}>
         Cerrar turno y arquear <ArrowRight size={15} />
       </button>
 
       {open && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center px-6" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} onClick={cerrar}>
-          <div className="rounded-2xl w-full max-w-md p-6" style={{ background: '#141414', border: '1px solid #262626' }} onClick={e => e.stopPropagation()}>
+          <div className="rounded-2xl w-full max-w-md p-6" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border3)' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
               <div>
                 <p className="text-white" style={{ fontSize: '16px', fontWeight: 600 }}>Cerrar turno y arquear</p>
-                <p style={{ color: '#666', fontSize: '12px', marginTop: 2 }}>Cuenta el efectivo y compáralo con lo esperado</p>
+                <p style={{ color: 'var(--c-text4)', fontSize: '12px', marginTop: 2 }}>Cuenta el efectivo y compáralo con lo esperado</p>
               </div>
-              <button onClick={cerrar} style={{ color: '#666' }}><X size={18} /></button>
+              <button onClick={cerrar} style={{ color: 'var(--c-text4)' }}><X size={18} /></button>
             </div>
 
             {/* Desglose esperado */}
-            <div className="rounded-xl p-4 mb-4" style={{ background: '#0e0e0e', border: '1px solid #1e1e1e' }}>
+            <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border)' }}>
               <div className="flex justify-between" style={{ padding: '3px 0' }}>
-                <span style={{ color: '#888', fontSize: '13px' }}>Base inicial</span>
+                <span style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Base inicial</span>
                 <span className="text-white" style={{ fontSize: '13px' }}>{fmt(base)}</span>
               </div>
               <div className="flex justify-between" style={{ padding: '3px 0' }}>
-                <span style={{ color: '#888', fontSize: '13px' }}>Ingresos del turno</span>
+                <span style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Ingresos del turno</span>
                 <span className="text-white" style={{ fontSize: '13px' }}>{fmt(ingresos)}</span>
               </div>
-              <div style={{ height: 1, background: '#1e1e1e', margin: '8px 0' }} />
+              <div style={{ height: 1, background: 'var(--c-border)', margin: '8px 0' }} />
               <div className="flex justify-between items-baseline">
                 <span className="text-white" style={{ fontSize: '13px', fontWeight: 600 }}>Esperado en caja</span>
                 <span className="text-white font-bold" style={{ fontSize: '20px' }}>{fmt(esperado)}</span>
@@ -79,8 +79,8 @@ export default function CerrarTurnoButton({ esperado, base, ingresos }: { espera
             </div>
 
             {/* Conteo real */}
-            <label style={{ color: '#888', fontSize: '13px' }}>¿Cuánto hay en caja?</label>
-            <div className="flex items-center mt-2 rounded-xl overflow-hidden" style={{ background: '#0e0e0e', border: '1px solid #2a2a2a' }}>
+            <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>¿Cuánto hay en caja?</label>
+            <div className="flex items-center mt-2 rounded-xl overflow-hidden" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border3)' }}>
               <span className="text-white pl-4" style={{ fontSize: '20px', fontWeight: 600 }}>$</span>
               <input
                 autoFocus
@@ -108,11 +108,11 @@ export default function CerrarTurnoButton({ esperado, base, ingresos }: { espera
               onClick={confirmar}
               disabled={pending}
               className="w-full rounded-full py-3 text-black font-semibold mt-5"
-              style={{ background: '#fff', fontSize: '14px', opacity: pending ? 0.6 : 1, cursor: pending ? 'default' : 'pointer' }}
+              style={{ background: 'var(--c-accent)', fontSize: '14px', opacity: pending ? 0.6 : 1, cursor: pending ? 'default' : 'pointer' }}
             >
               {pending ? 'Cerrando…' : contado === null ? 'Cerrar sin arqueo' : 'Confirmar cierre'}
             </button>
-            <p className="text-center" style={{ color: '#555', fontSize: '11px', marginTop: 10 }}>El turno quedará cerrado. Para seguir operando abre uno nuevo.</p>
+            <p className="text-center" style={{ color: 'var(--c-text5)', fontSize: '11px', marginTop: 10 }}>El turno quedará cerrado. Para seguir operando abre uno nuevo.</p>
           </div>
         </div>
       )}

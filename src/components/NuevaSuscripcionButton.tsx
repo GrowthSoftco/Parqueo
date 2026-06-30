@@ -6,8 +6,8 @@ import { Plus, X } from 'lucide-react'
 import { crearSuscripcion } from '@/app/actions'
 
 const inputStyle: React.CSSProperties = {
-  background: '#0f0f0f', border: '1px solid #232323', borderRadius: '8px',
-  color: '#fff', padding: '10px 14px', fontSize: '14px', outline: 'none', width: '100%',
+  background: 'var(--c-panel)', border: '1px solid var(--c-border2)', borderRadius: '8px',
+  color: 'var(--c-text)', padding: '10px 14px', fontSize: '14px', outline: 'none', width: '100%',
 }
 
 const planes = [
@@ -64,27 +64,27 @@ export default function NuevaSuscripcionButton() {
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-black font-semibold" style={{ background: '#fff', fontSize: '13px' }}>
+      <button onClick={() => setOpen(true)} className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-black font-semibold" style={{ background: 'var(--c-accent)', fontSize: '13px' }}>
         <Plus size={15} strokeWidth={2.5} /> Nueva suscripción
       </button>
 
       {open && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center px-6" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} onClick={close}>
-          <div className="rounded-2xl w-full max-w-sm p-6" style={{ background: '#141414', border: '1px solid #262626' }} onClick={e => e.stopPropagation()}>
+          <div className="rounded-2xl w-full max-w-sm p-6" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border3)' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
               <p className="text-white" style={{ fontSize: '16px', fontWeight: 600 }}>Nueva suscripción</p>
-              <button onClick={close} style={{ color: '#666' }}><X size={18} /></button>
+              <button onClick={close} style={{ color: 'var(--c-text4)' }}><X size={18} /></button>
             </div>
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
-                  <label style={{ color: '#888', fontSize: '13px' }}>Placa</label>
+                  <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Placa</label>
                   <button
                     onClick={() => { setIntl(v => !v); setError('') }}
                     className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-colors"
-                    style={{ background: intl ? '#1e1e1e' : '#0f0f0f', border: '1px solid #232323', color: intl ? '#fff' : '#888', fontSize: '11px', fontWeight: 500 }}
+                    style={{ background: intl ? 'var(--c-border)' : 'var(--c-panel)', border: '1px solid var(--c-border2)', color: intl ? 'var(--c-text)' : 'var(--c-text3)', fontSize: '11px', fontWeight: 500 }}
                   >
-                    <span style={{ width: 5, height: 5, borderRadius: 9999, background: intl ? '#3b82f6' : '#444' }} />
+                    <span style={{ width: 5, height: 5, borderRadius: 9999, background: intl ? '#3b82f6' : 'var(--c-text5)' }} />
                     Internacional
                   </button>
                 </div>
@@ -94,7 +94,7 @@ export default function NuevaSuscripcionButton() {
                     onChange={e => setIntlVal(e.target.value.toUpperCase())}
                     placeholder="Placa"
                     className="text-center font-mono outline-none"
-                    style={{ height: 48, background: '#0f0f0f', border: '1.5px solid #232323', borderRadius: 10, color: '#fff', fontSize: 18, fontWeight: 600, letterSpacing: '0.1em' }}
+                    style={{ height: 48, background: 'var(--c-panel)', border: '1.5px solid var(--c-border2)', borderRadius: 10, color: 'var(--c-text)', fontSize: 18, fontWeight: 600, letterSpacing: '0.1em' }}
                   />
                 ) : (
                   <div className="flex items-center justify-center gap-1.5" onPaste={onPaste}>
@@ -108,7 +108,7 @@ export default function NuevaSuscripcionButton() {
                           onFocus={e => e.target.select()}
                           maxLength={1}
                           className="text-center font-mono outline-none"
-                          style={{ width: 40, height: 48, background: '#0f0f0f', border: `1.5px solid ${chars[i] ? '#3b82f6' : '#232323'}`, borderRadius: 10, color: '#fff', fontSize: 17, fontWeight: 600 }}
+                          style={{ width: 40, height: 48, background: 'var(--c-panel)', border: `1.5px solid ${chars[i] ? '#3b82f6' : 'var(--c-border2)'}`, borderRadius: 10, color: 'var(--c-text)', fontSize: 17, fontWeight: 600 }}
                         />
                         {i === 2 && <span style={{ color: '#333', fontSize: 17, fontWeight: 700 }}>·</span>}
                       </div>
@@ -117,20 +117,20 @@ export default function NuevaSuscripcionButton() {
                 )}
               </div>
               <div className="flex flex-col gap-1.5">
-                <label style={{ color: '#888', fontSize: '13px' }}>Cliente</label>
+                <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Cliente</label>
                 <input value={cliente} onChange={e => setCliente(e.target.value)} placeholder="Nombre del cliente" style={inputStyle} />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label style={{ color: '#888', fontSize: '13px' }}>Teléfono</label>
+                <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Teléfono</label>
                 <input value={tel} onChange={e => setTel(e.target.value)} placeholder="300 123 4567" style={inputStyle} />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label style={{ color: '#888', fontSize: '13px' }}>Plan</label>
+                <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Plan</label>
                 <div className="grid grid-cols-2 gap-2">
                   {planes.map(p => {
                     const on = plan === p.id
                     return (
-                      <button key={p.id} onClick={() => pickPlan(p)} className="py-2 rounded-lg transition-all" style={{ background: on ? '#1e1e1e' : '#0f0f0f', border: on ? '1px solid #3b82f6' : '1px solid #232323', color: on ? '#fff' : '#888', fontSize: '13px' }}>
+                      <button key={p.id} onClick={() => pickPlan(p)} className="py-2 rounded-lg transition-all" style={{ background: on ? 'var(--c-border)' : 'var(--c-panel)', border: on ? '1px solid #3b82f6' : '1px solid var(--c-border2)', color: on ? 'var(--c-text)' : 'var(--c-text3)', fontSize: '13px' }}>
                         {p.label}
                       </button>
                     )
@@ -138,11 +138,11 @@ export default function NuevaSuscripcionButton() {
                 </div>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label style={{ color: '#888', fontSize: '13px' }}>Monto (COP)</label>
+                <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Monto (COP)</label>
                 <input value={monto} onChange={e => setMonto(e.target.value.replace(/\D/g, ''))} inputMode="numeric" style={inputStyle} />
               </div>
               {error && <p style={{ color: '#ef4444', fontSize: '13px' }}>{error}</p>}
-              <button onClick={submit} disabled={pending} className="w-full rounded-full py-2.5 mt-1 text-black font-semibold" style={{ background: '#fff', fontSize: '14px', opacity: pending ? 0.6 : 1 }}>
+              <button onClick={submit} disabled={pending} className="w-full rounded-full py-2.5 mt-1 text-black font-semibold" style={{ background: 'var(--c-accent)', fontSize: '14px', opacity: pending ? 0.6 : 1 }}>
                 {pending ? 'Guardando...' : 'Crear suscripción'}
               </button>
             </div>

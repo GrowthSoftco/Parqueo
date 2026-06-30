@@ -4,13 +4,15 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import PageHeader from '@/components/PageHeader'
-import { Building2, Tag, LayoutGrid, FileText, User, Users, Minus, Plus, Check, Trash2, UserPlus, Lock } from 'lucide-react'
+import { Building2, Tag, LayoutGrid, FileText, User, Users, Minus, Plus, Check, Trash2, UserPlus, Lock, Palette } from 'lucide-react'
 import { guardarConfig, actualizarPerfil, crearEmpleado, eliminarEmpleado, guardarCategorias, crearCategoria, eliminarCategoria } from '@/app/actions'
 import { iconoDe, ICONO_OPCIONES } from '@/lib/vehicleIcons'
+import ThemeSelector from '@/components/ThemeSelector'
 
 const sections = [
   { id: 'general', label: 'General', icon: Building2 },
   { id: 'perfil', label: 'Mi cuenta', icon: User },
+  { id: 'apariencia', label: 'Apariencia', icon: Palette },
   { id: 'empleados', label: 'Empleados', icon: Users },
   { id: 'categorias', label: 'Categorías', icon: Tag },
   { id: 'capacidad', label: 'Capacidad', icon: LayoutGrid },
@@ -36,8 +38,8 @@ type CategoriaVM = {
 }
 
 const fieldStyle: React.CSSProperties = {
-  background: '#0f0f0f', border: '1px solid #232323', borderRadius: '8px',
-  color: '#fff', padding: '8px 12px', fontSize: '13px', outline: 'none', width: '230px',
+  background: 'var(--c-panel)', border: '1px solid var(--c-border2)', borderRadius: '8px',
+  color: 'var(--c-text)', padding: '8px 12px', fontSize: '13px', outline: 'none', width: '230px',
 }
 const num = (s: string) => parseInt(s.replace(/\D/g, '')) || 0
 
@@ -184,14 +186,14 @@ export default function ConfiguracionView({
                   key={s.id}
                   onClick={() => setActive(s.id)}
                   className="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-left"
-                  style={{ background: on ? '#1c1c1c' : 'transparent', color: on ? '#fff' : '#777' }}
-                  onMouseEnter={e => { if (!on) (e.currentTarget as HTMLElement).style.color = '#ccc' }}
-                  onMouseLeave={e => { if (!on) (e.currentTarget as HTMLElement).style.color = '#777' }}
+                  style={{ background: on ? 'var(--c-surface3)' : 'transparent', color: on ? 'var(--c-text)' : 'var(--c-text4)' }}
+                  onMouseEnter={e => { if (!on) (e.currentTarget as HTMLElement).style.color = 'var(--c-text2)' }}
+                  onMouseLeave={e => { if (!on) (e.currentTarget as HTMLElement).style.color = 'var(--c-text4)' }}
                 >
                   <s.icon size={16} />
                   <span style={{ fontSize: '13.5px', fontWeight: on ? 600 : 450, flex: 1 }}>{s.label}</span>
                   {s.id === 'facturacion' && (
-                    <span className="px-1.5 py-0.5 rounded" style={{ background: '#1f1f1f', color: '#888', fontSize: '9px', fontWeight: 700, letterSpacing: '0.04em' }}>BETA</span>
+                    <span className="px-1.5 py-0.5 rounded" style={{ background: 'var(--c-border)', color: 'var(--c-text3)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.04em' }}>BETA</span>
                   )}
                 </button>
               )
@@ -234,7 +236,7 @@ export default function ConfiguracionView({
                   </Row>
                   <Divider />
                   <Row label="Correo" desc="No se puede cambiar por ahora">
-                    <input value={perfil.email} disabled style={{ ...fieldStyle, color: '#666', cursor: 'not-allowed' }} />
+                    <input value={perfil.email} disabled style={{ ...fieldStyle, color: 'var(--c-text4)', cursor: 'not-allowed' }} />
                   </Row>
                 </Card>
                 <div className="flex justify-end items-center gap-3 mt-6">
@@ -243,7 +245,7 @@ export default function ConfiguracionView({
                     onClick={guardarNombre}
                     disabled={savingPerfil || !nombreUsuario.trim()}
                     className="px-5 py-2.5 rounded-full text-black font-semibold"
-                    style={{ background: '#fff', fontSize: '13px', opacity: savingPerfil || !nombreUsuario.trim() ? 0.6 : 1, cursor: 'pointer' }}
+                    style={{ background: 'var(--c-accent)', fontSize: '13px', opacity: savingPerfil || !nombreUsuario.trim() ? 0.6 : 1, cursor: 'pointer' }}
                   >
                     {savingPerfil ? 'Guardando…' : 'Guardar nombre'}
                   </button>
@@ -255,28 +257,28 @@ export default function ConfiguracionView({
               <Section title="Empleados" desc="Crea cuentas para tus operarios. Solo verán Parqueadero, Caja e Historial.">
                 <Card>
                   {empleados.length === 0 ? (
-                    <div className="px-5 py-8 text-center" style={{ color: '#555', fontSize: '13px' }}>Aún no tienes empleados</div>
+                    <div className="px-5 py-8 text-center" style={{ color: 'var(--c-text5)', fontSize: '13px' }}>Aún no tienes empleados</div>
                   ) : (
                     empleados.map((e, i) => (
                       <div key={e.id}>
                         {i > 0 && <Divider />}
                         <div className="flex items-center justify-between px-5 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: '#1a1a1a', border: '1px solid #262626', color: '#999' }}>
+                            <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)', color: 'var(--c-text3)' }}>
                               <User size={16} />
                             </div>
                             <div>
                               <p className="text-white" style={{ fontSize: '13.5px', fontWeight: 500 }}>{e.nombre}</p>
-                              <p style={{ color: '#666', fontSize: '12px' }}>{e.email}</p>
+                              <p style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{e.email}</p>
                             </div>
                           </div>
                           <button
                             onClick={() => quitarEmpleado(e.id)}
                             disabled={savingEmp}
                             className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-                            style={{ color: '#777', cursor: 'pointer' }}
+                            style={{ color: 'var(--c-text4)', cursor: 'pointer' }}
                             onMouseEnter={ev => { (ev.currentTarget as HTMLElement).style.background = '#2a0f0f'; (ev.currentTarget as HTMLElement).style.color = '#ef4444' }}
-                            onMouseLeave={ev => { (ev.currentTarget as HTMLElement).style.background = 'transparent'; (ev.currentTarget as HTMLElement).style.color = '#777' }}
+                            onMouseLeave={ev => { (ev.currentTarget as HTMLElement).style.background = 'transparent'; (ev.currentTarget as HTMLElement).style.color = 'var(--c-text4)' }}
                             title="Eliminar empleado"
                           >
                             <Trash2 size={15} />
@@ -287,9 +289,9 @@ export default function ConfiguracionView({
                   )}
                 </Card>
 
-                <div className="rounded-2xl mt-4 p-5" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+                <div className="rounded-2xl mt-4 p-5" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
                   <div className="flex items-center gap-2 mb-4">
-                    <UserPlus size={16} color="#888" />
+                    <UserPlus size={16} color="var(--c-text3)" />
                     <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Nuevo empleado</p>
                   </div>
                   <div className="grid sm:grid-cols-3 gap-3">
@@ -303,7 +305,7 @@ export default function ConfiguracionView({
                       onClick={agregarEmpleado}
                       disabled={savingEmp || !empNombre.trim() || !empEmail.trim() || !empPass.trim()}
                       className="px-5 py-2.5 rounded-full text-black font-semibold"
-                      style={{ background: '#fff', fontSize: '13px', opacity: savingEmp || !empNombre.trim() || !empEmail.trim() || !empPass.trim() ? 0.6 : 1, cursor: 'pointer' }}
+                      style={{ background: 'var(--c-accent)', fontSize: '13px', opacity: savingEmp || !empNombre.trim() || !empEmail.trim() || !empPass.trim() ? 0.6 : 1, cursor: 'pointer' }}
                     >
                       {savingEmp ? 'Creando…' : 'Crear empleado'}
                     </button>
@@ -321,25 +323,25 @@ export default function ConfiguracionView({
                       <Card key={c.id}>
                         <div className="flex items-center justify-between px-5 pt-4 pb-3">
                           <div className="flex items-center gap-2.5">
-                            <Icon size={18} color="#aaa" />
+                            <Icon size={18} color="var(--c-text2)" />
                             <span className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>{c.nombre}</span>
-                            {!c.esDefault && <span className="px-1.5 py-0.5 rounded" style={{ background: '#1f1f1f', color: '#888', fontSize: '9.5px', fontWeight: 700 }}>PERSONALIZADA</span>}
+                            {!c.esDefault && <span className="px-1.5 py-0.5 rounded" style={{ background: 'var(--c-border)', color: 'var(--c-text3)', fontSize: '9.5px', fontWeight: 700 }}>PERSONALIZADA</span>}
                           </div>
                           <div className="flex items-center gap-2">
-                            <div className="flex rounded-lg p-0.5" style={{ background: '#0e0e0e', border: '1px solid #232323' }}>
+                            <div className="flex rounded-lg p-0.5" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border2)' }}>
                               {(['FRACCION', 'PLENA'] as const).map(modo => {
                                 const on = c.modo === modo
                                 return (
-                                  <button key={modo} onClick={() => setCat(i, 'modo', modo)} className="px-3 py-1.5 rounded-md transition-colors" style={{ background: on ? '#fff' : 'transparent', color: on ? '#000' : '#888', fontSize: '12px', fontWeight: 600 }}>
+                                  <button key={modo} onClick={() => setCat(i, 'modo', modo)} className="px-3 py-1.5 rounded-md transition-colors" style={{ background: on ? 'var(--c-text)' : 'transparent', color: on ? 'var(--c-bg)' : 'var(--c-text3)', fontSize: '12px', fontWeight: 600 }}>
                                     {modo === 'FRACCION' ? 'Por fracción' : 'Tarifa plena'}
                                   </button>
                                 )
                               })}
                             </div>
                             {!c.esDefault && (
-                              <button onClick={() => quitarCategoria(c.id)} className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors" style={{ color: '#777', cursor: 'pointer' }}
+                              <button onClick={() => quitarCategoria(c.id)} className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors" style={{ color: 'var(--c-text4)', cursor: 'pointer' }}
                                 onMouseEnter={ev => { (ev.currentTarget as HTMLElement).style.background = '#2a0f0f'; (ev.currentTarget as HTMLElement).style.color = '#ef4444' }}
-                                onMouseLeave={ev => { (ev.currentTarget as HTMLElement).style.background = 'transparent'; (ev.currentTarget as HTMLElement).style.color = '#777' }}
+                                onMouseLeave={ev => { (ev.currentTarget as HTMLElement).style.background = 'transparent'; (ev.currentTarget as HTMLElement).style.color = 'var(--c-text4)' }}
                                 title="Eliminar categoría">
                                 <Trash2 size={15} />
                               </button>
@@ -349,14 +351,14 @@ export default function ConfiguracionView({
                         <Divider />
                         <div className="px-5 py-4">
                           {c.modo === 'FRACCION' ? (
-                            <div className="flex items-center gap-2 flex-wrap" style={{ color: '#aaa', fontSize: '13px' }}>
+                            <div className="flex items-center gap-2 flex-wrap" style={{ color: 'var(--c-text2)', fontSize: '13px' }}>
                               <span>Cada</span>
                               <MiniInput value={c.fraccionMin} onChange={v => setCat(i, 'fraccionMin', v)} suffix="min" w={64} />
                               <span>cuesta</span>
                               <MiniInput value={c.fraccionPrecio} onChange={v => setCat(i, 'fraccionPrecio', v)} prefix="$" w={110} />
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2 flex-wrap" style={{ color: '#aaa', fontSize: '13px' }}>
+                            <div className="flex items-center gap-2 flex-wrap" style={{ color: 'var(--c-text2)', fontSize: '13px' }}>
                               <span>Precio único por estadía</span>
                               <MiniInput value={c.plenaPrecio} onChange={v => setCat(i, 'plenaPrecio', v)} prefix="$" w={130} />
                             </div>
@@ -366,10 +368,10 @@ export default function ConfiguracionView({
                             <div className="mt-4">
                               <div className="flex items-center gap-3 flex-wrap">
                                 <Toggle on={c.tolOn} onClick={() => toggleTol(i)} />
-                                <span style={{ color: '#aaa', fontSize: '13px' }}>Tolerancia</span>
+                                <span style={{ color: 'var(--c-text2)', fontSize: '13px' }}>Tolerancia</span>
                                 {c.tolOn && <MiniInput value={c.toleranciaMin} onChange={v => setCat(i, 'toleranciaMin', v)} suffix="min" w={64} />}
                               </div>
-                              <p style={{ color: '#555', fontSize: '12px', marginTop: 6 }}>
+                              <p style={{ color: 'var(--c-text5)', fontSize: '12px', marginTop: 6 }}>
                                 {c.tolOn
                                   ? `Margen para pasarse de la fracción sin que se cuente la siguiente. Ej: si se pasa ${c.toleranciaMin || '0'} min o menos, no se cobra otra fracción.`
                                   : 'Apenas se pase de la fracción se cobra la siguiente completa.'}
@@ -377,7 +379,7 @@ export default function ConfiguracionView({
                             </div>
                           )}
 
-                          <div className="flex items-center gap-6 flex-wrap mt-3" style={{ color: '#777', fontSize: '12.5px' }}>
+                          <div className="flex items-center gap-6 flex-wrap mt-3" style={{ color: 'var(--c-text4)', fontSize: '12.5px' }}>
                             <div className="flex items-center gap-2"><span>Día</span><MiniInput value={c.dia} onChange={v => setCat(i, 'dia', v)} prefix="$" w={100} /></div>
                             <div className="flex items-center gap-2"><span>Mes</span><MiniInput value={c.mes} onChange={v => setCat(i, 'mes', v)} prefix="$" w={110} /></div>
                           </div>
@@ -389,9 +391,9 @@ export default function ConfiguracionView({
 
                 {/* Agregar categoría */}
                 {esPro ? (
-                  <div className="rounded-2xl mt-4 p-5" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+                  <div className="rounded-2xl mt-4 p-5" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
                     <div className="flex items-center gap-2 mb-4">
-                      <Plus size={16} color="#888" />
+                      <Plus size={16} color="var(--c-text3)" />
                       <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Nueva categoría</p>
                     </div>
                     <div className="flex items-center gap-3 flex-wrap">
@@ -401,32 +403,38 @@ export default function ConfiguracionView({
                           const on = catIcono === op.key
                           const Icon = iconoDe(op.key)
                           return (
-                            <button key={op.key} onClick={() => setCatIcono(op.key)} title={op.label} className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors" style={{ background: on ? '#1e1e1e' : '#0f0f0f', border: `1px solid ${on ? '#3a3a3a' : '#232323'}`, color: on ? '#fff' : '#888' }}>
+                            <button key={op.key} onClick={() => setCatIcono(op.key)} title={op.label} className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors" style={{ background: on ? 'var(--c-border)' : 'var(--c-panel)', border: `1px solid ${on ? 'var(--c-text5)' : 'var(--c-border2)'}`, color: on ? 'var(--c-text)' : 'var(--c-text3)' }}>
                               <Icon size={16} />
                             </button>
                           )
                         })}
                       </div>
-                      <button onClick={agregarCategoria} disabled={savingCat || !catNombre.trim()} className="px-4 py-2 rounded-full text-black font-semibold" style={{ background: '#fff', fontSize: '13px', opacity: savingCat || !catNombre.trim() ? 0.5 : 1, cursor: 'pointer' }}>
+                      <button onClick={agregarCategoria} disabled={savingCat || !catNombre.trim()} className="px-4 py-2 rounded-full text-black font-semibold" style={{ background: 'var(--c-accent)', fontSize: '13px', opacity: savingCat || !catNombre.trim() ? 0.5 : 1, cursor: 'pointer' }}>
                         Agregar
                       </button>
                     </div>
                     {catErr && <p style={{ color: '#ef4444', fontSize: '13px', marginTop: 10 }}>{catErr}</p>}
                   </div>
                 ) : (
-                  <div className="rounded-2xl mt-4 p-5 flex items-center gap-4" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#1a1a1a', border: '1px solid #262626' }}>
-                      <Lock size={17} color="#888" />
+                  <div className="rounded-2xl mt-4 p-5 flex items-center gap-4" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)' }}>
+                      <Lock size={17} color="var(--c-text3)" />
                     </div>
                     <div className="flex-1">
                       <p className="text-white" style={{ fontSize: '13.5px', fontWeight: 600 }}>Crea tus propias categorías</p>
-                      <p style={{ color: '#777', fontSize: '12.5px', marginTop: 2 }}>Camión, buseta, lo que necesites — con el plan Pro o Negocio.</p>
+                      <p style={{ color: 'var(--c-text4)', fontSize: '12.5px', marginTop: 2 }}>Camión, buseta, lo que necesites — con el plan Pro o Negocio.</p>
                     </div>
-                    <Link href="/dashboard/plan" className="px-4 py-2 rounded-full text-black font-semibold shrink-0" style={{ background: '#fff', fontSize: '13px' }}>Ver planes</Link>
+                    <Link href="/dashboard/plan" className="px-4 py-2 rounded-full text-black font-semibold shrink-0" style={{ background: 'var(--c-accent)', fontSize: '13px' }}>Ver planes</Link>
                   </div>
                 )}
 
                 <SaveBar ok={okCat} saving={savingCat} onClick={guardarCats} />
+              </Section>
+            )}
+
+            {active === 'apariencia' && (
+              <Section title="Apariencia" desc="Personaliza el tema de color de la aplicación.">
+                <ThemeSelector />
               </Section>
             )}
 
@@ -436,7 +444,7 @@ export default function ConfiguracionView({
                   <div className="px-6 py-7 flex items-center justify-between">
                     <div>
                       <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Cupos totales</p>
-                      <p style={{ color: '#666', fontSize: '12.5px', marginTop: 2 }}>Se usa para calcular la ocupación del parqueadero</p>
+                      <p style={{ color: 'var(--c-text4)', fontSize: '12.5px', marginTop: 2 }}>Se usa para calcular la ocupación del parqueadero</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <Stepper onClick={() => setCapClamp(capN - 1)} icon={<Minus size={16} />} />
@@ -457,16 +465,16 @@ export default function ConfiguracionView({
 
             {active === 'facturacion' && (
               <Section title="Facturación electrónica" desc="Emite facturas válidas ante la DIAN directamente desde Parqueo.">
-                <div className="rounded-2xl p-6 flex items-start gap-4" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#1a1a1a', border: '1px solid #262626' }}>
-                    <FileText size={18} color="#888" />
+                <div className="rounded-2xl p-6 flex items-start gap-4" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)' }}>
+                    <FileText size={18} color="var(--c-text3)" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <p className="text-white" style={{ fontSize: '14px', fontWeight: 600 }}>Facturación DIAN</p>
-                      <span className="px-2 py-0.5 rounded-md" style={{ background: '#1f1f1f', color: '#aaa', fontSize: '10px', fontWeight: 700, letterSpacing: '0.04em' }}>EN PRUEBAS</span>
+                      <span className="px-2 py-0.5 rounded-md" style={{ background: 'var(--c-border)', color: 'var(--c-text2)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.04em' }}>EN PRUEBAS</span>
                     </div>
-                    <p style={{ color: '#888', fontSize: '13px', marginTop: 6, lineHeight: 1.55, maxWidth: 460 }}>
+                    <p style={{ color: 'var(--c-text3)', fontSize: '13px', marginTop: 6, lineHeight: 1.55, maxWidth: 460 }}>
                       Estamos integrando la facturación electrónica con la DIAN. Pronto vas a poder emitir facturas válidas desde aquí. Te avisaremos cuando esté lista.
                     </p>
                   </div>
@@ -484,7 +492,7 @@ function SaveBar({ ok, saving, onClick }: { ok: boolean; saving: boolean; onClic
   return (
     <div className="flex justify-end items-center gap-3 mt-6">
       {ok && <span className="flex items-center gap-1" style={{ color: '#22c55e', fontSize: '13px' }}><Check size={14} /> Guardado</span>}
-      <button onClick={onClick} disabled={saving} className="px-5 py-2.5 rounded-full text-black font-semibold" style={{ background: '#fff', fontSize: '13px', opacity: saving ? 0.6 : 1, cursor: 'pointer' }}>
+      <button onClick={onClick} disabled={saving} className="px-5 py-2.5 rounded-full text-black font-semibold" style={{ background: 'var(--c-accent)', fontSize: '13px', opacity: saving ? 0.6 : 1, cursor: 'pointer' }}>
         {saving ? 'Guardando…' : 'Guardar cambios'}
       </button>
     </div>
@@ -493,19 +501,19 @@ function SaveBar({ ok, saving, onClick }: { ok: boolean; saving: boolean; onClic
 
 function MiniInput({ value, onChange, prefix, suffix, w }: { value: string; onChange: (v: string) => void; prefix?: string; suffix?: string; w: number }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5" style={{ background: '#0f0f0f', border: '1px solid #232323' }}>
-      {prefix && <span style={{ color: '#555', fontSize: '13px' }}>{prefix}</span>}
+    <span className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border2)' }}>
+      {prefix && <span style={{ color: 'var(--c-text5)', fontSize: '13px' }}>{prefix}</span>}
       <input value={value} onChange={e => onChange(e.target.value)} inputMode="numeric" className="bg-transparent text-white outline-none" style={{ width: w, fontSize: '13px', fontWeight: 600 }} />
-      {suffix && <span style={{ color: '#666', fontSize: '12px' }}>{suffix}</span>}
+      {suffix && <span style={{ color: 'var(--c-text4)', fontSize: '12px' }}>{suffix}</span>}
     </span>
   )
 }
 
 function Stepper({ onClick, icon }: { onClick: () => void; icon: React.ReactNode }) {
   return (
-    <button onClick={onClick} className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors" style={{ background: '#0f0f0f', border: '1px solid #2a2a2a', color: '#ccc' }}
-      onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = '#1a1a1a')}
-      onMouseLeave={e => ((e.currentTarget as HTMLElement).style.background = '#0f0f0f')}>
+    <button onClick={onClick} className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border3)', color: 'var(--c-text2)' }}
+      onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = 'var(--c-surface3)')}
+      onMouseLeave={e => ((e.currentTarget as HTMLElement).style.background = 'var(--c-panel)')}>
       {icon}
     </button>
   )
@@ -515,23 +523,23 @@ function Section({ title, desc, children }: { title: string; desc: string; child
   return (
     <div>
       <h2 className="text-white" style={{ fontSize: '16px', fontWeight: 600 }}>{title}</h2>
-      <p style={{ color: '#666', fontSize: '13px', marginTop: '2px', marginBottom: '16px' }}>{desc}</p>
+      <p style={{ color: 'var(--c-text4)', fontSize: '13px', marginTop: '2px', marginBottom: '16px' }}>{desc}</p>
       {children}
     </div>
   )
 }
 function Card({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-2xl overflow-hidden" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>{children}</div>
+  return <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>{children}</div>
 }
 function Divider() {
-  return <div className="h-px mx-5" style={{ background: '#1c1c1c' }} />
+  return <div className="h-px mx-5" style={{ background: 'var(--c-surface3)' }} />
 }
 function Row({ label, desc, children }: { label: React.ReactNode; desc?: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-4 px-5 py-4">
       <div className="min-w-0">
         <div className="text-white" style={{ fontSize: '13.5px', fontWeight: 500 }}>{label}</div>
-        {desc && <p style={{ color: '#666', fontSize: '12px', marginTop: '2px' }}>{desc}</p>}
+        {desc && <p style={{ color: 'var(--c-text4)', fontSize: '12px', marginTop: '2px' }}>{desc}</p>}
       </div>
       <div className="shrink-0">{children}</div>
     </div>
@@ -539,8 +547,8 @@ function Row({ label, desc, children }: { label: React.ReactNode; desc?: string;
 }
 function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="rounded-full transition-colors" style={{ width: 42, height: 24, background: on ? '#22c55e' : '#2a2a2a', padding: 2, cursor: 'pointer' }}>
-      <div className="rounded-full transition-transform" style={{ width: 20, height: 20, background: '#fff', transform: on ? 'translateX(18px)' : 'translateX(0)' }} />
+    <button onClick={onClick} className="rounded-full transition-colors" style={{ width: 42, height: 24, background: on ? '#22c55e' : 'var(--c-border3)', padding: 2, cursor: 'pointer' }}>
+      <div className="rounded-full transition-transform" style={{ width: 20, height: 20, background: 'var(--c-accent)', transform: on ? 'translateX(18px)' : 'translateX(0)' }} />
     </button>
   )
 }

@@ -1,25 +1,169 @@
 @import "tailwindcss";
 
-:root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --sidebar: #111111;
-  --card: #161616;
-  --border: #222222;
-  --muted: #888888;
-  --accent: #ffffff;
+/* ===================== Sistema de temas =====================
+   Todos los colores de superficie/borde/texto de la app salen de
+   estos tokens. Cada tema redefine el set sobre <html data-theme>.
+   Los colores de estado (rojo/verde/ámbar) se quedan fijos a propósito.
+*/
+:root,
+[data-theme="parqueo"] {
+  --c-bg: #000000;
+  --c-panel: #0d0d0d;
+  --c-surface: #141414;
+  --c-surface2: #161616;
+  --c-surface3: #1c1c1c;
+  --c-border: #1e1e1e;
+  --c-border2: #232323;
+  --c-border3: #2a2a2a;
+  --c-text: #ffffff;
+  --c-text2: #bbbbbb;
+  --c-text3: #888888;
+  --c-text4: #666666;
+  --c-text5: #4d4d4d;
+  --c-accent: #ffffff;
+  --c-on-accent: #000000;
 }
 
+[data-theme="medianoche"] {
+  --c-bg: #060912;
+  --c-panel: #0b0f1c;
+  --c-surface: #111728;
+  --c-surface2: #141b30;
+  --c-surface3: #1b2440;
+  --c-border: #1e2942;
+  --c-border2: #273457;
+  --c-border3: #324168;
+  --c-text: #eef2fb;
+  --c-text2: #aab4cf;
+  --c-text3: #7a86a6;
+  --c-text4: #5a6688;
+  --c-text5: #3e496a;
+  --c-accent: #3b82f6;
+  --c-on-accent: #ffffff;
+}
+
+[data-theme="pizarra"] {
+  --c-bg: #0b0e12;
+  --c-panel: #12161c;
+  --c-surface: #1a1f27;
+  --c-surface2: #1e242d;
+  --c-surface3: #262d38;
+  --c-border: #2a323e;
+  --c-border2: #353f4d;
+  --c-border3: #424e5f;
+  --c-text: #f1f4f8;
+  --c-text2: #aeb6c2;
+  --c-text3: #7e8794;
+  --c-text4: #5d6571;
+  --c-text5: #424a55;
+  --c-accent: #38bdf8;
+  --c-on-accent: #06222e;
+}
+
+[data-theme="carbon"] {
+  --c-bg: #000000;
+  --c-panel: #060606;
+  --c-surface: #0c0c0c;
+  --c-surface2: #101010;
+  --c-surface3: #161616;
+  --c-border: #181818;
+  --c-border2: #1f1f1f;
+  --c-border3: #262626;
+  --c-text: #fafafa;
+  --c-text2: #b0b0b0;
+  --c-text3: #7e7e7e;
+  --c-text4: #5c5c5c;
+  --c-text5: #404040;
+  --c-accent: #ffffff;
+  --c-on-accent: #000000;
+}
+
+[data-theme="bosque"] {
+  --c-bg: #050a07;
+  --c-panel: #0a120d;
+  --c-surface: #101b14;
+  --c-surface2: #132018;
+  --c-surface3: #1a2c20;
+  --c-border: #1d3325;
+  --c-border2: #264430;
+  --c-border3: #31573e;
+  --c-text: #eef5ef;
+  --c-text2: #a7c2b1;
+  --c-text3: #78947f;
+  --c-text4: #586b5d;
+  --c-text5: #3d4d41;
+  --c-accent: #22c55e;
+  --c-on-accent: #052e14;
+}
+
+[data-theme="vino"] {
+  --c-bg: #0c0507;
+  --c-panel: #150a0d;
+  --c-surface: #1f1014;
+  --c-surface2: #251318;
+  --c-surface3: #311a20;
+  --c-border: #391d25;
+  --c-border2: #4d2832;
+  --c-border3: #623340;
+  --c-text: #f8eef1;
+  --c-text2: #cda8b1;
+  --c-text3: #9a7882;
+  --c-text4: #71565e;
+  --c-text5: #4f3a41;
+  --c-accent: #f43f5e;
+  --c-on-accent: #2a0710;
+}
+
+[data-theme="ambar"] {
+  --c-bg: #0c0903;
+  --c-panel: #15100a;
+  --c-surface: #1f1810;
+  --c-surface2: #251d13;
+  --c-surface3: #31271a;
+  --c-border: #392e1d;
+  --c-border2: #4d3e28;
+  --c-border3: #624f33;
+  --c-text: #f7f1e6;
+  --c-text2: #cdbb9b;
+  --c-text3: #9a8a6f;
+  --c-text4: #716552;
+  --c-text5: #4f463a;
+  --c-accent: #f59e0b;
+  --c-on-accent: #2a1a02;
+}
+
+[data-theme="dia"] {
+  --c-bg: #ececec;
+  --c-panel: #ffffff;
+  --c-surface: #ffffff;
+  --c-surface2: #f4f4f5;
+  --c-surface3: #ececed;
+  --c-border: #e4e4e7;
+  --c-border2: #d6d6da;
+  --c-border3: #c5c5cb;
+  --c-text: #18181b;
+  --c-text2: #52525b;
+  --c-text3: #71717a;
+  --c-text4: #9b9ba4;
+  --c-text5: #babac1;
+  --c-accent: #18181b;
+  --c-on-accent: #ffffff;
+}
+
+/* Tailwind v4: que las utilidades text-white/black y bg-white/black
+   sigan el tema. 'white' = texto primario, 'black' = texto sobre acento. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--c-bg);
+  --color-foreground: var(--c-text);
+  --color-white: var(--c-text);
+  --color-black: var(--c-on-accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--c-bg);
+  color: var(--c-text);
   font-family: Arial, Helvetica, sans-serif;
 }
 

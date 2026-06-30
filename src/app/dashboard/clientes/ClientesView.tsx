@@ -53,10 +53,10 @@ export default function ClientesView({ clientes, stats }: { clientes: Cliente[];
         <NuevoClienteButton />
       </div>
 
-      <div className="rounded-2xl overflow-hidden" style={{ background: '#141414', border: '1px solid #1e1e1e' }}>
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
         <table className="w-full">
           <thead>
-            <tr style={{ color: '#666', fontSize: '11px', letterSpacing: '0.04em' }}>
+            <tr style={{ color: 'var(--c-text4)', fontSize: '11px', letterSpacing: '0.04em' }}>
               <th className="text-left font-medium px-5 pt-4 pb-3 uppercase">Cliente</th>
               <th className="text-left font-medium px-5 pt-4 pb-3 uppercase">Placa</th>
               <th className="text-left font-medium px-5 pt-4 pb-3 uppercase">Plan</th>
@@ -68,8 +68,8 @@ export default function ClientesView({ clientes, stats }: { clientes: Cliente[];
           </thead>
           <tbody>
             {clientes.length === 0 && (
-              <tr className="border-t" style={{ borderColor: '#1c1c1c' }}>
-                <td colSpan={7} className="px-5 py-8 text-center" style={{ color: '#555', fontSize: '13px' }}>
+              <tr className="border-t" style={{ borderColor: 'var(--c-surface3)' }}>
+                <td colSpan={7} className="px-5 py-8 text-center" style={{ color: 'var(--c-text5)', fontSize: '13px' }}>
                   Aún no tienes clientes registrados.
                 </td>
               </tr>
@@ -79,29 +79,29 @@ export default function ClientesView({ clientes, stats }: { clientes: Cliente[];
                 key={c.id}
                 onClick={() => openDrawer(c)}
                 className="group border-t cursor-pointer transition-colors"
-                style={{ borderColor: '#1c1c1c' }}
-                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = '#171717')}
+                style={{ borderColor: 'var(--c-surface3)' }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = 'var(--c-surface2)')}
                 onMouseLeave={e => ((e.currentTarget as HTMLElement).style.background = 'transparent')}
               >
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: '#1a1a1a', border: '1px solid #2a2a2a' }}>
-                      <span style={{ color: '#bbb', fontSize: '13px', fontWeight: 600 }}>{c.nombre.charAt(0)}</span>
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)' }}>
+                      <span style={{ color: 'var(--c-text2)', fontSize: '13px', fontWeight: 600 }}>{c.nombre.charAt(0)}</span>
                     </div>
                     <span className="text-white" style={{ fontSize: '13.5px', fontWeight: 500 }}>{c.nombre}</span>
                   </div>
                 </td>
                 <td className="px-5 py-4 text-white font-mono" style={{ fontSize: '13px' }}>{c.placa}</td>
                 <td className="px-5 py-4">
-                  <span className="px-2 py-0.5 rounded-md" style={{ background: '#1a1a1a', border: '1px solid #272727', color: '#aaa', fontSize: '12px' }}>{c.plan}</span>
+                  <span className="px-2 py-0.5 rounded-md" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)', color: 'var(--c-text2)', fontSize: '12px' }}>{c.plan}</span>
                 </td>
-                <td className="px-5 py-4" style={{ color: '#888', fontSize: '13px' }}>{c.tel}</td>
-                <td className="px-5 py-4" style={{ color: '#888', fontSize: '13px' }}>{c.desde}</td>
+                <td className="px-5 py-4" style={{ color: 'var(--c-text3)', fontSize: '13px' }}>{c.tel}</td>
+                <td className="px-5 py-4" style={{ color: 'var(--c-text3)', fontSize: '13px' }}>{c.desde}</td>
                 <td className="px-5 py-4 text-right">
                   <span className="text-xs px-2 py-0.5 rounded-full" style={estadoStyle[c.estado]}>{c.estado}</span>
                 </td>
                 <td className="pr-4">
-                  <ChevronRight size={16} color="#555" className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ChevronRight size={16} color="var(--c-text5)" className="opacity-0 group-hover:opacity-100 transition-opacity" />
                 </td>
               </tr>
             ))}
@@ -114,7 +114,7 @@ export default function ClientesView({ clientes, stats }: { clientes: Cliente[];
           <div onClick={closeDrawer} className="fixed inset-0 z-[60] transition-opacity duration-300" style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(3px)', opacity: open ? 1 : 0 }} />
           <div
             className="fixed top-0 right-0 bottom-0 z-[70] overflow-y-auto"
-            style={{ width: 420, maxWidth: '90vw', background: '#0f0f0f', borderLeft: '1px solid #1e1e1e', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform 300ms cubic-bezier(0.16, 1, 0.3, 1)' }}
+            style={{ width: 420, maxWidth: '90vw', background: 'var(--c-panel)', borderLeft: '1px solid var(--c-border)', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform 300ms cubic-bezier(0.16, 1, 0.3, 1)' }}
           >
             <ClientDetail client={client} onClose={closeDrawer} />
           </div>
@@ -131,16 +131,16 @@ function ClientDetail({ client, onClose }: { client: Cliente; onClose: () => voi
   const pct = m.diasTotal > 0 ? Math.min(100, Math.max(0, Math.round((m.diasRestantes / m.diasTotal) * 100))) : 0
   const warn = m.diasRestantes <= 5 && m.diasRestantes > 0
   const vencida = m.diasRestantes <= 0
-  const barra = vencida ? '#ef4444' : warn ? '#f59e0b' : '#e7e7e7'
-  const dot = estadoColor[client.estado] ?? '#888'
-  const puntoTl: Record<string, string> = { in: '#22c55e', out: '#6e6e6e', pago: '#d4d4d4' }
+  const barra = vencida ? '#ef4444' : warn ? '#f59e0b' : 'var(--c-text)'
+  const dot = estadoColor[client.estado] ?? 'var(--c-text3)'
+  const puntoTl: Record<string, string> = { in: '#22c55e', out: 'var(--c-text4)', pago: 'var(--c-text2)' }
 
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-start justify-between px-6 pt-6 pb-5">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ background: '#1a1a1a', border: '1px solid #262626', fontSize: '16px', fontWeight: 600, color: '#cfcfcf' }}>
+          <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)', fontSize: '16px', fontWeight: 600, color: 'var(--c-text2)' }}>
             {client.nombre.charAt(0)}
           </div>
           <div className="min-w-0">
@@ -148,40 +148,40 @@ function ClientDetail({ client, onClose }: { client: Cliente; onClose: () => voi
               <h2 className="text-white truncate" style={{ fontSize: '18px', fontWeight: 600, letterSpacing: '-0.01em' }}>{client.nombre}</h2>
               <span style={{ width: 6, height: 6, borderRadius: 9999, background: dot, flexShrink: 0 }} title={client.estado} />
             </div>
-            <p style={{ color: '#777', fontSize: '12.5px', marginTop: 1 }}>Cliente desde {client.desde}</p>
+            <p style={{ color: 'var(--c-text4)', fontSize: '12.5px', marginTop: 1 }}>Cliente desde {client.desde}</p>
           </div>
         </div>
-        <button onClick={onClose} className="shrink-0 -mr-1.5 p-1.5 rounded-lg transition-colors" style={{ color: '#666' }} onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#666')}>
+        <button onClick={onClose} className="shrink-0 -mr-1.5 p-1.5 rounded-lg transition-colors" style={{ color: 'var(--c-text4)' }} onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--c-text)')} onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--c-text4)')}>
           <X size={18} />
         </button>
       </div>
 
-      <div className="h-px mx-6" style={{ background: '#1a1a1a' }} />
+      <div className="h-px mx-6" style={{ background: 'var(--c-surface3)' }} />
 
       <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-7">
         {/* Contacto */}
         <div className="flex flex-col">
           <div className="flex items-center justify-between py-2.5">
-            <span style={{ color: '#777', fontSize: '13px' }}>Teléfono</span>
+            <span style={{ color: 'var(--c-text4)', fontSize: '13px' }}>Teléfono</span>
             <span className="text-white" style={{ fontSize: '13px' }}>{client.tel || '—'}</span>
           </div>
-          <div className="flex items-center justify-between py-2.5" style={{ borderTop: '1px solid #161616' }}>
-            <span style={{ color: '#777', fontSize: '13px' }}>Email</span>
+          <div className="flex items-center justify-between py-2.5" style={{ borderTop: '1px solid var(--c-surface2)' }}>
+            <span style={{ color: 'var(--c-text4)', fontSize: '13px' }}>Email</span>
             <span className="text-white truncate ml-4" style={{ fontSize: '13px' }}>{client.email || '—'}</span>
           </div>
         </div>
 
         {/* Vehículos */}
         <div>
-          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '4px' }}>VEHÍCULOS</p>
+          <p style={{ color: 'var(--c-text4)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '4px' }}>VEHÍCULOS</p>
           <div className="flex flex-col">
             {client.vehiculos.map((v, i) => {
               const Icon = iconoDe(v.icono)
               return (
-                <div key={v.placa} className="flex items-center gap-3 py-3" style={{ borderTop: i === 0 ? 'none' : '1px solid #161616' }}>
-                  <Icon size={16} color="#888" />
+                <div key={v.placa} className="flex items-center gap-3 py-3" style={{ borderTop: i === 0 ? 'none' : '1px solid var(--c-surface2)' }}>
+                  <Icon size={16} color="var(--c-text3)" />
                   <span className="text-white font-mono" style={{ fontSize: '13px' }}>{v.placa}</span>
-                  <span className="ml-auto" style={{ color: '#666', fontSize: '12.5px' }}>{v.tipoNombre}</span>
+                  <span className="ml-auto" style={{ color: 'var(--c-text4)', fontSize: '12.5px' }}>{v.tipoNombre}</span>
                 </div>
               )
             })}
@@ -190,17 +190,17 @@ function ClientDetail({ client, onClose }: { client: Cliente; onClose: () => voi
 
         {/* Mensualidad */}
         <div>
-          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '10px' }}>MENSUALIDAD</p>
+          <p style={{ color: 'var(--c-text4)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '10px' }}>MENSUALIDAD</p>
           <div className="flex items-baseline justify-between">
-            <span style={{ color: '#888', fontSize: '13px' }}>Plan {m.plan.toLowerCase()}</span>
+            <span style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Plan {m.plan.toLowerCase()}</span>
             <span className="text-white" style={{ fontSize: '24px', fontWeight: 700, letterSpacing: '-0.02em' }}>{m.monto}</span>
           </div>
-          <div className="mt-4 w-full rounded-full" style={{ height: 4, background: '#1c1c1c' }}>
+          <div className="mt-4 w-full rounded-full" style={{ height: 4, background: 'var(--c-surface3)' }}>
             <div className="rounded-full" style={{ height: 4, width: `${pct}%`, background: barra, transition: 'width 400ms ease' }} />
           </div>
           <div className="flex justify-between mt-2">
-            <span style={{ color: '#777', fontSize: '12.5px' }}>Vence {m.vence}</span>
-            <span style={{ color: warn || vencida ? barra : '#777', fontSize: '12.5px', fontWeight: warn || vencida ? 600 : 400 }}>
+            <span style={{ color: 'var(--c-text4)', fontSize: '12.5px' }}>Vence {m.vence}</span>
+            <span style={{ color: warn || vencida ? barra : 'var(--c-text4)', fontSize: '12.5px', fontWeight: warn || vencida ? 600 : 400 }}>
               {vencida ? 'Vencida' : `${m.diasRestantes} días restantes`}
             </span>
           </div>
@@ -208,20 +208,20 @@ function ClientDetail({ client, onClose }: { client: Cliente; onClose: () => voi
 
         {/* Línea de tiempo */}
         <div>
-          <p style={{ color: '#666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '14px' }}>LÍNEA DE TIEMPO</p>
+          <p style={{ color: 'var(--c-text4)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', marginBottom: '14px' }}>LÍNEA DE TIEMPO</p>
           <div className="relative flex flex-col gap-5">
-            <div className="absolute left-[3.5px] top-1.5 bottom-1.5 w-px" style={{ background: '#1f1f1f' }} />
+            <div className="absolute left-[3.5px] top-1.5 bottom-1.5 w-px" style={{ background: 'var(--c-border)' }} />
             {client.timeline.map((t, i) => (
               <div key={i} className="flex items-start gap-3.5 relative">
-                <span className="shrink-0 z-10" style={{ width: 8, height: 8, borderRadius: 9999, marginTop: 4, background: puntoTl[t.tipo] ?? '#6e6e6e', boxShadow: '0 0 0 3px #0f0f0f' }} />
+                <span className="shrink-0 z-10" style={{ width: 8, height: 8, borderRadius: 9999, marginTop: 4, background: puntoTl[t.tipo] ?? 'var(--c-text4)', boxShadow: '0 0 0 3px var(--c-panel)' }} />
                 <div>
                   <p className="text-white" style={{ fontSize: '13px' }}>{t.detalle}</p>
-                  <p style={{ color: '#666', fontSize: '11.5px', marginTop: '1px' }}>{t.fecha}</p>
+                  <p style={{ color: 'var(--c-text4)', fontSize: '11.5px', marginTop: '1px' }}>{t.fecha}</p>
                 </div>
               </div>
             ))}
             {client.timeline.length === 0 && (
-              <p style={{ color: '#555', fontSize: '12px' }}>Sin movimientos registrados.</p>
+              <p style={{ color: 'var(--c-text5)', fontSize: '12px' }}>Sin movimientos registrados.</p>
             )}
           </div>
         </div>

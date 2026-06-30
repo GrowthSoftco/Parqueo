@@ -27,15 +27,15 @@ export default function DevDock() {
           className="flex items-center gap-1 p-1.5 rounded-2xl shadow-2xl"
           style={{
             background: 'rgba(20,20,20,0.85)',
-            border: '1px solid #2a2a2a',
+            border: '1px solid var(--c-border3)',
             backdropFilter: 'blur(12px)',
           }}
         >
           <div className="flex items-center gap-1 px-1.5">
             <Code2 size={13} color="#f59e0b" />
-            <span style={{ color: '#666', fontSize: '11px', fontWeight: 600 }}>DEV</span>
+            <span style={{ color: 'var(--c-text4)', fontSize: '11px', fontWeight: 600 }}>DEV</span>
           </div>
-          <div className="w-px h-5 mx-0.5" style={{ background: '#2a2a2a' }} />
+          <div className="w-px h-5 mx-0.5" style={{ background: 'var(--c-border3)' }} />
           {screens.map(s => {
             const active = pathname === s.href
             return (
@@ -44,19 +44,19 @@ export default function DevDock() {
                 onClick={() => router.push(s.href)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-colors"
                 style={{
-                  background: active ? '#fff' : 'transparent',
-                  color: active ? '#000' : '#999',
+                  background: active ? 'var(--c-text)' : 'transparent',
+                  color: active ? 'var(--c-bg)' : 'var(--c-text3)',
                 }}
                 onMouseEnter={e => {
                   if (!active) {
-                    ;(e.currentTarget as HTMLElement).style.background = '#262626'
-                    ;(e.currentTarget as HTMLElement).style.color = '#fff'
+                    ;(e.currentTarget as HTMLElement).style.background = 'var(--c-border3)'
+                    ;(e.currentTarget as HTMLElement).style.color = 'var(--c-text)'
                   }
                 }}
                 onMouseLeave={e => {
                   if (!active) {
                     ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-                    ;(e.currentTarget as HTMLElement).style.color = '#999'
+                    ;(e.currentTarget as HTMLElement).style.color = 'var(--c-text3)'
                   }
                 }}
               >
@@ -65,13 +65,13 @@ export default function DevDock() {
               </button>
             )
           })}
-          <div className="w-px h-5 mx-0.5" style={{ background: '#2a2a2a' }} />
+          <div className="w-px h-5 mx-0.5" style={{ background: 'var(--c-border3)' }} />
           <button
             onClick={() => setOpen(false)}
             className="p-1.5 rounded-lg transition-colors"
-            style={{ color: '#666' }}
-            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#fff')}
-            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#666')}
+            style={{ color: 'var(--c-text4)' }}
+            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--c-text)')}
+            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--c-text4)')}
           >
             <X size={15} />
           </button>
@@ -82,12 +82,12 @@ export default function DevDock() {
           className="flex items-center gap-2 px-4 py-2.5 rounded-full shadow-2xl transition-transform hover:scale-105"
           style={{
             background: 'rgba(20,20,20,0.85)',
-            border: '1px solid #2a2a2a',
+            border: '1px solid var(--c-border3)',
             backdropFilter: 'blur(12px)',
           }}
         >
           <Code2 size={14} color="#f59e0b" />
-          <span style={{ color: '#ccc', fontSize: '12px', fontWeight: 600 }}>Pantallas</span>
+          <span style={{ color: 'var(--c-text2)', fontSize: '12px', fontWeight: 600 }}>Pantallas</span>
         </button>
       )}
     </div>

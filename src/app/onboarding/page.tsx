@@ -58,31 +58,31 @@ export default function OnboardingPage() {
     (step === 4 && espacios.trim())
 
   return (
-    <div className="flex flex-col h-screen w-full" style={{ background: '#000000' }}>
+    <div className="flex flex-col h-screen w-full" style={{ background: 'var(--c-bg)' }}>
       {/* Top bar */}
       <div className="flex items-center justify-between px-8 pt-10 pb-6">
         <button
           onClick={back}
           className="flex items-center gap-2 transition-colors"
-          style={{ color: '#888', fontSize: '14px' }}
-          onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#fff')}
-          onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#888')}
+          style={{ color: 'var(--c-text3)', fontSize: '14px' }}
+          onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--c-text)')}
+          onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--c-text3)')}
         >
           <ArrowLeft size={18} />
           Volver
         </button>
 
         <div className="flex items-center gap-3">
-          <span style={{ color: '#888', fontSize: '14px' }}>Paso {step}/{TOTAL_STEPS}</span>
+          <span style={{ color: 'var(--c-text3)', fontSize: '14px' }}>Paso {step}/{TOTAL_STEPS}</span>
           <div className="relative w-6 h-6">
             <svg className="w-6 h-6 -rotate-90" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" fill="none" stroke="#222" strokeWidth="2.5" />
+              <circle cx="12" cy="12" r="10" fill="none" stroke="var(--c-border2)" strokeWidth="2.5" />
               <circle
                 cx="12"
                 cy="12"
                 r="10"
                 fill="none"
-                stroke="#fff"
+                stroke="var(--c-text)"
                 strokeWidth="2.5"
                 strokeDasharray={`${(step / TOTAL_STEPS) * 62.8} 62.8`}
                 strokeLinecap="round"
@@ -181,7 +181,7 @@ export default function OnboardingPage() {
                     style={{ ...inputStyle, textAlign: 'center', fontSize: '24px', fontWeight: 600 }}
                   />
                 </Field>
-                <p style={{ color: '#555', fontSize: '12px', textAlign: 'center', marginTop: '12px' }}>
+                <p style={{ color: 'var(--c-text5)', fontSize: '12px', textAlign: 'center', marginTop: '12px' }}>
                   espacios disponibles
                 </p>
               </div>
@@ -197,8 +197,8 @@ export default function OnboardingPage() {
           disabled={!canContinue}
           className="px-12 py-3 rounded-full font-semibold transition-opacity"
           style={{
-            background: '#fff',
-            color: '#000',
+            background: 'var(--c-accent)',
+            color: 'var(--c-on-accent)',
             fontSize: '15px',
             opacity: canContinue ? 1 : 0.3,
             cursor: canContinue ? 'pointer' : 'not-allowed',
@@ -213,9 +213,9 @@ export default function OnboardingPage() {
 
 const inputStyle: React.CSSProperties = {
   background: '#111',
-  border: '1px solid #222',
+  border: '1px solid var(--c-border2)',
   borderRadius: '10px',
-  color: '#fff',
+  color: 'var(--c-text)',
   padding: '12px 16px',
   fontSize: '15px',
   outline: 'none',
@@ -236,7 +236,7 @@ function Step({
       <h1 className="text-white text-center font-bold mb-2" style={{ fontSize: '30px' }}>
         {title}
       </h1>
-      <p className="text-center mb-10" style={{ color: '#888', fontSize: '15px' }}>
+      <p className="text-center mb-10" style={{ color: 'var(--c-text3)', fontSize: '15px' }}>
         {subtitle}
       </p>
       {children}
@@ -247,7 +247,7 @@ function Step({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2">
-      <label style={{ color: '#888', fontSize: '13px' }}>{label}</label>
+      <label style={{ color: 'var(--c-text3)', fontSize: '13px' }}>{label}</label>
       {children}
     </div>
   )
@@ -273,7 +273,7 @@ function SelectCard({
       onClick={onClick}
       className="text-left rounded-2xl transition-all flex flex-col justify-between"
       style={{
-        background: '#141414',
+        background: 'var(--c-surface)',
         border: selected ? '1.5px dashed #6366f1' : '1.5px solid transparent',
         padding: '18px',
         minHeight: '150px',
@@ -284,7 +284,7 @@ function SelectCard({
         <div
           className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
           style={{
-            background: selected ? '#fff' : '#262626',
+            background: selected ? 'var(--c-text)' : 'var(--c-border3)',
           }}
         >
           {selected && <Check size={12} color="#000" strokeWidth={3} />}
@@ -293,7 +293,7 @@ function SelectCard({
       <div className="mt-6">
         <p className="text-white" style={{ fontSize: '16px', fontWeight: 600 }}>{label}</p>
         {desc && (
-          <p style={{ color: '#777', fontSize: '13px', marginTop: '4px', lineHeight: 1.4 }}>{desc}</p>
+          <p style={{ color: 'var(--c-text4)', fontSize: '13px', marginTop: '4px', lineHeight: 1.4 }}>{desc}</p>
         )}
       </div>
     </button>
