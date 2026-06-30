@@ -47,3 +47,6 @@ next-env.d.ts
 
 # permitir el ejemplo (sin secretos)
 !.env.example
+
+# Electron build artifacts
+dist-electron/

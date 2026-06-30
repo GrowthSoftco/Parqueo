@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers'
+import { cache } from 'react'
 import crypto from 'crypto'
 import { prisma } from './prisma'
 
@@ -30,11 +31,13 @@ export async function destroySession() {
   c.delete(COOKIE)
 }
 
-export async function getSessionUser() {
+// Cacheado por request: el layout y la página piden la sesión por separado;
+// cache() de React lo dedupe para que solo haga 1 consulta por navegación.
+export const getSessionUser = cache(async () => {
   const c = await cookies()
   const raw = c.get(COOKIE)?.value
   if (!raw) return null
   const userId = unsign(raw)
   if (!userId) return null
   return prisma.user.findUnique({ where: { id: userId }, include: { tenant: true } })
-}
+})
