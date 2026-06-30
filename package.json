@@ -2,25 +2,72 @@
   "name": "parqueo",
   "version": "0.1.0",
   "private": true,
+  "description": "Gestión de parqueaderos en tiempo real",
+  "author": "Radix LLC",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
+    "postinstall": "prisma generate",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "electron": "electron .",
+    "electron:dev": "concurrently -k -n NEXT,ELECTRON -c green,cyan \"next dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "dist": "next build && electron-builder",
+    "dist:mac": "next build && electron-builder --mac",
+    "dist:win": "next build && electron-builder --win"
+  },
+  "build": {
+    "appId": "com.radix.parqueo",
+    "productName": "Parqueo",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "electron/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.business",
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.png"
+    }
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "bcryptjs": "^3.0.3",
+    "lucide-react": "^1.21.0",
     "next": "16.2.9",
+    "next-auth": "^5.0.0-beta.31",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.22.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "serve-handler": "^6.1.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^10.0.3",
+    "dotenv": "^17.4.2",
+    "electron": "^42.5.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "prisma": "^7.8.0",
+    "sharp": "^0.35.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.22.4",
+    "typescript": "^5",
+    "wait-on": "^9.0.10"
   }
 }

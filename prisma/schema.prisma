@@ -1,0 +1,254 @@
+// Parqueo — SaaS multi-tenant para parqueaderos
+// Cada Tenant = un parqueadero (cuenta cliente). El operador (SUPER_ADMIN) está por encima.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------- Enums ----------
+
+enum Role {
+  SUPER_ADMIN // operador de la plataforma (consola /admin) — TU cuenta de desarrollador
+  OWNER // dueño del parqueadero
+  ADMIN // co-administrador del parqueadero
+  EMPLEADO // empleado/operario del parqueadero (solo operativo)
+}
+
+enum TenantStatus {
+  TRIAL
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum Plan {
+  BASICO
+  PRO
+  NEGOCIO
+}
+
+enum BillingCycle {
+  MENSUAL
+  ANUAL
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum PaymentStatus {
+  PAGADO
+  FALLIDO
+  PENDIENTE
+}
+
+enum TariffMode {
+  FRACCION
+  PLENA
+}
+
+enum RecordStatus {
+  ADENTRO
+  SALIO
+}
+
+enum ShiftStatus {
+  ABIERTO
+  CERRADO
+}
+
+enum ClientPlan {
+  MENSUAL
+  SEMANAL
+  DIARIA
+  NOCTURNA
+}
+
+enum ClientSubStatus {
+  ACTIVA
+  POR_VENCER
+  VENCIDA
+}
+
+// ---------- Modelos ----------
+
+model Tenant {
+  id        String       @id @default(cuid())
+  nombre    String
+  direccion String?
+  telefono  String?
+  nit       String?
+  ciudad    String?
+  status    TenantStatus @default(TRIAL)
+  espacios  Int          @default(50)
+  autoRecibo Boolean     @default(true) // imprimir tiquete al registrar salida
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  users        User[]
+  subscription Subscription?
+  payments     Payment[]
+  invoices     Invoice[]
+  categories   Category[]
+  records      ParkingRecord[]
+  shifts       Shift[]
+  customers    Customer[]
+  clientSubs   ClientSubscription[]
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  nombre       String
+  role         Role      @default(OWNER)
+  tenantId     String?
+  tenant       Tenant?   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  lastActiveAt DateTime?
+
+  @@index([tenantId])
+}
+
+model Subscription {
+  id          String             @id @default(cuid())
+  tenantId    String             @unique
+  tenant      Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  plan        Plan?
+  status      SubscriptionStatus @default(TRIAL)
+  cycle       BillingCycle       @default(MENSUAL)
+  trialEndsAt DateTime?
+  periodEnd   DateTime?
+  createdAt   DateTime           @default(now())
+}
+
+model Payment {
+  id       String        @id @default(cuid())
+  tenantId String
+  tenant   Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  monto    Int
+  metodo   String
+  status   PaymentStatus @default(PAGADO)
+  concepto String?
+  paidAt   DateTime      @default(now())
+
+  @@index([tenantId])
+}
+
+model Invoice {
+  id       String   @id @default(cuid())
+  tenantId String
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  numero   String
+  monto    Int
+  status   String   @default("Pagada")
+  issuedAt DateTime @default(now())
+
+  @@index([tenantId])
+}
+
+// Categoría de vehículo con su tarifa (carro, moto, camión, buseta…). Por parqueadero.
+model Category {
+  id             String          @id @default(cuid())
+  tenantId       String
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  nombre         String
+  icono          String          @default("car") // car | motorbike | bike | truck | bus
+  orden          Int             @default(0)
+  esDefault      Boolean         @default(false) // las 3 base (carro/moto/bici)
+  modo           TariffMode      @default(FRACCION)
+  fraccionMin    Int             @default(15)
+  fraccionPrecio Int             @default(0)
+  plenaPrecio    Int             @default(0)
+  toleranciaMin  Int             @default(0)
+  porDia         Int             @default(0)
+  porMes         Int             @default(0)
+  records        ParkingRecord[]
+
+  @@index([tenantId])
+}
+
+model ParkingRecord {
+  id         String       @id @default(cuid())
+  tenantId   String
+  tenant     Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  placa      String
+  categoryId String?
+  category   Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tipoNombre String       @default("Carro") // denormalizado para historial/agrupación
+  icono      String       @default("car")
+  entradaAt  DateTime     @default(now())
+  salidaAt   DateTime?
+  monto      Int?
+  status     RecordStatus @default(ADENTRO)
+
+  @@index([tenantId])
+  @@index([placa])
+}
+
+model Shift {
+  id        String      @id @default(cuid())
+  tenantId  String
+  tenant    Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  operario  String
+  base      Int         @default(0)
+  total     Int         @default(0)
+  status    ShiftStatus @default(ABIERTO)
+  contado   Int?        // efectivo contado en el arqueo al cerrar
+  abiertoAt DateTime    @default(now())
+  cerradoAt DateTime?
+
+  @@index([tenantId])
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  nombre    String
+  telefono  String?
+  email     String?
+  createdAt DateTime @default(now())
+
+  clientSubs ClientSubscription[]
+
+  @@index([tenantId])
+}
+
+model ClientSubscription {
+  id         String          @id @default(cuid())
+  tenantId   String
+  tenant     Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId String?
+  customer   Customer?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  placa      String
+  plan       ClientPlan
+  monto      Int
+  inicioAt   DateTime        @default(now())
+  venceAt    DateTime
+  status     ClientSubStatus @default(ACTIVA)
+
+  @@index([tenantId])
+}
+
+model Setting {
+  key   String @id
+  value String
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actor        String
+  accion       String
+  detalle      String?
+  targetTenant String?
+  createdAt    DateTime @default(now())
+}
