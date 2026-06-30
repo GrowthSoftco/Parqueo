@@ -20,6 +20,7 @@ const METODOS: Record<string, string[]> = {
 
 export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: string | null; empresa: Empresa; autoRecibo: boolean }) {
   const metodos = plan ? METODOS[plan] ?? ['Efectivo'] : ['Efectivo']
+  const puedeImprimir = plan !== 'BASICO' // impresión de tiquete: Pro/Negocio
   const [open, setOpen] = useState(false)
   const [chars, setChars] = useState<string[]>(Array(LEN).fill(''))
   const [intl, setIntl] = useState(false)
@@ -112,7 +113,7 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
   }
 
   const finalizar = () => {
-    if (autoRecibo) imprimir()
+    if (autoRecibo && puedeImprimir) imprimir()
     close()
   }
 
@@ -189,9 +190,11 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                 )}
 
                 <div className="w-full flex gap-2">
-                  <button onClick={imprimir} className="flex items-center justify-center gap-2 rounded-full py-3 font-semibold transition-colors" style={{ flex: 1, background: 'var(--c-border)', border: '1px solid var(--c-border3)', color: 'var(--c-text)', fontSize: '14px', cursor: 'pointer' }} onMouseEnter={e => (e.currentTarget.style.background = 'var(--c-border3)')} onMouseLeave={e => (e.currentTarget.style.background = 'var(--c-border)')}>
-                    <Printer size={15} /> Imprimir
-                  </button>
+                  {puedeImprimir && (
+                    <button onClick={imprimir} className="flex items-center justify-center gap-2 rounded-full py-3 font-semibold transition-colors" style={{ flex: 1, background: 'var(--c-border)', border: '1px solid var(--c-border3)', color: 'var(--c-text)', fontSize: '14px', cursor: 'pointer' }} onMouseEnter={e => (e.currentTarget.style.background = 'var(--c-border3)')} onMouseLeave={e => (e.currentTarget.style.background = 'var(--c-border)')}>
+                      <Printer size={15} /> Imprimir
+                    </button>
+                  )}
                   <button onClick={finalizar} className="rounded-full py-3 text-black font-semibold" style={{ flex: 1, background: 'var(--c-accent)', fontSize: '14px', cursor: 'pointer' }}>
                     Listo
                   </button>

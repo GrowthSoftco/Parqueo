@@ -12,7 +12,7 @@ export type Categoria = { id: string; nombre: string; icono: string }
 
 const LEN = 6
 
-export default function EntryButton({ categorias, empresa, autoRecibo }: { categorias: Categoria[]; empresa: Empresa; autoRecibo: boolean }) {
+export default function EntryButton({ categorias, empresa, autoRecibo, plan }: { categorias: Categoria[]; empresa: Empresa; autoRecibo: boolean; plan?: string | null }) {
   const [open, setOpen] = useState(false)
   const [chars, setChars] = useState<string[]>(Array(LEN).fill(''))
   const [intl, setIntl] = useState(false)
@@ -83,7 +83,7 @@ export default function EntryButton({ categorias, empresa, autoRecibo }: { categ
     start(async () => {
       const res = await registrarEntrada(placa, catId)
       if (res.ok) {
-        if (autoRecibo) imprimirTicket(ticketEntrada({ empresa, placa, tipoNombre: cat?.nombre ?? 'Vehículo' }))
+        if (autoRecibo && plan !== 'BASICO') imprimirTicket(ticketEntrada({ empresa, placa, tipoNombre: cat?.nombre ?? 'Vehículo' }))
         toast(`Entrada registrada · ${placa}`, 'success')
         close()
         router.refresh()

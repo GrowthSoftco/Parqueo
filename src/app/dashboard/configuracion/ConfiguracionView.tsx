@@ -221,7 +221,13 @@ export default function ConfiguracionView({
                   </Row>
                   <Divider />
                   <Row label="Imprimir tiquete automáticamente" desc="Al registrar una salida">
-                    <Toggle on={autoRecibo} onClick={() => setAutoRecibo(v => !v)} />
+                    {plan === 'BASICO' ? (
+                      <Link href="/planes?from=app" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors" style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)', color: 'var(--c-text3)', fontSize: '12px', fontWeight: 600 }} title="La impresión de tiquetes es del plan Pro">
+                        <Lock size={12} /> Pro
+                      </Link>
+                    ) : (
+                      <Toggle on={autoRecibo} onClick={() => setAutoRecibo(v => !v)} />
+                    )}
                   </Row>
                 </Card>
                 <SaveBar ok={ok} saving={saving} onClick={guardar} />

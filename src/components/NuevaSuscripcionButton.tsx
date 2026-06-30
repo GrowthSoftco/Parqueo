@@ -2,7 +2,7 @@
 
 import { useState, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, X } from 'lucide-react'
+import { Plus, X, Lock } from 'lucide-react'
 import { crearSuscripcion } from '@/app/actions'
 
 const inputStyle: React.CSSProperties = {
@@ -17,7 +17,8 @@ const planes = [
   { id: 'DIARIA', label: 'Diaria', monto: 8000 },
 ] as const
 
-export default function NuevaSuscripcionButton() {
+export default function NuevaSuscripcionButton({ plan: planTenant }: { plan?: string | null }) {
+  const bloqueado = planTenant === 'BASICO'
   const LEN = 6
   const [open, setOpen] = useState(false)
   const [chars, setChars] = useState<string[]>(Array(LEN).fill(''))
@@ -60,6 +61,19 @@ export default function NuevaSuscripcionButton() {
       const res = await crearSuscripcion({ placa, cliente, tel, plan, monto: parseInt(monto) || 0 })
       if (res.ok) { close(); router.refresh() } else setError(res.error ?? 'Error')
     })
+  }
+
+  if (bloqueado) {
+    return (
+      <a
+        href="/planes?from=app"
+        className="flex items-center gap-1.5 px-4 py-2.5 rounded-full font-semibold transition-colors"
+        style={{ background: 'var(--c-surface3)', border: '1px solid var(--c-border3)', color: 'var(--c-text3)', fontSize: '13px' }}
+        title="Las suscripciones mensuales son del plan Pro"
+      >
+        <Lock size={14} /> Suscripciones · Pro
+      </a>
+    )
   }
 
   return (

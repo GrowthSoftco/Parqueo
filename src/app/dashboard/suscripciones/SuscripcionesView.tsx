@@ -29,7 +29,7 @@ const estadoStyle: Record<string, React.CSSProperties> = {
 
 const filtros = ['Todas', 'Activa', 'Por vencer', 'Vencida'] as const
 
-export default function SuscripcionesView({ subs, stats }: { subs: Sub[]; stats: StatCardProps[] }) {
+export default function SuscripcionesView({ subs, stats, plan }: { subs: Sub[]; stats: StatCardProps[]; plan: string | null }) {
   const [open, setOpen] = useState(false)
   const [sub, setSub] = useState<Sub | null>(null)
   const [filtro, setFiltro] = useState<(typeof filtros)[number]>('Todas')
@@ -68,7 +68,7 @@ export default function SuscripcionesView({ subs, stats }: { subs: Sub[]; stats:
             </button>
           ))}
         </div>
-        <NuevaSuscripcionButton />
+        <NuevaSuscripcionButton plan={plan} />
       </div>
 
       <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>

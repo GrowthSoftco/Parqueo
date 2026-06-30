@@ -44,7 +44,7 @@ export default function TopBar({ plan, userName, userEmail, role, categorias, em
       <CommandSearch role={role} />
 
       {/* Registrar entrada / salida (funcional) */}
-      <EntryButton categorias={categorias} empresa={empresa} autoRecibo={autoRecibo} />
+      <EntryButton categorias={categorias} empresa={empresa} autoRecibo={autoRecibo} plan={plan} />
       <ExitButton plan={plan} empresa={empresa} autoRecibo={autoRecibo} />
 
       {/* Notifications */}

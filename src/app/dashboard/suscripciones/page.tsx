@@ -53,5 +53,7 @@ export default async function SuscripcionesPage() {
     { label: 'Total clientes', value: String(totalClientes), note: 'registrados' },
   ]
 
-  return <SuscripcionesView subs={subs} stats={stats} />
+  const plan = (await prisma.subscription.findUnique({ where: { tenantId: tenant.id }, select: { plan: true } }))?.plan ?? null
+
+  return <SuscripcionesView subs={subs} stats={stats} plan={plan} />
 }

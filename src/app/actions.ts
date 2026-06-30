@@ -129,6 +129,9 @@ export async function crearSuscripcion(data: {
   monto: number
 }) {
   const tenant = await getCurrentTenant()
+  if ((await planTenant(tenant.id)) === 'BASICO') {
+    return { ok: false, error: 'Las suscripciones mensuales son del plan Pro. Mejora tu plan para activarlas.' }
+  }
   if (!data.placa.trim() || !data.cliente.trim()) return { ok: false, error: 'Placa y cliente requeridos' }
   const customer = await prisma.customer.create({
     data: { tenantId: tenant.id, nombre: data.cliente.trim(), telefono: data.tel.trim() || null },
