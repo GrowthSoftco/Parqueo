@@ -146,17 +146,21 @@ export default function MensajeComposer() {
             {kind === 'popup' && (
               <>
                 <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(2px)' }} />
-                <div className="absolute rounded-xl overflow-hidden" style={{ top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 230, background: 'var(--c-surface)', border: '1px solid var(--c-border3)' }}>
-                  <div style={{ height: 3, background: '#eab308' }} />
-                  <div style={{ padding: 16 }}>
-                    <div className="flex items-center gap-2 mb-2.5">
-                      <span style={{ width: 6, height: 6, borderRadius: 9999, background: '#eab308' }} />
-                      <span style={{ color: 'var(--c-text3)', fontSize: 9.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Mensaje de Parqueo</span>
+                <div className="absolute overflow-hidden" style={{ top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 224, borderRadius: 16, background: 'var(--c-surface)', border: '1px solid var(--c-border2)' }}>
+                  <div className="flex flex-col items-center text-center" style={{ padding: '18px 18px 14px' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/logo.svg" alt="" width={22} height={22} style={{ marginBottom: 9 }} />
+                    <div className="flex items-center gap-1.5">
+                      <span style={{ width: 5, height: 5, borderRadius: 9999, background: '#eab308' }} />
+                      <span style={{ color: 'var(--c-text3)', fontSize: 8.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Mensaje de Parqueo</span>
                     </div>
-                    <p className="text-white" style={{ fontSize: 12.5, lineHeight: 1.55 }}>{preview}</p>
-                    <div className="flex justify-end mt-4">
-                      <span className="rounded-full px-3.5 py-1.5" style={{ background: 'var(--c-border)', border: '1px solid var(--c-border3)', color: 'var(--c-text)', fontSize: 11.5, fontWeight: 600 }}>Entendido</span>
-                    </div>
+                  </div>
+                  <div className="h-px mx-5" style={{ background: 'var(--c-border)' }} />
+                  <div style={{ padding: '14px 18px' }}>
+                    <p className="text-center text-white" style={{ fontSize: 11.5, lineHeight: 1.55 }}>{preview}</p>
+                  </div>
+                  <div style={{ padding: '0 14px 14px' }}>
+                    <div className="w-full rounded-full text-center" style={{ background: 'var(--c-accent)', color: 'var(--c-on-accent)', fontSize: 11, fontWeight: 600, padding: '8px' }}>Entendido</div>
                   </div>
                 </div>
               </>

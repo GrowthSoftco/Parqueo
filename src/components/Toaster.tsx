@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { AlertCircle, CheckCircle2, Info, Megaphone, X } from 'lucide-react'
 import type { ToastType } from '@/lib/toast'
+import MensajePopup from '@/components/MensajePopup'
 
 type Toast = { id: number; type: ToastType; message: string; show: boolean }
 
@@ -96,22 +97,7 @@ export default function Toaster() {
       </div>
 
       {/* Popup del mensaje completo (mensaje del desarrollador) */}
-      {expandido && (
-        <div className="fixed inset-0 z-[710] flex items-center justify-center px-6" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} onClick={() => setExpandido(null)}>
-          <div className="rounded-2xl w-full max-w-md p-6" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border3)', animation: 'pop-in 170ms cubic-bezier(0.16,1,0.3,1)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <span className="flex items-center justify-center" style={{ width: 26, height: 26, borderRadius: 9999, background: '#eab30822', color: '#eab308' }}>
-                  <Megaphone size={15} strokeWidth={2.4} />
-                </span>
-                <p className="text-white" style={{ fontSize: 15, fontWeight: 600 }}>Mensaje de Parqueo</p>
-              </div>
-              <button onClick={() => setExpandido(null)} style={{ color: 'var(--c-text4)' }} className="hover:text-white transition-colors"><X size={18} /></button>
-            </div>
-            <p style={{ color: 'var(--c-text2)', fontSize: 14, lineHeight: 1.6 }}>{expandido}</p>
-          </div>
-        </div>
-      )}
+      {expandido && <MensajePopup message={expandido} onClose={() => setExpandido(null)} />}
     </>
   )
 }
