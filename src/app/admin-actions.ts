@@ -42,7 +42,7 @@ export async function enviarMensajeGlobal(mensaje: string, kind: MensajeKind = '
   return { ok: true }
 }
 
-const PRICE: Record<string, number> = { BASICO: 49900, PRO: 99900, NEGOCIO: 179900 }
+const PRICE: Record<string, number> = { BASICO: 49990, PRO: 99990, NEGOCIO: 179990 }
 const fmt = (n: number) => '$' + n.toLocaleString('es-CO')
 
 type Estado = 'ACTIVE' | 'SUSPENDED' | 'BANNED'
