@@ -10,6 +10,7 @@ import {
   FileText,
   BarChart3,
   PieChart,
+  Wallet,
   Users,
   Settings,
   LogOut,
@@ -25,6 +26,7 @@ const mainNav = [
   { label: 'Historial', href: '/dashboard/historial', icon: FileText, tier: 2 },
   { label: 'Contabilidad', href: '/dashboard/contabilidad', icon: BarChart3, tier: 2 },
   { label: 'Reportes', href: '/dashboard/reportes', icon: PieChart, tier: 3 },
+  { label: 'Finanzas', href: '/dashboard/finanzas', icon: Wallet, tier: 3 },
 ]
 
 const secondaryNav = [

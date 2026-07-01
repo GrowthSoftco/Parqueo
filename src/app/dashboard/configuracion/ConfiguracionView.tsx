@@ -4,8 +4,8 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import PageHeader from '@/components/PageHeader'
-import { Building2, Tag, LayoutGrid, FileText, User, Users, Minus, Plus, Check, Trash2, UserPlus, Lock, Palette } from 'lucide-react'
-import { guardarConfig, actualizarPerfil, crearEmpleado, eliminarEmpleado, guardarCategorias, crearCategoria, eliminarCategoria } from '@/app/actions'
+import { Building2, Tag, LayoutGrid, FileText, User, Users, Minus, Plus, Check, Trash2, UserPlus, Lock, Palette, Ticket, Handshake } from 'lucide-react'
+import { guardarConfig, actualizarPerfil, crearEmpleado, eliminarEmpleado, guardarCategorias, crearCategoria, eliminarCategoria, crearConvenio, toggleConvenio, eliminarConvenio } from '@/app/actions'
 import { iconoDe, ICONO_OPCIONES } from '@/lib/vehicleIcons'
 import ThemeSelector from '@/components/ThemeSelector'
 
@@ -13,11 +13,16 @@ const sections = [
   { id: 'general', label: 'General', icon: Building2 },
   { id: 'perfil', label: 'Mi cuenta', icon: User },
   { id: 'apariencia', label: 'Apariencia', icon: Palette },
+  { id: 'operacion', label: 'Operación', icon: Ticket },
+  { id: 'convenios', label: 'Convenios', icon: Handshake },
   { id: 'empleados', label: 'Empleados', icon: Users },
   { id: 'categorias', label: 'Categorías', icon: Tag },
   { id: 'capacidad', label: 'Capacidad', icon: LayoutGrid },
   { id: 'facturacion', label: 'Facturación', icon: FileText },
 ] as const
+
+type ConvenioVM = { id: string; nombre: string; tipo: string; valor: number; activo: boolean }
+type Operacion = { preguntarEstadia: boolean; tarifaPerdido: number; ticketCodigo: string; ticketCampos: Record<string, boolean> }
 
 type Empleado = { id: string; nombre: string; email: string }
 type SectionId = (typeof sections)[number]['id']
@@ -51,6 +56,8 @@ export default function ConfiguracionView({
   espacios,
   autoRecibo: autoReciboInit,
   empleados,
+  operacion,
+  convenios,
   seccionInicial = 'general',
 }: {
   tenant: { nombre: string; direccion: string; telefono: string; nit: string }
@@ -60,6 +67,8 @@ export default function ConfiguracionView({
   espacios: number
   autoRecibo: boolean
   empleados: Empleado[]
+  operacion: Operacion
+  convenios: ConvenioVM[]
   seccionInicial?: SectionId
 }) {
   const router = useRouter()
@@ -71,6 +80,39 @@ export default function ConfiguracionView({
   const [autoRecibo, setAutoRecibo] = useState(autoReciboInit)
   const [saving, start] = useTransition()
   const [ok, setOk] = useState(false)
+
+  // Operación (estadía, tiquete perdido, código del tiquete)
+  const [op, setOp] = useState(operacion)
+  const [okOp, setOkOp] = useState(false)
+  const setCampo = (k: string, v: boolean) => setOp(o => ({ ...o, ticketCampos: { ...o.ticketCampos, [k]: v } }))
+  const guardarOperacion = () => {
+    setOkOp(false)
+    start(async () => {
+      await guardarConfig({
+        nombre: g.nombre, direccion: g.direccion, telefono: g.telefono, nit: g.nit,
+        espacios: num(cap), autoRecibo,
+        preguntarEstadia: op.preguntarEstadia, ticketCodigo: op.ticketCodigo,
+        ticketConfig: JSON.stringify(op.ticketCampos), tarifaPerdido: num(String(op.tarifaPerdido)),
+      })
+      router.refresh(); setOkOp(true); setTimeout(() => setOkOp(false), 2500)
+    })
+  }
+
+  // Convenios
+  const [convNombre, setConvNombre] = useState('')
+  const [convTipo, setConvTipo] = useState('PORCENTAJE')
+  const [convValor, setConvValor] = useState('')
+  const [convErr, setConvErr] = useState('')
+  const [savingConv, startConv] = useTransition()
+  const agregarConvenio = () => {
+    setConvErr('')
+    startConv(async () => {
+      const res = await crearConvenio({ nombre: convNombre, tipo: convTipo, valor: num(convValor) })
+      if (res.ok) { setConvNombre(''); setConvValor(''); router.refresh() } else setConvErr(res.error ?? 'Error')
+    })
+  }
+  const cambiarConvenio = (id: string) => startConv(async () => { await toggleConvenio(id); router.refresh() })
+  const quitarConvenio = (id: string) => startConv(async () => { await eliminarConvenio(id); router.refresh() })
 
   // Perfil
   const [nombreUsuario, setNombreUsuario] = useState(perfil.nombre)
@@ -441,6 +483,89 @@ export default function ConfiguracionView({
             {active === 'apariencia' && (
               <Section title="Apariencia" desc="Personaliza el tema de color de la aplicación.">
                 <ThemeSelector />
+              </Section>
+            )}
+
+            {active === 'operacion' && (
+              <Section title="Operación y tiquete" desc="Cómo se cobra y qué lleva impreso el tiquete.">
+                <Card>
+                  <Row label="Preguntar la estadía al entrar" desc="Elegir fracción / día / plena en cada ingreso">
+                    <Toggle on={op.preguntarEstadia} onClick={() => setOp(o => ({ ...o, preguntarEstadia: !o.preguntarEstadia }))} />
+                  </Row>
+                  <Divider />
+                  <Row label="Tiquete perdido" desc="Cobro fijo cuando no traen el tiquete (0 = tarifa día)">
+                    <MiniInput value={String(op.tarifaPerdido)} onChange={v => setOp(o => ({ ...o, tarifaPerdido: num(v) }))} prefix="$" w={120} />
+                  </Row>
+                  <Divider />
+                  <Row label="Código en el tiquete" desc="Code128 = pistola láser · QR = cámara del celular">
+                    <div className="flex gap-1.5">
+                      {[['code128', 'Barras'], ['qr', 'QR'], ['none', 'Ninguno']].map(([id, l]) => {
+                        const on = op.ticketCodigo === id
+                        return (
+                          <button key={id} onClick={() => setOp(o => ({ ...o, ticketCodigo: id }))} className="px-3 py-1.5 rounded-md transition-colors" style={{ background: on ? 'var(--c-text)' : 'var(--c-panel)', color: on ? 'var(--c-bg)' : 'var(--c-text3)', border: '1px solid var(--c-border2)', fontSize: '12.5px', fontWeight: 600 }}>{l}</button>
+                        )
+                      })}
+                    </div>
+                  </Row>
+                  <Divider />
+                  <Row label="Datos del tiquete" desc="Qué aparece en el encabezado">
+                    <div className="flex gap-4">
+                      {[['nit', 'NIT'], ['direccion', 'Dirección'], ['telefono', 'Teléfono']].map(([k, l]) => (
+                        <label key={k} className="flex items-center gap-1.5" style={{ cursor: 'pointer' }}>
+                          <input type="checkbox" checked={op.ticketCampos[k] !== false} onChange={e => setCampo(k, e.target.checked)} />
+                          <span style={{ color: 'var(--c-text2)', fontSize: '13px' }}>{l}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </Row>
+                </Card>
+                <SaveBar ok={okOp} saving={saving} onClick={guardarOperacion} />
+              </Section>
+            )}
+
+            {active === 'convenios' && (
+              <Section title="Convenios" desc="Descuentos por alianza (centro comercial, empresa vecina…). El empleado los aplica en la salida.">
+                {!esPro ? (
+                  <div className="rounded-2xl p-6 flex items-center gap-3" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
+                    <Lock size={18} color="var(--c-text3)" />
+                    <div>
+                      <p className="text-white" style={{ fontSize: 14, fontWeight: 600 }}>Los convenios son del plan Pro</p>
+                      <Link href="/planes?from=app" style={{ color: '#a855f7', fontSize: 13 }}>Mejorar a Pro →</Link>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <Card>
+                      <div className="p-5 flex flex-col gap-3">
+                        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-2 items-center">
+                          <input value={convNombre} onChange={e => setConvNombre(e.target.value)} placeholder="Nombre (ej. C.C. Oviedo)" style={fieldStyle} />
+                          <select value={convTipo} onChange={e => setConvTipo(e.target.value)} className="outline-none" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border2)', borderRadius: 8, color: 'var(--c-text)', padding: '8px 10px', fontSize: '13px' }}>
+                            <option value="PORCENTAJE">Porcentaje</option>
+                            <option value="FIJO">Monto fijo</option>
+                          </select>
+                          <MiniInput value={convValor} onChange={setConvValor} prefix={convTipo === 'FIJO' ? '$' : ''} suffix={convTipo === 'PORCENTAJE' ? '%' : ''} w={100} />
+                          <button onClick={agregarConvenio} disabled={savingConv} className="rounded-full px-4 py-2 text-black font-semibold" style={{ background: 'var(--c-accent)', fontSize: '13px' }}>Agregar</button>
+                        </div>
+                        {convErr && <p style={{ color: '#ef4444', fontSize: '13px' }}>{convErr}</p>}
+                      </div>
+                    </Card>
+                    <div className="flex flex-col gap-2 mt-4">
+                      {convenios.length === 0 && <p style={{ color: 'var(--c-text5)', fontSize: 13 }}>Aún no tienes convenios.</p>}
+                      {convenios.map(c => (
+                        <div key={c.id} className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', opacity: c.activo ? 1 : 0.5 }}>
+                          <div>
+                            <p className="text-white" style={{ fontSize: 13.5, fontWeight: 600 }}>{c.nombre}</p>
+                            <p style={{ color: 'var(--c-text4)', fontSize: 12 }}>{c.tipo === 'PORCENTAJE' ? `${c.valor}% de descuento` : `$${c.valor.toLocaleString('es-CO')} de descuento`}</p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Toggle on={c.activo} onClick={() => cambiarConvenio(c.id)} />
+                            <button onClick={() => quitarConvenio(c.id)} style={{ color: 'var(--c-text4)' }} className="hover:text-white transition-colors"><Trash2 size={16} /></button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </Section>
             )}
 
