@@ -108,25 +108,49 @@ export default function FinanzasView({
 
       {/* Nuevo movimiento */}
       <div className="rounded-2xl p-5 mb-5" style={card}>
-        <div className="flex items-center gap-2 mb-4">
-          {[['EGRESO', 'Egreso'], ['INGRESO', 'Ingreso']].map(([id, l]) => {
-            const on = tipo === id
-            return <button key={id} onClick={() => { setTipo(id); setCategoria(id === 'EGRESO' ? 'Nómina' : 'Venta') }} className="px-4 py-1.5 rounded-full transition-colors" style={{ background: on ? 'var(--c-text)' : 'var(--c-surface2)', color: on ? 'var(--c-bg)' : 'var(--c-text3)', border: '1px solid var(--c-border2)', fontSize: 13, fontWeight: 500 }}>{l}</button>
-          })}
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-white" style={{ fontSize: 14, fontWeight: 600 }}>Nuevo movimiento</p>
+          {/* Egreso / Ingreso: segmentado en una sola cápsula */}
+          <div className="flex p-0.5 rounded-full" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border2)' }}>
+            {[['EGRESO', 'Egreso', '#ef4444'], ['INGRESO', 'Ingreso', '#22c55e']].map(([id, l, col]) => {
+              const on = tipo === id
+              return (
+                <button key={id} onClick={() => { setTipo(id); setCategoria(id === 'EGRESO' ? 'Nómina' : 'Venta') }} className="px-4 py-1.5 rounded-full transition-colors" style={{ background: on ? 'var(--c-surface3)' : 'transparent', color: on ? col : 'var(--c-text4)', fontSize: 12.5, fontWeight: 600 }}>
+                  {l}
+                </button>
+              )
+            })}
+          </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto_auto_auto] gap-2 items-center">
-          <select value={categoria} onChange={e => setCategoria(e.target.value)} className="outline-none" style={{ ...field }}>
-            {cats.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <input value={concepto} onChange={e => setConcepto(e.target.value)} placeholder="Concepto (ej. Nómina Juan)" style={field} />
-          <input value={monto ? '$' + Number(monto).toLocaleString('es-CO') : ''} onChange={e => setMonto(e.target.value.replace(/\D/g, ''))} inputMode="numeric" placeholder="Monto" style={{ ...field, width: 130 }} />
-          <label className="flex items-center gap-1.5 px-2" style={{ cursor: 'pointer' }}>
-            <input type="checkbox" checked={recurrente} onChange={e => setRecurrente(e.target.checked)} />
-            <span style={{ color: 'var(--c-text3)', fontSize: 12.5 }}>Recurrente</span>
-          </label>
-          <button onClick={agregar} disabled={saving} className="rounded-full px-4 py-2 text-black font-semibold" style={{ background: 'var(--c-accent)', fontSize: 13 }}>Agregar</button>
+
+        <div className="flex flex-col gap-2.5">
+          {/* Fila principal de campos, todos a la misma altura */}
+          <div className="flex flex-col sm:flex-row gap-2.5">
+            <select value={categoria} onChange={e => setCategoria(e.target.value)} className="outline-none shrink-0" style={{ ...field, height: 42, minWidth: 130 }}>
+              {cats.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <input value={concepto} onChange={e => setConcepto(e.target.value)} placeholder="Concepto (ej. Nómina de Juan)" className="flex-1" style={{ ...field, height: 42 }} />
+            <input value={monto ? '$' + Number(monto).toLocaleString('es-CO') : ''} onChange={e => setMonto(e.target.value.replace(/\D/g, ''))} inputMode="numeric" placeholder="Monto" style={{ ...field, height: 42, width: 140, textAlign: 'right', fontWeight: 600 }} />
+          </div>
+
+          {/* Footer: recurrente (chip) + agregar */}
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setRecurrente(v => !v)}
+              className="flex items-center gap-2 px-3 rounded-full transition-colors"
+              style={{ height: 34, background: recurrente ? 'color-mix(in srgb, #f59e0b 15%, transparent)' : 'var(--c-panel)', border: `1px solid ${recurrente ? '#f59e0b55' : 'var(--c-border2)'}`, color: recurrente ? '#f59e0b' : 'var(--c-text3)', fontSize: 12.5, fontWeight: 500 }}
+            >
+              <span className="flex items-center justify-center" style={{ width: 15, height: 15, borderRadius: 5, background: recurrente ? '#f59e0b' : 'transparent', border: recurrente ? 'none' : '1.5px solid var(--c-border3)' }}>
+                {recurrente && <Check size={11} color="#1a1206" strokeWidth={3.5} />}
+              </span>
+              Recurrente
+            </button>
+            <button onClick={agregar} disabled={saving} className="rounded-full px-6 text-black font-semibold transition-opacity" style={{ height: 42, background: 'var(--c-accent)', fontSize: 13.5, opacity: saving ? 0.6 : 1 }}>
+              {saving ? 'Guardando…' : 'Agregar'}
+            </button>
+          </div>
+          {err && <p style={{ color: '#ef4444', fontSize: 13 }}>{err}</p>}
         </div>
-        {err && <p style={{ color: '#ef4444', fontSize: 13, marginTop: 8 }}>{err}</p>}
       </div>
 
       {/* Movimientos */}
