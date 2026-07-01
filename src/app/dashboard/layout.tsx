@@ -16,12 +16,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (user.tenant.status === 'SUSPENDED' || user.tenant.status === 'BANNED') {
     return <CuentaSuspendida status={user.tenant.status} tenantId={user.tenant.id} pusherKey={pusherKey} pusherCluster={pusherCluster} />
   }
-  const [sub, categorias, registros] = await Promise.all([
+  const [sub, categorias, registros, convenios] = await Promise.all([
     prisma.subscription.findUnique({ where: { tenantId: user.tenant.id } }),
     prisma.category.findMany({ where: { tenantId: user.tenant.id }, orderBy: { orden: 'asc' }, select: { id: true, nombre: true, icono: true } }),
     prisma.parkingRecord.findMany({ where: { tenantId: user.tenant.id }, orderBy: [{ salidaAt: 'desc' }, { entradaAt: 'desc' }], take: 8, select: { placa: true, tipoNombre: true, monto: true, status: true, entradaAt: true, salidaAt: true } }),
+    prisma.convenio.findMany({ where: { tenantId: user.tenant.id, activo: true }, orderBy: { nombre: 'asc' }, select: { id: true, nombre: true, tipo: true, valor: true } }),
   ])
   const plan = sub?.plan ?? null
+  let ticketCampos: Record<string, boolean> = {}
+  try { ticketCampos = JSON.parse(user.tenant.ticketConfig || '{}') } catch {}
+  const ticketCfg = { codigo: user.tenant.ticketCodigo, campos: ticketCampos }
 
   const hace = (d: Date) => {
     const min = Math.round((Date.now() - d.getTime()) / 60000)
@@ -61,6 +65,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
           empresa={{ nombre: user.tenant.nombre, nit: user.tenant.nit ?? undefined, direccion: user.tenant.direccion ?? undefined, telefono: user.tenant.telefono ?? undefined }}
           autoRecibo={user.tenant.autoRecibo}
           actividad={actividad}
+          preguntarEstadia={user.tenant.preguntarEstadia}
+          tarifaPerdido={user.tenant.tarifaPerdido}
+          ticketCfg={ticketCfg}
+          convenios={convenios}
         />
         <div className="flex-1 overflow-y-auto">{children}</div>
       </main>

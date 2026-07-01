@@ -4,9 +4,12 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { User, CreditCard, Settings, LogOut, Zap } from 'lucide-react'
 import EntryButton from '@/components/EntryButton'
-import ExitButton from '@/components/ExitButton'
+import ExitButton, { type ConvenioVM } from '@/components/ExitButton'
 import CommandSearch from '@/components/CommandSearch'
+import Scanner from '@/components/Scanner'
 import NotificationsBell, { type Actividad } from '@/components/NotificationsBell'
+
+export type TicketCfg = { codigo: string; campos: Record<string, boolean> }
 const menu = [
   { label: 'Mi cuenta', icon: User, href: '/dashboard/configuracion?s=perfil' },
   { label: 'Mi plan', icon: CreditCard, href: '/dashboard/plan' },
@@ -21,7 +24,7 @@ const PLAN_COLOR: Record<string, string> = { BASICO: '#3b82f6', PRO: '#a855f7', 
 const PLAN_LABEL: Record<string, string> = { BASICO: 'BÁSICO', PRO: 'PRO', NEGOCIO: 'NEGOCIO' }
 const AVATAR = '/avatar.jpg'
 
-export default function TopBar({ plan, userName, userEmail, role, categorias, empresa, autoRecibo, actividad }: { plan?: string | null; userName?: string; userEmail?: string; role?: string; categorias: { id: string; nombre: string; icono: string }[]; empresa: { nombre: string; nit?: string; direccion?: string; telefono?: string }; autoRecibo: boolean; actividad: Actividad[] }) {
+export default function TopBar({ plan, userName, userEmail, role, categorias, empresa, autoRecibo, actividad, preguntarEstadia, tarifaPerdido, ticketCfg, convenios }: { plan?: string | null; userName?: string; userEmail?: string; role?: string; categorias: { id: string; nombre: string; icono: string }[]; empresa: { nombre: string; nit?: string; direccion?: string; telefono?: string }; autoRecibo: boolean; actividad: Actividad[]; preguntarEstadia?: boolean; tarifaPerdido?: number; ticketCfg?: TicketCfg; convenios?: ConvenioVM[] }) {
   const esOperador = role === 'EMPLEADO'
   const menuItems = esOperador ? [] : menu
   const ringColor = plan ? PLAN_COLOR[plan] ?? '#3b82f6' : 'var(--c-text4)'
@@ -43,9 +46,12 @@ export default function TopBar({ plan, userName, userEmail, role, categorias, em
       {/* Buscador global ⌘K */}
       <CommandSearch role={role} />
 
+      {/* Escáner láser/QR: código del tiquete → abre salida con la placa */}
+      <Scanner />
+
       {/* Registrar entrada / salida (funcional) */}
-      <EntryButton categorias={categorias} empresa={empresa} autoRecibo={autoRecibo} plan={plan} />
-      <ExitButton plan={plan} empresa={empresa} autoRecibo={autoRecibo} />
+      <EntryButton categorias={categorias} empresa={empresa} autoRecibo={autoRecibo} plan={plan} preguntarEstadia={preguntarEstadia} ticketCfg={ticketCfg} />
+      <ExitButton plan={plan} empresa={empresa} autoRecibo={autoRecibo} tarifaPerdido={tarifaPerdido} ticketCfg={ticketCfg} convenios={convenios} />
 
       {/* Notifications */}
       <NotificationsBell items={actividad} />

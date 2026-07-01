@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { getCurrentTenant } from '@/lib/tenant'
 import { getSessionUser } from '@/lib/auth'
+import { planTier } from '@/lib/plan'
 import { revalidatePath } from 'next/cache'
 
 type TarifaCobro = {
@@ -12,20 +13,29 @@ type TarifaCobro = {
   fraccionPrecio: number
   plenaPrecio: number
   toleranciaMin: number
+  porDia: number
 } | null
 
-// Cobro según el modo de la tarifa.
-// Tarifa plena: precio único por la estadía.
-// Por fracción: se cobra por bloques de tiempo; la tolerancia es el margen
-// que se permite pasarse antes de contar la SIGUIENTE fracción (no es gratis).
-function calcularCobro(tarifa: TarifaCobro, entradaAt: Date) {
+// Cobro según el modo de la tarifa (o el modo elegido al entrar si se preguntó la estadía).
+// Tarifa plena: precio único. Por día: porDia × días. Por fracción: bloques de tiempo;
+// la tolerancia es el margen que se permite pasarse antes de contar la SIGUIENTE fracción.
+function calcularCobro(tarifa: TarifaCobro, entradaAt: Date, cobroModo?: string | null) {
   const minutos = Math.max(1, Math.ceil((Date.now() - entradaAt.getTime()) / 60000))
   if (!tarifa) return { minutos, monto: 0 }
-  if (tarifa.modo === 'PLENA') return { minutos, monto: tarifa.plenaPrecio }
+  const modo = cobroModo || tarifa.modo
+  if (modo === 'DIA') {
+    const dias = Math.max(1, Math.ceil(minutos / 1440))
+    return { minutos, monto: dias * (tarifa.porDia || 0) }
+  }
+  if (modo === 'PLENA') return { minutos, monto: tarifa.plenaPrecio }
   const fraccionMin = Math.max(1, tarifa.fraccionMin)
-  // Resta la tolerancia: si te pasas de la fracción por menos de ese margen, no cuenta la siguiente.
   const fracciones = Math.max(1, Math.ceil((minutos - tarifa.toleranciaMin) / fraccionMin))
   return { minutos, monto: fracciones * tarifa.fraccionPrecio }
+}
+
+// Código corto para el tiquete (para escanear a la salida con pistola/QR).
+function nuevoCodigo() {
+  return Date.now().toString(36).slice(-5).toUpperCase() + Math.random().toString(36).slice(2, 5).toUpperCase()
 }
 
 function revalidar() {
@@ -55,7 +65,7 @@ function limitesDe(plan: string | null) {
   return plan && LIMITES[plan] ? LIMITES[plan] : null
 }
 
-export async function registrarEntrada(placa: string, categoryId: string) {
+export async function registrarEntrada(placa: string, categoryId: string, cobroModo?: string) {
   const tenant = await getCurrentTenant()
   if (!(await turnoAbierto(tenant.id))) return SIN_TURNO
   const limpia = placa.trim().toUpperCase()
@@ -80,11 +90,21 @@ export async function registrarEntrada(placa: string, categoryId: string) {
   })
   if (dentro) return { ok: false, error: 'Ese vehículo ya está adentro' }
 
+  // ¿La placa tiene mensualidad activa? → no se le cobra a la salida.
+  const mensualidad = await prisma.clientSubscription.findFirst({
+    where: { tenantId: tenant.id, placa: limpia, status: { in: ['ACTIVA', 'POR_VENCER'] }, venceAt: { gte: new Date() } },
+  })
+  const esMensualidad = !!mensualidad
+
+  const codigo = nuevoCodigo()
   await prisma.parkingRecord.create({
-    data: { tenantId: tenant.id, placa: limpia, categoryId: cat.id, tipoNombre: cat.nombre, icono: cat.icono, status: 'ADENTRO' },
+    data: {
+      tenantId: tenant.id, placa: limpia, categoryId: cat.id, tipoNombre: cat.nombre, icono: cat.icono,
+      codigo, esMensualidad, cobroModo: cobroModo ?? null, status: 'ADENTRO',
+    },
   })
   revalidar()
-  return { ok: true }
+  return { ok: true, codigo, esMensualidad, placa: limpia, tipoNombre: cat.nombre }
 }
 
 export async function registrarSalida(recordId: string) {
@@ -97,7 +117,8 @@ export async function registrarSalida(recordId: string) {
   }
 
   const cat = rec.categoryId ? await prisma.category.findUnique({ where: { id: rec.categoryId } }) : null
-  const { minutos, monto } = calcularCobro(cat, rec.entradaAt)
+  const { minutos } = calcularCobro(cat, rec.entradaAt, rec.cobroModo)
+  const monto = rec.esMensualidad ? 0 : calcularCobro(cat, rec.entradaAt, rec.cobroModo).monto
 
   await prisma.parkingRecord.update({
     where: { id: recordId },
@@ -108,7 +129,7 @@ export async function registrarSalida(recordId: string) {
   await prisma.shift.update({ where: { id: turno.id }, data: { total: turno.total + monto } })
 
   revalidar()
-  return { ok: true, monto, minutos, placa: rec.placa }
+  return { ok: true, monto, minutos, placa: rec.placa, esMensualidad: rec.esMensualidad }
 }
 
 export async function crearCliente(nombre: string, telefono: string, email: string) {
@@ -228,6 +249,10 @@ export async function guardarConfig(data: {
   nit: string
   espacios: number
   autoRecibo: boolean
+  preguntarEstadia?: boolean
+  ticketCodigo?: string
+  ticketConfig?: string
+  tarifaPerdido?: number
 }) {
   const tenant = await getCurrentTenant()
   // Límite de espacios según el plan (Básico hasta 80)
@@ -242,12 +267,90 @@ export async function guardarConfig(data: {
       nit: data.nit,
       espacios,
       autoRecibo: data.autoRecibo,
+      ...(data.preguntarEstadia !== undefined ? { preguntarEstadia: data.preguntarEstadia } : {}),
+      ...(data.ticketCodigo ? { ticketCodigo: data.ticketCodigo } : {}),
+      ...(data.ticketConfig ? { ticketConfig: data.ticketConfig } : {}),
+      ...(data.tarifaPerdido !== undefined ? { tarifaPerdido: Math.max(0, Math.round(data.tarifaPerdido)) } : {}),
     },
   })
   revalidatePath('/dashboard/configuracion')
   revalidatePath('/dashboard/parqueadero')
   revalidatePath('/dashboard')
   return { ok: true, espaciosAplicados: espacios }
+}
+
+// ---- Convenios (descuentos por alianza) — Pro/Negocio ----
+export async function crearConvenio(data: { nombre: string; tipo: string; valor: number }) {
+  const owner = await requireOwnerUser()
+  if (!owner?.tenant) return { ok: false, error: 'No autorizado' }
+  if (planTier(await getPlan(owner.tenant.id)) < 2) return { ok: false, error: 'Los convenios son del plan Pro o Negocio' }
+  const nombre = data.nombre.trim()
+  if (!nombre) return { ok: false, error: 'Escribe un nombre' }
+  const tipo = data.tipo === 'FIJO' ? 'FIJO' : 'PORCENTAJE'
+  const valor = Math.max(0, Math.round(data.valor) || 0)
+  await prisma.convenio.create({ data: { tenantId: owner.tenant.id, nombre, tipo, valor: tipo === 'PORCENTAJE' ? Math.min(100, valor) : valor } })
+  revalidatePath('/dashboard/configuracion')
+  revalidatePath('/dashboard/parqueadero')
+  return { ok: true }
+}
+
+export async function toggleConvenio(id: string) {
+  const owner = await requireOwnerUser()
+  if (!owner?.tenant) return { ok: false, error: 'No autorizado' }
+  const conv = await prisma.convenio.findFirst({ where: { id, tenantId: owner.tenant.id } })
+  if (!conv) return { ok: false, error: 'No existe' }
+  await prisma.convenio.update({ where: { id }, data: { activo: !conv.activo } })
+  revalidatePath('/dashboard/configuracion')
+  return { ok: true }
+}
+
+export async function eliminarConvenio(id: string) {
+  const owner = await requireOwnerUser()
+  if (!owner?.tenant) return { ok: false, error: 'No autorizado' }
+  const conv = await prisma.convenio.findFirst({ where: { id, tenantId: owner.tenant.id } })
+  if (!conv) return { ok: false, error: 'No existe' }
+  await prisma.convenio.delete({ where: { id } })
+  revalidatePath('/dashboard/configuracion')
+  return { ok: true }
+}
+
+// ---- Finanzas (ingresos/egresos, capital) — Negocio ----
+export async function guardarCapital(monto: number) {
+  const owner = await requireOwnerUser()
+  if (!owner?.tenant) return { ok: false, error: 'No autorizado' }
+  if (planTier(await getPlan(owner.tenant.id)) < 3) return { ok: false, error: 'Las finanzas son del plan Negocio' }
+  await prisma.tenant.update({ where: { id: owner.tenant.id }, data: { capital: Math.max(0, Math.round(monto) || 0) } })
+  revalidatePath('/dashboard/finanzas')
+  return { ok: true }
+}
+
+export async function crearMovimiento(data: { tipo: string; categoria: string; concepto: string; monto: number; recurrente?: boolean }) {
+  const owner = await requireOwnerUser()
+  if (!owner?.tenant) return { ok: false, error: 'No autorizado' }
+  if (planTier(await getPlan(owner.tenant.id)) < 3) return { ok: false, error: 'Las finanzas son del plan Negocio' }
+  const concepto = data.concepto.trim()
+  const monto = Math.max(0, Math.round(data.monto) || 0)
+  if (!concepto || monto <= 0) return { ok: false, error: 'Completa concepto y monto' }
+  await prisma.financeEntry.create({
+    data: {
+      tenantId: owner.tenant.id,
+      tipo: data.tipo === 'INGRESO' ? 'INGRESO' : 'EGRESO',
+      categoria: data.categoria || 'Otro',
+      concepto, monto, recurrente: !!data.recurrente,
+    },
+  })
+  revalidatePath('/dashboard/finanzas')
+  return { ok: true }
+}
+
+export async function eliminarMovimiento(id: string) {
+  const owner = await requireOwnerUser()
+  if (!owner?.tenant) return { ok: false, error: 'No autorizado' }
+  const m = await prisma.financeEntry.findFirst({ where: { id, tenantId: owner.tenant.id } })
+  if (!m) return { ok: false, error: 'No existe' }
+  await prisma.financeEntry.delete({ where: { id } })
+  revalidatePath('/dashboard/finanzas')
+  return { ok: true }
 }
 
 // ---- Categorías de vehículo (tarifas) ----
@@ -434,7 +537,9 @@ export async function actualizarPerfil(nombre: string) {
   return { ok: true }
 }
 
-export async function registrarSalidaPorPlaca(placa: string) {
+type SalidaOpts = { convenioId?: string; descuento?: number; motivo?: string; perdido?: boolean }
+
+export async function registrarSalidaPorPlaca(placa: string, opts: SalidaOpts = {}) {
   const tenant = await getCurrentTenant()
   const turno = await turnoAbierto(tenant.id)
   if (!turno) return SIN_TURNO
@@ -448,12 +553,41 @@ export async function registrarSalidaPorPlaca(placa: string) {
   if (!rec) return { ok: false, error: 'No hay un vehículo adentro con esa placa' }
 
   const cat = rec.categoryId ? await prisma.category.findUnique({ where: { id: rec.categoryId } }) : null
-  const { minutos, monto } = calcularCobro(cat, rec.entradaAt)
+  const { minutos } = calcularCobro(cat, rec.entradaAt, rec.cobroModo)
+  let base = calcularCobro(cat, rec.entradaAt, rec.cobroModo).monto
+
+  // Tiquete perdido → tarifa fija del parqueadero (o tarifa día de la categoría)
+  if (opts.perdido) base = tenant.tarifaPerdido > 0 ? tenant.tarifaPerdido : (cat?.porDia || base)
+
+  // Mensualidad activa → no cobra
+  if (rec.esMensualidad) base = 0
+
+  // Convenio (descuento por alianza)
+  let descuento = 0
+  let convenioNombre: string | null = null
+  let convenioId: string | null = null
+  if (opts.convenioId && !rec.esMensualidad) {
+    const conv = await prisma.convenio.findFirst({ where: { id: opts.convenioId, tenantId: tenant.id, activo: true } })
+    if (conv) {
+      descuento += conv.tipo === 'PORCENTAJE' ? Math.round((base * conv.valor) / 100) : conv.valor
+      convenioNombre = conv.nombre
+      convenioId = conv.id
+    }
+  }
+  // Descuento manual (cortesía)
+  if (opts.descuento && opts.descuento > 0 && !rec.esMensualidad) descuento += Math.round(opts.descuento)
+
+  descuento = Math.min(base, Math.max(0, descuento))
+  const monto = Math.max(0, base - descuento)
   const salida = new Date()
 
   await prisma.parkingRecord.update({
     where: { id: rec.id },
-    data: { salidaAt: salida, monto, status: 'SALIO' },
+    data: {
+      salidaAt: salida, monto, status: 'SALIO',
+      descuento, convenioId, convenioNombre,
+      descuentoMotivo: opts.motivo?.trim() || (opts.perdido ? 'Tiquete perdido' : null),
+    },
   })
 
   await prisma.shift.update({ where: { id: turno.id }, data: { total: turno.total + monto } })
@@ -463,9 +597,24 @@ export async function registrarSalidaPorPlaca(placa: string) {
     ok: true,
     monto,
     minutos,
+    descuento,
+    esMensualidad: rec.esMensualidad,
+    convenioNombre,
     placa: rec.placa,
     tipoNombre: rec.tipoNombre,
     entradaAt: rec.entradaAt.toISOString(),
     salidaAt: salida.toISOString(),
   }
+}
+
+// Buscar el vehículo adentro por el código del tiquete (para el escáner láser/QR).
+export async function buscarPorCodigo(codigo: string) {
+  const tenant = await getCurrentTenant()
+  const c = codigo.trim().toUpperCase()
+  if (!c) return { ok: false as const, error: 'Código vacío' }
+  const rec = await prisma.parkingRecord.findFirst({
+    where: { tenantId: tenant.id, codigo: c, status: 'ADENTRO' },
+  })
+  if (!rec) return { ok: false as const, error: 'No hay un vehículo adentro con ese código' }
+  return { ok: true as const, placa: rec.placa, tipoNombre: rec.tipoNombre }
 }

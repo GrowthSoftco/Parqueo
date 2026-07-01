@@ -7,17 +7,20 @@ import { registrarEntrada } from '@/app/actions'
 import { toast } from '@/lib/toast'
 import { iconoDe } from '@/lib/vehicleIcons'
 import { ticketEntrada, imprimirTicket, type Empresa } from '@/lib/ticket'
+import type { TicketCfg } from '@/components/TopBar'
 
 export type Categoria = { id: string; nombre: string; icono: string }
 
 const LEN = 6
+const ESTADIAS = [{ id: 'FRACCION', l: 'Por fracción' }, { id: 'DIA', l: 'Día' }, { id: 'PLENA', l: 'Plena' }] as const
 
-export default function EntryButton({ categorias, empresa, autoRecibo, plan }: { categorias: Categoria[]; empresa: Empresa; autoRecibo: boolean; plan?: string | null }) {
+export default function EntryButton({ categorias, empresa, autoRecibo, plan, preguntarEstadia, ticketCfg }: { categorias: Categoria[]; empresa: Empresa; autoRecibo: boolean; plan?: string | null; preguntarEstadia?: boolean; ticketCfg?: TicketCfg }) {
   const [open, setOpen] = useState(false)
   const [chars, setChars] = useState<string[]>(Array(LEN).fill(''))
   const [intl, setIntl] = useState(false)
   const [intlVal, setIntlVal] = useState('')
   const [catId, setCatId] = useState<string>(categorias[0]?.id ?? '')
+  const [cobroModo, setCobroModo] = useState<string>('FRACCION')
   const [pending, start] = useTransition()
   const refs = useRef<(HTMLInputElement | null)[]>([])
   const router = useRouter()
@@ -81,10 +84,15 @@ export default function EntryButton({ categorias, empresa, autoRecibo, plan }: {
     }
     const cat = categorias.find(c => c.id === catId)
     start(async () => {
-      const res = await registrarEntrada(placa, catId)
+      const res = await registrarEntrada(placa, catId, preguntarEstadia ? cobroModo : undefined)
       if (res.ok) {
-        if (autoRecibo && plan !== 'BASICO') imprimirTicket(ticketEntrada({ empresa, placa, tipoNombre: cat?.nombre ?? 'Vehículo' }))
-        toast(`Entrada registrada · ${placa}`, 'success')
+        if (autoRecibo && plan !== 'BASICO') {
+          imprimirTicket(ticketEntrada({
+            empresa, placa, tipoNombre: cat?.nombre ?? 'Vehículo',
+            codigo: res.codigo, codigoTipo: ticketCfg?.codigo, campos: ticketCfg?.campos, mensualidad: res.esMensualidad,
+          }))
+        }
+        toast(res.esMensualidad ? `Entrada · ${placa} · MENSUALIDAD` : `Entrada registrada · ${placa}`, res.esMensualidad ? 'info' : 'success')
         close()
         router.refresh()
       } else toast(res.error ?? 'No se pudo registrar', 'error')
@@ -195,6 +203,28 @@ export default function EntryButton({ categorias, empresa, autoRecibo, plan }: {
                 )
               })}
             </div>
+
+            {/* Estadía (solo si el parqueadero lo activó) */}
+            {preguntarEstadia && (
+              <div className="mb-6">
+                <p style={{ color: 'var(--c-text3)', fontSize: '13px', marginBottom: '8px' }}>¿Cómo se cobra?</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {ESTADIAS.map(e => {
+                    const on = cobroModo === e.id
+                    return (
+                      <button
+                        key={e.id}
+                        onClick={() => setCobroModo(e.id)}
+                        className="py-2 rounded-lg transition-all"
+                        style={{ background: on ? 'var(--c-border)' : 'var(--c-panel)', border: on ? '1.5px solid #6b6b6b' : '1.5px solid var(--c-border2)', color: on ? 'var(--c-text)' : 'var(--c-text3)', fontSize: '12.5px', fontWeight: 500 }}
+                      >
+                        {e.l}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
 
             <button
               onClick={submit}

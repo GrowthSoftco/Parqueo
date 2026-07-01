@@ -90,6 +90,11 @@ model Tenant {
   status    TenantStatus @default(TRIAL)
   espacios  Int          @default(50)
   autoRecibo Boolean     @default(true) // imprimir tiquete al registrar salida
+  preguntarEstadia Boolean @default(false) // al entrar, preguntar fracción/día/plena
+  ticketCodigo String   @default("code128") // code128 | qr | none — código impreso
+  ticketConfig String   @default("{}") // JSON: qué campos muestra el tiquete
+  tarifaPerdido Int      @default(0) // cobro por tiquete perdido (0 = tarifa día)
+  capital   Int          @default(0) // capital inicial para finanzas
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
@@ -102,6 +107,8 @@ model Tenant {
   shifts       Shift[]
   customers    Customer[]
   clientSubs   ClientSubscription[]
+  convenios    Convenio[]
+  finanzas     FinanceEntry[]
 }
 
 model User {
@@ -185,6 +192,14 @@ model ParkingRecord {
   category   Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   tipoNombre String       @default("Carro") // denormalizado para historial/agrupación
   icono      String       @default("car")
+  codigo     String?      // código del tiquete (para escanear a la salida)
+  cobroModo  String?      // FRACCION | DIA | PLENA (si se preguntó la estadía al entrar)
+  esMensualidad Boolean   @default(false) // placa con mensualidad activa → no cobra
+  descuento  Int          @default(0) // descuento aplicado a la salida (convenio/cortesía)
+  descuentoMotivo String? // motivo del descuento manual (cortesía)
+  convenioId String?
+  convenio   Convenio?    @relation(fields: [convenioId], references: [id], onDelete: SetNull)
+  convenioNombre String?  // denormalizado para reportes/historial
   entradaAt  DateTime     @default(now())
   salidaAt   DateTime?
   monto      Int?
@@ -192,6 +207,38 @@ model ParkingRecord {
 
   @@index([tenantId])
   @@index([placa])
+  @@index([codigo])
+}
+
+// Convenios (descuentos por alianza: centro comercial, empresa vecina…). Por parqueadero.
+model Convenio {
+  id        String          @id @default(cuid())
+  tenantId  String
+  tenant    Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  nombre    String
+  tipo      String          @default("PORCENTAJE") // PORCENTAJE | FIJO
+  valor     Int             @default(0) // % (0-100) o monto fijo en COP
+  activo    Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  records   ParkingRecord[]
+
+  @@index([tenantId])
+}
+
+// Movimientos financieros manuales (ingresos/egresos, nómina, capital…). Plan Negocio.
+model FinanceEntry {
+  id         String   @id @default(cuid())
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tipo       String   // INGRESO | EGRESO
+  categoria  String   @default("Otro") // Nómina | Servicios | Insumos | Arriendo | Capital | Otro
+  concepto   String
+  monto      Int
+  recurrente Boolean  @default(false) // recordatorio recurrente (ej. nómina)
+  shiftId    String?  // si es un egreso sacado de la caja de un turno
+  fecha      DateTime @default(now())
+
+  @@index([tenantId])
 }
 
 model Shift {

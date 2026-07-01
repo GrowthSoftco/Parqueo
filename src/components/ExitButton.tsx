@@ -6,11 +6,14 @@ import { LogOut, X, CheckCircle2, Printer } from 'lucide-react'
 import { registrarSalidaPorPlaca } from '@/app/actions'
 import { toast } from '@/lib/toast'
 import { ticketSalida, imprimirTicket, type Empresa } from '@/lib/ticket'
+import type { TicketCfg } from '@/components/TopBar'
+
+export type ConvenioVM = { id: string; nombre: string; tipo: string; valor: number }
 
 const LEN = 6
 const fmt = (n: number) => '$' + n.toLocaleString('es-CO')
 
-type Resultado = { placa: string; monto: number; minutos: number; tipoNombre: string; entradaAt: string; salidaAt: string }
+type Resultado = { placa: string; monto: number; minutos: number; tipoNombre: string; entradaAt: string; salidaAt: string; descuento: number; esMensualidad: boolean; convenioNombre: string | null }
 
 const METODOS: Record<string, string[]> = {
   BASICO: ['Efectivo'],
@@ -18,9 +21,11 @@ const METODOS: Record<string, string[]> = {
   NEGOCIO: ['Efectivo', 'Nequi', 'Daviplata', 'Tarjeta'],
 }
 
-export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: string | null; empresa: Empresa; autoRecibo: boolean }) {
+export default function ExitButton({ plan, empresa, autoRecibo, tarifaPerdido, ticketCfg, convenios }: { plan?: string | null; empresa: Empresa; autoRecibo: boolean; tarifaPerdido?: number; ticketCfg?: TicketCfg; convenios?: ConvenioVM[] }) {
   const metodos = plan ? METODOS[plan] ?? ['Efectivo'] : ['Efectivo']
   const puedeImprimir = plan !== 'BASICO' // impresión de tiquete: Pro/Negocio
+  const conveniosList = convenios ?? []
+  const puedeConvenio = plan === 'PRO' || plan === 'NEGOCIO'
   const [open, setOpen] = useState(false)
   const [chars, setChars] = useState<string[]>(Array(LEN).fill(''))
   const [intl, setIntl] = useState(false)
@@ -28,6 +33,8 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
   const [result, setResult] = useState<Resultado | null>(null)
   const [metodo, setMetodo] = useState('Efectivo')
   const [paga, setPaga] = useState('')
+  const [convenioId, setConvenioId] = useState('')
+  const [perdido, setPerdido] = useState(false)
   const [pending, start] = useTransition()
   const refs = useRef<(HTMLInputElement | null)[]>([])
   const router = useRouter()
@@ -57,6 +64,8 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
     setResult(null)
     setMetodo('Efectivo')
     setPaga('')
+    setConvenioId('')
+    setPerdido(false)
     router.refresh()
   }
 
@@ -91,8 +100,8 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
       return
     }
     start(async () => {
-      const res = await registrarSalidaPorPlaca(placa)
-      if (res.ok) setResult({ placa: res.placa!, monto: res.monto!, minutos: res.minutos!, tipoNombre: res.tipoNombre!, entradaAt: res.entradaAt!, salidaAt: res.salidaAt! })
+      const res = await registrarSalidaPorPlaca(placa, { convenioId: convenioId || undefined, perdido })
+      if (res.ok) setResult({ placa: res.placa!, monto: res.monto!, minutos: res.minutos!, tipoNombre: res.tipoNombre!, entradaAt: res.entradaAt!, salidaAt: res.salidaAt!, descuento: res.descuento ?? 0, esMensualidad: !!res.esMensualidad, convenioNombre: res.convenioNombre ?? null })
       else toast(res.error ?? 'No se pudo registrar la salida', 'error')
     })
   }
@@ -109,6 +118,10 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
       monto: result.monto,
       metodo,
       paga: paga ? Number(paga) : undefined,
+      descuento: result.descuento,
+      convenio: result.convenioNombre ?? undefined,
+      mensualidad: result.esMensualidad,
+      campos: ticketCfg?.campos,
     }))
   }
 
@@ -138,12 +151,21 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                 <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: 'color-mix(in srgb, #22c55e 16%, transparent)' }}>
                   <CheckCircle2 size={24} color="#22c55e" />
                 </div>
-                <p style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Salida registrada · {result.placa}</p>
-                <p className="text-white font-bold mt-2" style={{ fontSize: '40px' }}>{fmt(result.monto)}</p>
-                <p style={{ color: 'var(--c-text4)', fontSize: '13px', marginBottom: '20px' }}>Tiempo: {result.minutos} min</p>
+                <p style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Salida registrada · {result.placa}{result.convenioNombre ? ` · ${result.convenioNombre}` : ''}</p>
+                {result.esMensualidad ? (
+                  <>
+                    <p className="text-white font-bold mt-2" style={{ fontSize: '30px' }}>Sin cobro</p>
+                    <p style={{ color: '#22c55e', fontSize: '13px', fontWeight: 600, marginBottom: '20px' }}>● Mensualidad activa</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-white font-bold mt-2" style={{ fontSize: '40px' }}>{fmt(result.monto)}</p>
+                    <p style={{ color: 'var(--c-text4)', fontSize: '13px', marginBottom: '20px' }}>Tiempo: {result.minutos} min{result.descuento > 0 ? ` · descuento ${fmt(result.descuento)}` : ''}</p>
+                  </>
+                )}
 
                 {/* Métodos de pago (según plan) */}
-                <div className="w-full text-left mb-4">
+                <div className="w-full text-left mb-4" style={{ display: result.esMensualidad ? 'none' : 'block' }}>
                   <p style={{ color: 'var(--c-text3)', fontSize: '12px', marginBottom: '8px' }}>Método de pago</p>
                   <div className="flex flex-wrap gap-2">
                     {metodos.map(m => {
@@ -163,7 +185,7 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                 </div>
 
                 {/* Paga con / devuelta (solo efectivo) */}
-                {metodo === 'Efectivo' ? (
+                {!result.esMensualidad && (metodo === 'Efectivo' ? (
                   <div className="w-full text-left mb-5">
                     <p style={{ color: 'var(--c-text3)', fontSize: '12px', marginBottom: '8px' }}>Paga con</p>
                     <input
@@ -187,7 +209,7 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                   </div>
                 ) : (
                   <p style={{ color: 'var(--c-text4)', fontSize: 13, marginBottom: 20 }}>Cobro exacto por {metodo}</p>
-                )}
+                ))}
 
                 <div className="w-full flex gap-2">
                   {puedeImprimir && (
@@ -256,6 +278,38 @@ export default function ExitButton({ plan, empresa, autoRecibo }: { plan?: strin
                     ))}
                   </div>
                 )}
+
+                {/* Convenio + tiquete perdido (Pro/Negocio) */}
+                {(puedeConvenio && conveniosList.length > 0) || puedeConvenio ? (
+                  <div className="flex flex-col gap-2.5 mb-5">
+                    {conveniosList.length > 0 && (
+                      <div className="flex items-center justify-between gap-3">
+                        <span style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Convenio</span>
+                        <select
+                          value={convenioId}
+                          onChange={e => setConvenioId(e.target.value)}
+                          className="outline-none"
+                          style={{ background: 'var(--c-panel)', border: '1px solid var(--c-border2)', borderRadius: 8, color: 'var(--c-text)', padding: '7px 10px', fontSize: '13px', minWidth: 160 }}
+                        >
+                          <option value="">Sin convenio</option>
+                          {conveniosList.map(c => (
+                            <option key={c.id} value={c.id}>{c.nombre} · {c.tipo === 'PORCENTAJE' ? `${c.valor}%` : fmt(c.valor)}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                    <button
+                      onClick={() => setPerdido(v => !v)}
+                      className="flex items-center justify-between transition-colors"
+                      style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
+                    >
+                      <span style={{ color: 'var(--c-text3)', fontSize: '13px' }}>Tiquete perdido {tarifaPerdido ? `(${fmt(tarifaPerdido)})` : ''}</span>
+                      <span className="rounded-full transition-colors" style={{ width: 40, height: 23, background: perdido ? '#f59e0b' : 'var(--c-border3)', padding: 2, display: 'inline-flex' }}>
+                        <span className="rounded-full transition-transform" style={{ width: 19, height: 19, background: '#fff', transform: perdido ? 'translateX(17px)' : 'translateX(0)' }} />
+                      </span>
+                    </button>
+                  </div>
+                ) : null}
 
                 <button onClick={submit} disabled={pending} className="w-full rounded-full py-3 text-black font-semibold transition-opacity" style={{ background: 'var(--c-accent)', fontSize: '14px', opacity: pending ? 0.6 : 1 }}>
                   {pending ? 'Calculando...' : 'Calcular y cobrar'}

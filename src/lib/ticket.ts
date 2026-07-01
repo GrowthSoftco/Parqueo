@@ -1,9 +1,23 @@
 // Tiquetes térmicos (58/80mm) + impresión vía iframe oculto.
 // Funciona en web y en Electron (window.print del documento del iframe).
 
+import bwipjs from 'bwip-js/browser'
+
 export type Empresa = { nombre: string; nit?: string; direccion?: string; telefono?: string }
+// Qué campos del encabezado muestra el tiquete (lo decide el admin).
+export type TicketCampos = { nit?: boolean; direccion?: boolean; telefono?: boolean }
 
 const fmt$ = (n: number) => '$' + n.toLocaleString('es-CO')
+
+// Genera el código del tiquete como SVG (Code128 para pistola láser, QR para cámara).
+function codigoSVG(codigo: string, tipo: string): string {
+  try {
+    if (tipo === 'qr') return `<div class="qr">${bwipjs.toSVG({ bcid: 'qrcode', text: codigo, scale: 3 })}</div>`
+    return `<div class="bc">${bwipjs.toSVG({ bcid: 'code128', text: codigo, scale: 2, height: 9, includetext: false })}</div>`
+  } catch {
+    return ''
+  }
+}
 const p2 = (x: number) => String(x).padStart(2, '0')
 const fecha = (d: Date) => `${p2(d.getDate())}/${p2(d.getMonth() + 1)}/${d.getFullYear()}`
 const hora = (d: Date) => `${p2(d.getHours())}:${p2(d.getMinutes())}`
@@ -27,25 +41,33 @@ const CSS = `
   .row { display:flex; justify-content:space-between; gap:8px; }
   .mt { margin-top:4px; }
   .pb { margin-top:8px; }
+  .codebox { text-align:center; margin-top:9px; }
+  .codebox .bc svg { max-width:64mm; height:auto; }
+  .codebox .qr svg { width:30mm; height:30mm; }
 `
 
 function wrap(inner: string): string {
   return `<!doctype html><html><head><meta charset="utf-8"><title>Tiquete</title><style>${CSS}</style></head><body><div class="wm">${LOGO}</div><div class="content">${inner}<div class="c muted pb">Con tecnología de Parqueo</div></div></body></html>`
 }
 
-function cabecera(e: Empresa): string {
+function cabecera(e: Empresa, campos?: TicketCampos): string {
+  const c = campos ?? {}
+  const show = (v: boolean | undefined) => v !== false // por defecto se muestran
   return `
     <div class="c b" style="font-size:15px">${esc(e.nombre)}</div>
-    ${e.nit ? `<div class="c muted">NIT ${esc(e.nit)}</div>` : ''}
-    ${e.direccion ? `<div class="c muted">${esc(e.direccion)}</div>` : ''}
-    ${e.telefono ? `<div class="c muted">Tel ${esc(e.telefono)}</div>` : ''}
+    ${e.nit && show(c.nit) ? `<div class="c muted">NIT ${esc(e.nit)}</div>` : ''}
+    ${e.direccion && show(c.direccion) ? `<div class="c muted">${esc(e.direccion)}</div>` : ''}
+    ${e.telefono && show(c.telefono) ? `<div class="c muted">Tel ${esc(e.telefono)}</div>` : ''}
   `
 }
 
-export function ticketEntrada(d: { empresa: Empresa; placa: string; tipoNombre: string; entradaAt?: Date }): string {
+export function ticketEntrada(d: {
+  empresa: Empresa; placa: string; tipoNombre: string; entradaAt?: Date
+  codigo?: string; codigoTipo?: string; campos?: TicketCampos; mensualidad?: boolean
+}): string {
   const t = d.entradaAt ?? new Date()
   return wrap(`
-    ${cabecera(d.empresa)}
+    ${cabecera(d.empresa, d.campos)}
     <hr class="hr"/>
     <div class="c b">TIQUETE DE ENTRADA</div>
     <hr class="hr"/>
@@ -54,6 +76,8 @@ export function ticketEntrada(d: { empresa: Empresa; placa: string; tipoNombre: 
     <div class="row mt"><span>Vehículo</span><span class="b">${esc(d.tipoNombre)}</span></div>
     <div class="row"><span>Fecha</span><span class="b">${fecha(t)}</span></div>
     <div class="row"><span>Hora entrada</span><span class="b">${hora(t)}</span></div>
+    ${d.mensualidad ? `<hr class="hr"/><div class="c b">● MENSUALIDAD ●</div>` : ''}
+    ${d.codigo && d.codigoTipo !== 'none' ? `<div class="codebox">${codigoSVG(d.codigo, d.codigoTipo || 'code128')}<div class="c muted mt">${esc(d.codigo)}</div></div>` : ''}
     <hr class="hr"/>
     <div class="c muted">Conserve este tiquete para retirar el vehículo</div>
   `)
@@ -62,11 +86,12 @@ export function ticketEntrada(d: { empresa: Empresa; placa: string; tipoNombre: 
 export function ticketSalida(d: {
   empresa: Empresa; placa: string; tipoNombre: string
   entradaAt: Date; salidaAt: Date; minutos: number; monto: number; metodo: string; paga?: number
+  descuento?: number; convenio?: string; mensualidad?: boolean; campos?: TicketCampos
 }): string {
   const dur = d.minutos < 60 ? `${d.minutos} min` : `${Math.floor(d.minutos / 60)}h ${d.minutos % 60}m`
   const devuelta = d.paga && d.paga >= d.monto ? d.paga - d.monto : null
   return wrap(`
-    ${cabecera(d.empresa)}
+    ${cabecera(d.empresa, d.campos)}
     <hr class="hr"/>
     <div class="c b">RECIBO DE PAGO</div>
     <hr class="hr"/>
@@ -77,10 +102,14 @@ export function ticketSalida(d: {
     <div class="row"><span>Salida</span><span class="b">${fecha(d.salidaAt)} ${hora(d.salidaAt)}</span></div>
     <div class="row"><span>Tiempo</span><span class="b">${dur}</span></div>
     <div class="row"><span>Método</span><span class="b">${esc(d.metodo)}</span></div>
+    ${d.convenio ? `<div class="row"><span>Convenio</span><span class="b">${esc(d.convenio)}</span></div>` : ''}
+    ${d.descuento && d.descuento > 0 ? `<div class="row"><span>Descuento</span><span class="b">- ${fmt$(d.descuento)}</span></div>` : ''}
     <hr class="hr"/>
-    <div class="row"><span class="b">TOTAL</span><span class="xl">${fmt$(d.monto)}</span></div>
+    ${d.mensualidad
+      ? `<div class="c big">MENSUALIDAD</div><div class="c muted">Sin cobro — cliente con plan</div>`
+      : `<div class="row"><span class="b">TOTAL</span><span class="xl">${fmt$(d.monto)}</span></div>
     ${d.paga ? `<div class="row mt"><span>Recibido</span><span class="b">${fmt$(d.paga)}</span></div>` : ''}
-    ${devuelta != null ? `<div class="row"><span>Devuelta</span><span class="b">${fmt$(devuelta)}</span></div>` : ''}
+    ${devuelta != null ? `<div class="row"><span>Devuelta</span><span class="b">${fmt$(devuelta)}</span></div>` : ''}`}
     <hr class="hr"/>
     <div class="c muted">¡Gracias por su visita!</div>
     <div class="c muted">${fecha(d.salidaAt)} ${hora(d.salidaAt)}</div>
